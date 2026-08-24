@@ -1,7 +1,7 @@
 # Metodología de Trabajo · Luciano Santo Domingo
 
 Sitio web que ordena y publica la metodología de entrenamiento desarrollada durante años en el
-**Club Atlético Europeo (Argentina)** junto a distintos cuerpos técnicos: fuerza, juegos reducidos,
+**Club Agropecuario Argentino (Carlos Casares, Argentina)** junto a distintos cuerpos técnicos: fuerza, juegos reducidos,
 posesión y juegos de posición, trabajos tácticos, finalización, balón parado, control de carga y
 planificación del microciclo.
 
@@ -223,4 +223,4 @@ de carga combinando carga interna (sRPE) y externa (GPS).
 
 ---
 
-© Luciano Santo Domingo · Club Atlético Europeo, Argentina.
+© Luciano Santo Domingo · Club Agropecuario Argentino, Carlos Casares, Argentina.

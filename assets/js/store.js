@@ -19,7 +19,7 @@
     arena:   { label: "Arena — tierra y ámbar",           mode: "dark",  bg: "#100e0a", bg2: "#17140f", surface: "#1d1913", surface2: "#26211a", text: "#f5f0e6", muted: "#9c9083", border: "#2e281f", accent: "#e8a33d" },
     blanco:  { label: "Blanco — claro editorial",         mode: "light", bg: "#f4f4f1", bg2: "#ffffff", surface: "#ffffff", surface2: "#ececE6", text: "#0b0d0a", muted: "#5f645c", border: "#d9dad4", accent: "#111111" },
     hielo:   { label: "Hielo — claro y azul",             mode: "light", bg: "#f3f6fa", bg2: "#ffffff", surface: "#ffffff", surface2: "#e8eef6", text: "#0a1220", muted: "#5b6b80", border: "#d3dce8", accent: "#0057ff" },
-    club:    { label: "Club — institucional",             mode: "dark",  bg: "#05080f", bg2: "#0a0f1a", surface: "#0e1522", surface2: "#141d2d", text: "#f0f4fa", muted: "#8494ab", border: "#1c2739", accent: "#f2c14b" }
+    club:    { label: "Club — verde, rojo y blanco",      mode: "dark",  bg: "#050f09", bg2: "#08170e", surface: "#0b1e12", surface2: "#102918", text: "#f1f7f2", muted: "#84a08d", border: "#183524", accent: "#1faa4b" }
   };
   LSD.PRESETS = PRESETS;
 
@@ -32,12 +32,12 @@
       title: "Metodología de Trabajo",
       author: "Luciano Santo Domingo",
       role: "Preparador Físico · Metodología de Entrenamiento",
-      club: "Club Atlético Europeo — Argentina",
+      club: "Club Agropecuario Argentino · Carlos Casares, Argentina",
       tagline: "Años de trabajo de campo, ordenados.",
       heroLine1: "Metodología",
       heroLine2: "de Trabajo",
       heroLine3: "Luciano Santo Domingo",
-      intro: "Archivo metodológico construido a lo largo de años de trabajo en el Club Atlético Europeo junto a distintos cuerpos técnicos. Fuerza, juegos reducidos, posesión, trabajos tácticos y control de carga: cada bloque documentado con el mismo criterio y con el vídeo de la tarea real.",
+      intro: "Archivo metodológico construido a lo largo de años de trabajo en el Club Agropecuario Argentino junto a distintos cuerpos técnicos. Fuerza, juegos reducidos, posesión, trabajos tácticos y control de carga: cada bloque documentado con el mismo criterio y con el vídeo de la tarea real.",
       email: "",
       instagram: "",
       footerNote: "Documento vivo. Se actualiza con cada temporada."

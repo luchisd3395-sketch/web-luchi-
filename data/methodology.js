@@ -1,7 +1,7 @@
 /* =============================================================
    data/methodology.js
    Cuerpo de conocimiento — METODOLOGÍA DE TRABAJO
-   Luciano Santo Domingo · Club Atlético Europeo (Argentina)
+   Luciano Santo Domingo · Club Agropecuario Argentino (Carlos Casares, Argentina)
 
    Cada BLOQUE agrupa UNIDADES DE TRABAJO. Cada unidad se
    describe con la misma ficha para mantener un lenguaje común:
@@ -12,7 +12,7 @@ window.LSD_METHODOLOGY = {
   meta: {
     autor: "Luciano Santo Domingo",
     rol: "Preparador Físico · Metodología de Entrenamiento",
-    club: "Club Atlético Europeo — Argentina",
+    club: "Club Agropecuario Argentino · Carlos Casares, Argentina",
     version: "1.0",
     actualizado: "2026"
   },
