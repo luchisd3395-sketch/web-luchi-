@@ -1,0 +1,27 @@
+Carpeta para las fotografías del sitio.
+
+Guardá acá tus fotos (portada, fotos de cada bloque) y referencialas
+desde la terminal con la ruta relativa. Por ejemplo, si guardás
+"entrenamiento-fuerza.jpg" en esta carpeta:
+
+    imagen portada assets/img/entrenamiento-fuerza.jpg
+    imagen bloque fuerza assets/img/entrenamiento-fuerza.jpg
+
+También podés usar una URL de internet en vez de una ruta local.
+
+Recomendaciones:
+  · Portada: horizontal, mínimo 1920 px de ancho.
+  · Bloques: horizontal, alrededor de 1200 × 800 px.
+  · Comprimí las fotos antes de subirlas (por debajo de 400 KB cada una)
+    para que la página cargue rápido.
+
+
+FOTOS DISPONIBLES SIN ASIGNAR
+  cuerpo-tecnico-cancha.jpg   Dos del cuerpo técnico en el campo de entrenamiento
+  cancha-visitante.jpg        Dos del cuerpo técnico en cancha visitante
+  estadio-del-club.jpg        Dos del cuerpo técnico en el estadio del club
+
+Están en la carpeta pero no puestas en ningún bloque, porque no ilustran
+ninguno de los tres que faltan (posesion, finalizacion, abp). Para usarlas:
+
+    imagen bloque <id> assets/img/<archivo>.jpg

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es" data-mode="light" data-font="anton" data-density="normal" data-titlecase="upper"
+      data-container="wide" data-hero="full" data-nav="top" data-card="sharp" data-motion="on">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Metodología de Trabajo · Luciano Santo Domingo</title>
+<meta name="description" content="Archivo metodológico de entrenamiento en fútbol: fuerza, juegos reducidos, posesión, trabajos tácticos, balón parado y control de carga. Luciano Santo Domingo — Club Agropecuario Argentino, Carlos Casares.">
+<meta name="author" content="Luciano Santo Domingo">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Metodología de Trabajo · Luciano Santo Domingo">
+<meta property="og:description" content="Fuerza, juegos reducidos, posesión, trabajos tácticos y control de carga. Metodología de entrenamiento documentada.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23ffffff'/%3E%3Cpath d='M6 6h4v15h10v5H6z' fill='%23e11d2e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;800;900&family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/terminal.css">
+</head>
+<body>
+
+<!-- ==================== CABECERA ==================== -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#inicio">
+      <span class="brand-mark" id="brandMark">LS</span>
+      <span class="brand-text">
+        <span class="brand-name" id="brandName">Luciano Santo Domingo</span>
+        <span class="brand-sub" id="brandSub">Metodología de Trabajo</span>
+      </span>
+    </a>
+
+    <nav class="nav" id="nav" aria-label="Navegación principal"></nav>
+
+    <div class="header-actions">
+      <button class="btn-term" id="termOpen" title="Abrir la terminal de configuración (tecla `)">
+        <span class="dot"></span> Terminal
+      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main class="site-main" id="main">
+
+  <!-- ==================== PORTADA ==================== -->
+  <section class="hero" id="inicio">
+    <div class="hero-media" id="heroMedia" aria-hidden="true"></div>
+    <div class="hero-grid-lines" aria-hidden="true"></div>
+    <div class="wrap hero-inner">
+      <div class="hero-eyebrow">
+        <span class="bar" aria-hidden="true"></span>
+        <span class="label" id="heroEyebrow">Preparador Físico · Metodología de Entrenamiento</span>
+      </div>
+
+      <h1 class="hero-title display">
+        <span class="line"><span id="heroL1">Metodología</span></span>
+        <span class="line"><span id="heroL2">de Trabajo</span></span>
+        <span class="line"><span id="heroL3">Luciano Santo Domingo</span></span>
+      </h1>
+
+      <p class="lede" id="heroIntro"></p>
+
+      <div class="hero-bottom">
+        <div class="hero-stats" id="heroStats"></div>
+        <button class="scroll-cue" id="heroCta">
+          <span class="line-v" aria-hidden="true"></span>
+          <span class="label">Ver los bloques</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MARQUESINA ==================== -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </div>
+
+  <!-- ==================== BLOQUES ==================== -->
+  <section class="section" id="bloques">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-num">01</div>
+        <div>
+          <div class="sec-head-top">
+            <h2 class="sec-title">Bloques metodológicos</h2>
+            <span class="sec-count" id="blocksCount"></span>
+          </div>
+          <p class="lede sec-desc">La metodología dividida en bloques. Cada uno agrupa unidades de trabajo
+            descritas con la misma ficha: objetivo, formato, espacio, duración, claves de ejecución y variantes.</p>
+        </div>
+      </div>
+      <div class="blocks-grid" id="blocksGrid"></div>
+    </div>
+  </section>
+
+  <!-- ==================== UNIDADES DE TRABAJO ==================== -->
+  <section class="section" id="trabajos">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-num">02</div>
+        <div>
+          <div class="sec-head-top">
+            <h2 class="sec-title">Unidades de trabajo</h2>
+            <span class="sec-count" id="worksCount"></span>
+          </div>
+          <p class="lede sec-desc">Cada tarea, con su ficha completa. Tocá cualquiera para abrir el detalle
+            y los vídeos asociados.</p>
+        </div>
+      </div>
+      <div class="filters" id="worksFilters"></div>
+      <div class="works-grid" id="worksGrid"></div>
+    </div>
+  </section>
+
+  <!-- ==================== VÍDEOS ==================== -->
+  <section class="section" id="videos">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-num">03</div>
+        <div>
+          <div class="sec-head-top">
+            <h2 class="sec-title">Archivo de vídeo</h2>
+            <span class="sec-count" id="videosCount"></span>
+          </div>
+          <p class="lede sec-desc">Las tareas grabadas en el campo. El formato de esta galería
+            —mosaico, cuadrícula, lista, carrusel o cine— se configura desde la terminal.</p>
+        </div>
+      </div>
+      <div class="filters" id="videoFilters"></div>
+      <div class="video-collection" id="videoCollection"
+           data-layout="grid" data-ratio="16:9" data-size="md" data-align="stretch" data-cols="3"></div>
+      <div class="video-strip" id="videoStrip"></div>
+
+      <div class="empty-state hidden" id="videosEmpty">
+        Todavía no hay vídeos en el archivo.<br>
+        Abrí la terminal con la tecla <kbd>`</kbd> o el botón <kbd>TERMINAL</kbd> y escribí:<br><br>
+        <kbd>video add "Rondo 4v2" https://youtu.be/XXXXXXX --bloque posesion</kbd><br><br>
+        Para ver ejemplos y probar los formatos: <kbd>demo</kbd>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ==================== MOMENTOS EN EL CLUB ==================== -->
+  <section class="section" id="momentos">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-num">05</div>
+        <div>
+          <div class="sec-head-top">
+            <h2 class="sec-title">Momentos en el club</h2>
+            <span class="sec-count" id="momCount"></span>
+          </div>
+          <p class="lede sec-desc">Fotografías del día a día: entrenamientos, partidos y cuerpo técnico.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="momentos" id="momentos-galeria">
+      <div class="mom-strip" id="momStrip" tabindex="0" aria-label="Fotografías del club"></div>
+      <div class="wrap mom-bar">
+        <div class="mom-nav">
+          <button class="mom-btn" id="momPrev" aria-label="Foto anterior">←</button>
+          <button class="mom-btn" id="momNext" aria-label="Foto siguiente">→</button>
+          <span class="mom-counter" id="momCounter"></span>
+        </div>
+        <div class="mom-dots" id="momDots"></div>
+      </div>
+      <div class="wrap">
+        <div class="empty-state hidden" id="momVacio">
+          Todavía no hay fotos en esta sección.<br>
+          Desde la terminal: <kbd>momentos add assets/img/foto.jpg</kbd>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MICROCICLO ==================== -->
+  <section class="section" id="microciclo">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-num">04</div>
+        <div>
+          <div class="sec-head-top">
+            <h2 class="sec-title">Microciclo tipo</h2>
+            <span class="sec-count">MD+1 → MD</span>
+          </div>
+          <p class="lede sec-desc">Cómo se ordena la semana entre partido y partido: qué se entrena cada día,
+            con qué carga relativa y con qué intención.</p>
+        </div>
+      </div>
+      <div class="micro-table-wrap reveal">
+        <table class="micro-table">
+          <thead>
+            <tr>
+              <th>Día</th><th>Tipo</th><th>Foco</th><th>Contenidos</th><th>Duración</th><th>Carga</th>
+            </tr>
+          </thead>
+          <tbody id="microBody"></tbody>
+        </table>
+      </div>
+      <div class="load-legend reveal" id="microLegend"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ==================== PIE ==================== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo display" id="footLogo"></div>
+        <p class="label" style="margin-top:1.2rem" id="footNote"></p>
+      </div>
+      <div class="footer-col">
+        <h4>Bloques</h4>
+        <ul id="footBlocks"></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <ul id="footContact"></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="label" id="footAuthor"></span>
+      <span class="label">© <span id="footYear"></span> · Todos los derechos reservados</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== CAPA DE MODALES ==================== -->
+<div class="overlay" id="overlay"></div>
+<div class="toast-stack" id="toastStack"></div>
+
+<!-- ==================== TERMINAL ==================== -->
+<button class="term-fab" id="termFab" title="Abrir terminal (tecla `)">⌘ Terminal</button>
+
+<section class="term" id="term" data-dock="bottom" aria-label="Terminal de configuración">
+  <div class="term-bar">
+    <span class="term-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="term-name"><b>lsd</b>//console<span class="term-name-sub"> — configuración del sitio</span></span>
+    <span class="term-bar-actions">
+      <button id="termDock" title="Cambiar posición">Anclaje</button>
+      <button id="termClear" title="Limpiar pantalla">Limpiar</button>
+      <button id="termClose" title="Cerrar (Esc)">Cerrar</button>
+    </span>
+  </div>
+
+  <div class="term-out" id="termOut"></div>
+
+  <div class="term-input-row">
+    <div class="term-sug" id="termSug"></div>
+    <span class="term-prompt">lsd ❯</span>
+    <span class="term-ghost">
+      <span class="term-ghost-text" id="termGhost"></span>
+      <input class="term-input" id="termInput" type="text" autocomplete="off" autocapitalize="off"
+             autocorrect="off" spellcheck="false" placeholder="escribí `ayuda` y pulsá Enter">
+    </span>
+    <span class="term-hint">Tab autocompleta · ↑↓ historial · Esc cierra</span>
+  </div>
+
+  <div class="term-lock" id="termLock">
+    <div class="lock-box">
+      <h4>Acceso restringido</h4>
+      <p>Introducí la clave para administrar el sitio.</p>
+      <input type="password" id="termLockInput" placeholder="••••••">
+    </div>
+  </div>
+</section>
+
+<script src="data/methodology.js"></script>
+<script src="data/config.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/media.js"></script>
+<script src="assets/js/render.js"></script>
+<script src="assets/js/terminal.js"></script>
+<script src="assets/js/commands.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
