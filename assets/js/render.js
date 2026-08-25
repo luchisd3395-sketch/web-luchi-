@@ -384,6 +384,8 @@
           '<svg width="17" height="19" viewBox="0 0 17 19" fill="currentColor"><path d="M0 0l17 9.5L0 19V0z"/></svg>' +
         '</span>' +
         (v.duration ? '<span class="video-dur">' + esc(v.duration) + '</span>' : '') +
+        (v.start != null ? '<span class="video-frag" title="Fragmento de una grabación más larga">' +
+          esc(LSD.formatTime(v.start)) + (v.end != null ? '–' + esc(LSD.formatTime(v.end)) : '') + '</span>' : '') +
         (c.video.hoverPlay && LSD.canHoverPreview(v)
           ? '<video class="hover-preview" src="' + esc(LSD.safeUrl(v.url)) + '" muted loop playsinline preload="none"></video>'
           : '') +

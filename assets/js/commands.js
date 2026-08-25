@@ -119,7 +119,7 @@
     { g: "Básicos",       cmds: ["ayuda", "estado", "limpiar", "abrir", "salir", "acerca"] },
     { g: "Configuración", cmds: ["config", "set", "get", "reset", "texto"] },
     { g: "Aspecto",       cmds: ["tema", "color", "fuente", "densidad", "layout", "portada", "nav", "tarjeta"] },
-    { g: "Vídeos",        cmds: ["video", "videos", "lote"] },
+    { g: "Vídeos",        cmds: ["video", "videos", "lote", "fragmentos"] },
     { g: "Imágenes",      cmds: ["imagen"] },
     { g: "Contenido",     cmds: ["bloques", "trabajos", "buscar", "seccion"] },
     { g: "Datos",         cmds: ["exportar", "importar", "publicar", "demo", "clave"] }
@@ -638,7 +638,9 @@
     dur: "duration", duracion: "duration", duration: "duration",
     desc: "desc", descripcion: "desc",
     poster: "poster", miniatura: "poster", portada: "poster",
-    destacado: "featured", featured: "featured"
+    destacado: "featured", featured: "featured",
+    desde: "start", inicio: "start", start: "start",
+    hasta: "end", fin: "end", end: "end"
   };
 
   T.register({
@@ -670,6 +672,7 @@
     help: function () {
       T.space();
       T.dim('AÑADIR   video add "Título" <url> --bloque <id> [--trabajo <id>] [--tags a,b] [--dur 2:30]');
+      T.dim('                                  [--desde 2:05] [--hasta 2:25]   (para un fragmento)');
       T.dim('                                  [--desc "…"] [--poster <url>] [--destacado]');
       T.dim("LISTAR   video list [bloque]");
       T.dim("EDITAR   video edit <id|#n> <campo> <valor>      campos: " + Object.keys(VIDEO_FIELDS).slice(0, 9).join(", "));
@@ -710,6 +713,8 @@
               esc((b ? b.code + " " + b.short : "sin bloque")) +
               (v.work ? " › " + esc(v.work) : "") +
               "  ·  " + esc(LSD.providerLabel(v.provider)) +
+              (v.start != null ? "  ·  " + esc(LSD.formatTime(v.start)) +
+                 (v.end != null ? " → " + esc(LSD.formatTime(v.end)) : "") : "") +
               (v.duration ? "  ·  " + esc(v.duration) : "") +
               ((v.tags && v.tags.length) ? "  ·  " + esc(v.tags.join(", ")) : "") +
             "</div></div>");
@@ -751,6 +756,14 @@
         }
 
         var tags = flags.tags ? String(flags.tags).split(/[,;]+/).map(function (t) { return t.trim(); }).filter(Boolean) : [];
+        var desde = LSD.parseTime(flags.desde || flags.start || flags.inicio || "");
+        var hasta = LSD.parseTime(flags.hasta || flags.end || flags.fin || "");
+        if (hasta != null && desde == null) desde = 0;
+        if (desde != null && hasta != null && hasta <= desde) {
+          T.err("El tiempo de fin debe ser posterior al de inicio.");
+          return;
+        }
+        if (desde == null && parsed.start != null) desde = parsed.start;
         var rec = {
           id: uniqueId(LSD.slug(title)),
           title: title,
@@ -760,7 +773,9 @@
           block: blockId,
           work: workId,
           tags: tags,
-          duration: LSD.normDuration(flags.dur || flags.duracion || ""),
+          start: desde, end: hasta,
+          duration: LSD.normDuration(flags.dur || flags.duracion || "") ||
+                    ((desde != null && hasta != null) ? LSD.formatTime(hasta - desde) : ""),
           desc: flags.desc || flags.descripcion || "",
           poster: flags.poster || flags.miniatura || "",
           featured: !!(flags.destacado || flags.featured),
@@ -807,6 +822,23 @@
         if (field === "tags") val = val.split(/[,;]+/).map(function (t) { return t.trim(); }).filter(Boolean);
         if (field === "featured") val = ["1", "true", "si", "sí", "on", "yes"].indexOf(da(val)) >= 0;
         if (field === "duration") val = LSD.normDuration(val);
+        if (field === "start" || field === "end") {
+          var seg = LSD.parseTime(val);
+          if (seg == null) { T.err("Tiempo no válido. Usá 2:05, 125 o 1:02:05."); return; }
+          var otro = field === "start" ? r2.v.end : r2.v.start;
+          if (otro != null) {
+            var ini = field === "start" ? seg : otro;
+            var fin = field === "start" ? otro : seg;
+            if (fin <= ini) { T.err("El fin debe ser posterior al inicio."); return; }
+          }
+          S.write(function (st) {
+            st.media.videos[r2.i][field] = seg;
+            var v2 = st.media.videos[r2.i];
+            if (v2.start != null && v2.end != null) v2.duration = LSD.formatTime(v2.end - v2.start);
+          });
+          T.ok(r2.v.id + " · " + (field === "start" ? "desde" : "hasta") + " → " + LSD.formatTime(seg));
+          return;
+        }
         if (field === "block") {
           var nb = findBlock(val);
           if (!nb) { T.err("Bloque no encontrado."); T.chips(blockIds()); return; }
@@ -906,6 +938,7 @@
           url: p.url, provider: p.provider, vid: p.vid,
           block: (findBlock(v.block || "") || {}).id || M.blocks[0].id,
           work: v.work || null,
+          start: LSD.parseTime(v.start), end: LSD.parseTime(v.end),
           tags: Array.isArray(v.tags) ? v.tags : (v.tags ? String(v.tags).split(/[,;]+/) : []),
           duration: LSD.normDuration(v.duration || ""),
           desc: v.desc || "", poster: v.poster || "",
@@ -1036,6 +1069,161 @@
     }
   });
 
+
+
+  /* =========================================================
+     FRAGMENTOS DE UN MISMO VÍDEO
+     ========================================================= */
+  T.register({
+    name: "fragmentos", alias: ["cortes", "partes", "tramos"],
+    desc: "Da de alta varios tramos de un mismo vídeo como piezas separadas",
+    usage: "fragmentos <url> --bloque <id>",
+    complete: function (prev) { return prev.length ? [] : []; },
+    help: function () {
+      T.space();
+      T.dim("Sirve para una grabación larga con varias actividades dentro.");
+      T.dim("No hace falta cortar el vídeo ni volver a subirlo: cada tramo");
+      T.dim("queda como una pieza propia que reproduce sólo su fragmento.");
+      T.space();
+      T.dim("   fragmentos https://youtu.be/xxxx --bloque ssg");
+      T.space();
+      T.dim("Se abre un cuadro para pegar la lista, una línea por actividad:");
+      T.space();
+      T.dim("   Nombre de la actividad | 2:05 | 2:25");
+      T.dim("   Rondo 5v2 | 3:10 | 3:30 | rondo-base | rondo,activación");
+      T.space();
+      T.dim("Los tiempos admiten 2:05, 125 o 1:02:05.");
+      T.dim("Si sólo ponés el de inicio, se usan 20 segundos por defecto.");
+    },
+    run: function (args, flags) {
+      var url = args[0];
+      if (!url) {
+        T.err("Uso: fragmentos <url del vídeo> --bloque <id>");
+        T.dim("Bloques disponibles:");
+        T.chips(blockIds());
+        return;
+      }
+      var parsed = LSD.parseMedia(url);
+      if (!parsed || !parsed.url) { T.err("No se pudo interpretar la URL."); return; }
+
+      var bloque = null, unidadBase = null;
+      if (flags.trabajo || flags.unidad || flags.work) {
+        var w0 = findWork(String(flags.trabajo || flags.unidad || flags.work));
+        if (!w0) { T.err("Unidad de trabajo no encontrada."); return; }
+        unidadBase = w0.item.id; bloque = w0.block;
+      }
+      if (flags.bloque || flags.block) {
+        var b0 = findBlock(String(flags.bloque || flags.block));
+        if (!b0) { T.err("Bloque no encontrado."); T.chips(blockIds()); return; }
+        bloque = b0;
+      }
+      if (!bloque) {
+        T.err("Falta indicar el bloque. Añadí  --bloque <id>  al comando.");
+        T.chips(blockIds());
+        return;
+      }
+
+      var pordefecto = LSD.parseTime(flags.duracion || flags.dur || "") || 20;
+
+      openPasteBox(
+        "Actividades de este vídeo — una por línea",
+        function (txt) { procesarFragmentos(txt, parsed, bloque, unidadBase, pordefecto, flags); },
+        "Entrada en calor con balón | 0:12 | 0:32\n" +
+        "Rondo 5v2 | 1:05 | 1:25\n" +
+        "SSG 4v4 con comodines | 2:40 | 3:00 | ssg-comodines | SSG,superioridad"
+      );
+    }
+  });
+
+  function procesarFragmentos(texto, parsed, bloque, unidadBase, pordefecto, flags) {
+    var lineas = String(texto).split(/\r?\n/);
+    var altas = [], fallos = [], n = 0;
+
+    lineas.forEach(function (linea, i) {
+      var cruda = linea.trim();
+      if (!cruda || cruda.charAt(0) === "#") return;
+      n++;
+      var partes = cruda.split(/\s*[|;\t]\s*/).filter(function (x) { return x !== ""; });
+
+      if (partes.length < 2) {
+        fallos.push([i + 1, cruda, "hacen falta al menos: nombre | inicio"]);
+        return;
+      }
+      var nombre = partes[0];
+      var desde = LSD.parseTime(partes[1]);
+      if (desde == null) { fallos.push([i + 1, cruda, "tiempo de inicio no válido: «" + partes[1] + "»"]); return; }
+
+      var hasta = partes[2] ? LSD.parseTime(partes[2]) : null;
+      if (partes[2] && hasta == null) { fallos.push([i + 1, cruda, "tiempo de fin no válido: «" + partes[2] + "»"]); return; }
+      if (hasta == null) hasta = desde + pordefecto;
+      if (hasta <= desde) { fallos.push([i + 1, cruda, "el fin (" + LSD.formatTime(hasta) + ") no puede ser anterior al inicio (" + LSD.formatTime(desde) + ")"]); return; }
+
+      var unidad = unidadBase;
+      if (partes[3]) {
+        var w = findWork(partes[3]);
+        if (!w) { fallos.push([i + 1, cruda, "unidad desconocida: «" + partes[3] + "»"]); return; }
+        if (w.block.id !== bloque.id) {
+          fallos.push([i + 1, cruda, "la unidad «" + w.item.id + "» es del bloque «" + w.block.id + "»"]);
+          return;
+        }
+        unidad = w.item.id;
+      }
+      var etiquetas = partes[4] ? partes[4].split(/\s*,\s*/).filter(Boolean) : [];
+
+      altas.push({
+        id: uniqueId(LSD.slug(nombre)),
+        title: nombre,
+        url: parsed.url, provider: parsed.provider, vid: parsed.vid,
+        start: desde, end: hasta,
+        block: bloque.id, work: unidad,
+        tags: etiquetas,
+        duration: LSD.formatTime(hasta - desde),
+        desc: "", poster: "", featured: false,
+        added: new Date().toISOString().slice(0, 10)
+      });
+    });
+
+    if (!n) { T.warn("No había ninguna línea con contenido."); return; }
+
+    if (fallos.length && !flags.parcial && !flags.forzar) {
+      T.err(fallos.length + " de " + n + " líneas tienen un problema. No se cargó ninguna.");
+      T.space();
+      fallos.forEach(function (f) {
+        T.html('<div class="t-line"><span class="t-err">línea ' + f[0] + "</span> " +
+          '<span class="t-dim">' + esc(f[1].slice(0, 70)) + "</span>" +
+          '<div style="padding-left:1.2rem" class="t-warn">' + esc(f[2]) + "</div></div>");
+      });
+      T.space();
+      T.dim("Corregí esas líneas y volvé a pegar. Para cargar las correctas:  fragmentos … --parcial");
+      return;
+    }
+    if (!altas.length) { T.err("Ninguna línea se pudo cargar."); return; }
+
+    // Solapamientos: no es un error, pero conviene avisar
+    var orden = altas.slice().sort(function (a, b) { return a.start - b.start; });
+    var solapes = [];
+    for (var k = 1; k < orden.length; k++) {
+      if (orden[k].start < orden[k - 1].end) {
+        solapes.push('"' + orden[k - 1].title + '" y "' + orden[k].title + '"');
+      }
+    }
+
+    S.write(function (st) { altas.forEach(function (v) { st.media.videos.push(v); }); });
+
+    T.ok(altas.length + " fragmentos cargados en " + bloque.code + " · " + bloque.title);
+    altas.forEach(function (v) {
+      T.html('<div class="t-line"><span class="t-key">' + esc(LSD.formatTime(v.start)) + " → " +
+        esc(LSD.formatTime(v.end)) + '</span>  <span class="t-ok">' + esc(v.title) +
+        '</span> <span class="t-dim">(' + esc(v.duration) + ")</span></div>");
+    });
+    if (solapes.length) {
+      T.space();
+      T.warn("Hay tramos que se pisan: " + solapes.join(", ") + ".");
+      T.dim("No impide nada, pero revisá los tiempos por las dudas.");
+    }
+    T.space();
+    T.dim("Cada uno reproduce sólo su tramo. Para publicarlo en el sitio:  publicar");
+  }
 
   /* =========================================================
      CARGA POR LOTES

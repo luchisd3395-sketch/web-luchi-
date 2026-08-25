@@ -31,7 +31,7 @@
     for (p in RX) {
       for (i = 0; i < RX[p].length; i++) {
         m = u.match(RX[p][i]);
-        if (m) return { provider: p, vid: m[1], url: u };
+        if (m) return { provider: p, vid: m[1], url: u, start: startFromUrl(u) };
       }
     }
     if (FILE_RX.test(u)) return { provider: "file", vid: "", url: u };
@@ -58,10 +58,13 @@
       case "youtube":
         return "https://www.youtube-nocookie.com/embed/" + v.vid +
           "?autoplay=" + auto + "&mute=" + mute + "&rel=0&modestbranding=1&playsinline=1" +
+          (v.start != null ? "&start=" + Math.round(v.start) : "") +
+          (v.end != null ? "&end=" + Math.round(v.end) : "") +
           (loop ? "&loop=1&playlist=" + v.vid : "");
       case "vimeo":
         return "https://player.vimeo.com/video/" + v.vid +
-          "?autoplay=" + auto + "&muted=" + mute + "&loop=" + loop + "&dnt=1";
+          "?autoplay=" + auto + "&muted=" + mute + "&loop=" + loop + "&dnt=1" +
+          (v.start != null ? "#t=" + Math.round(v.start) + "s" : "");
       case "drive":
         return "https://drive.google.com/file/d/" + v.vid + "/preview";
       case "dailymotion":
@@ -73,6 +76,51 @@
     }
   };
 
+
+
+  /* ----------------------------------------------------------------
+     TIEMPOS
+     Permiten mostrar un fragmento de un vídeo largo como si fuera una
+     pieza propia, sin necesidad de cortar ni volver a subir nada.
+     ---------------------------------------------------------------- */
+
+  /** Convierte "2:05", "125", "1:02:05" o "2m5s" en segundos. */
+  LSD.parseTime = function (v) {
+    if (v == null || v === "") return null;
+    var s = String(v).trim().toLowerCase();
+    if (/^\d+$/.test(s)) return parseInt(s, 10);
+    if (/^(\d{1,2}:)?\d{1,2}:\d{1,2}$/.test(s)) {
+      var p = s.split(":").map(Number);
+      return p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : p[0] * 60 + p[1];
+    }
+    var m = s.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
+    if (m && (m[1] || m[2] || m[3])) {
+      return (+(m[1] || 0)) * 3600 + (+(m[2] || 0)) * 60 + (+(m[3] || 0));
+    }
+    return null;
+  };
+
+  /** Convierte segundos en "2:05" o "1:02:05". */
+  LSD.formatTime = function (n) {
+    if (n == null || isNaN(n)) return "";
+    n = Math.max(0, Math.round(n));
+    var h = Math.floor(n / 3600), m = Math.floor((n % 3600) / 60), s = n % 60;
+    var mm = h ? ("0" + m).slice(-2) : String(m);
+    return (h ? h + ":" : "") + mm + ":" + ("0" + s).slice(-2);
+  };
+
+  /** Extrae de la URL la marca de tiempo de inicio, si la trae. */
+  function startFromUrl(u) {
+    var m = String(u).match(/[?&#](?:t|start)=([0-9hms:]+)/i);
+    return m ? LSD.parseTime(m[1]) : null;
+  }
+
+  /** Duración de un fragmento, en texto. */
+  LSD.rangeLabel = function (v) {
+    if (v.start == null || v.end == null) return "";
+    var d = v.end - v.start;
+    return d > 0 ? LSD.formatTime(d) : "";
+  };
 
   /** URL de reproducción para el fondo de portada: en bucle, en silencio y sin adornos. */
   LSD.heroEmbedUrl = function (v) {
@@ -91,6 +139,10 @@
       case "streamable":
         return "https://streamable.com/e/" + v.vid + "?autoplay=1&muted=1&loop=1&nocontrols=1";
       default:
+        if (v.start != null) {
+          return v.url.split("#")[0] + "#t=" + Math.round(v.start) +
+            (v.end != null ? "," + Math.round(v.end) : "");
+        }
         return v.url;
     }
   };

@@ -142,8 +142,33 @@ video rm <id|#n>                 Borra un vídeo
 video vaciar --si                Borra todos
 video export · video import      Descarga o carga el archivo en JSON
 lote                             Carga muchos vídeos de una vez, pegando una lista
+fragmentos <url> --bloque <id>   Da de alta varios tramos de un mismo vídeo
 demo                             Carga 10 vídeos de ejemplo para probar los formatos
 ```
+
+**Fragmentos de una misma grabación.** Si tenés una sesión larga con varias actividades dentro,
+no hace falta cortar el vídeo ni volver a subirlo: cada tramo se da de alta como una pieza propia
+que reproduce sólo su fragmento.
+
+```
+fragmentos https://youtu.be/xxxxxxx --bloque ssg
+```
+
+Abre un cuadro para pegar la lista de actividades, una por línea:
+
+```
+Entrada en calor con balón | 0:12 | 0:32
+Rondo 5v2 | 1:05 | 1:25 | ssg-3v3 | SSG,activación
+SSG 4v4 con comodines | 2:40 | 3:00
+Actividad sin fin declarado | 3:30
+```
+
+Nombre e inicio son obligatorios; el fin, la unidad de trabajo y las etiquetas son opcionales. Si
+no ponés el fin se usan 20 segundos (`--duracion 15` cambia ese valor). Los tiempos admiten
+`2:05`, `125` o `1:02:05`. Avisa si dos tramos se pisan.
+
+Para un fragmento suelto: `video add "Título" <url> --bloque ssg --desde 2:05 --hasta 2:25`, y
+`video edit <id> desde 2:10` para ajustarlo después. La duración se recalcula sola.
 
 **Carga por lotes.** Para muchos vídeos, `lote` abre un cuadro donde se pega una lista de texto,
 una línea por vídeo:

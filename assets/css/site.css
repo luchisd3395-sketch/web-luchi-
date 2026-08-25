@@ -735,3 +735,12 @@
 }
 .block-card.has-img:hover .bc-desc { max-height: 11em; opacity: 1; margin-top: .7rem; }
 .block-card.has-img .bc-foot { border-top-color: rgba(255, 255, 255, .28); }
+
+/* Marca de fragmento: indica que la pieza es un tramo de una grabación
+   más larga y no un vídeo independiente. */
+.video-frag {
+  position: absolute; left: .6rem; bottom: .6rem; z-index: 2;
+  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .06em;
+  background: rgba(0, 0, 0, .72); color: #fff; padding: .18rem .42rem;
+  border-left: 2px solid var(--accent);
+}
