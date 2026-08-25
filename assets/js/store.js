@@ -12,8 +12,8 @@
      PRESETS DE TEMA
      ------------------------------------------------------------------ */
   var PRESETS = {
-    pista:   { label: "Pista — blanco, negro, naranja y verde", mode: "light", bg: "#ffffff", bg2: "#fafafa", surface: "#ffffff", surface2: "#f4f4f4", text: "#000000", muted: "#6b6b6b", border: "#e4e4e4", accent: "#ed4a22", accent2: "#12a150" },
-    rojo:    { label: "Rojo — blanco, negro y rojo puro",       mode: "light", bg: "#ffffff", bg2: "#fafafa", surface: "#ffffff", surface2: "#f4f4f4", text: "#000000", muted: "#6b6b6b", border: "#e4e4e4", accent: "#e11d2e", accent2: "#12a150" },
+    agro:    { label: "Agropecuario — blanco, negro, rojo y verde", mode: "light", bg: "#ffffff", bg2: "#fafafa", surface: "#ffffff", surface2: "#f4f4f4", text: "#000000", muted: "#6b6b6b", border: "#e4e4e4", accent: "#d81222", accent2: "#0a7d3f" },
+    pista:   { label: "Pista — blanco, negro, naranja y verde",     mode: "light", bg: "#ffffff", bg2: "#fafafa", surface: "#ffffff", surface2: "#f4f4f4", text: "#000000", muted: "#6b6b6b", border: "#e4e4e4", accent: "#ed4a22", accent2: "#12a150" },
     papel:   { label: "Papel — crema editorial",              mode: "light", bg: "#f6f4ef", bg2: "#ffffff", surface: "#ffffff", surface2: "#edeae3", text: "#14120e", muted: "#6b665c", border: "#ddd8cd", accent: "#c8331f", accent2: "#2f6b3a" },
     hielo:   { label: "Hielo — claro y azul",                 mode: "light", bg: "#f3f6fa", bg2: "#ffffff", surface: "#ffffff", surface2: "#e8eef6", text: "#0a1220", muted: "#5b6b80", border: "#d3dce8", accent: "#0057ff", accent2: "#00a37a" },
     noir:    { label: "Noir — negro absoluto y volt",         mode: "dark",  bg: "#080908", bg2: "#0f110f", surface: "#131613", surface2: "#1b1f1b", text: "#f2f4f0", muted: "#8e948b", border: "#262a26", accent: "#d8ff3e", accent2: "#ff4d3d" },
@@ -21,7 +21,7 @@
     acero:   { label: "Acero — grafito y azul eléctrico",     mode: "dark",  bg: "#0a0c10", bg2: "#0f1319", surface: "#131822", surface2: "#1a212d", text: "#eef1f6", muted: "#8792a4", border: "#232b38", accent: "#3d7bff", accent2: "#30d5a0" },
     sangre:  { label: "Sangre — negro y rojo",                mode: "dark",  bg: "#0a0708", bg2: "#110c0d", surface: "#171011", surface2: "#1f1618", text: "#f6f0f0", muted: "#9b8a8c", border: "#2b1e20", accent: "#ff3b30", accent2: "#f5f5f5" },
     arena:   { label: "Arena — tierra y ámbar",               mode: "dark",  bg: "#100e0a", bg2: "#17140f", surface: "#1d1913", surface2: "#26211a", text: "#f5f0e6", muted: "#9c9083", border: "#2e281f", accent: "#e8a33d", accent2: "#7fb069" },
-    club:    { label: "Club — verde, rojo y blanco",          mode: "dark",  bg: "#050f09", bg2: "#08170e", surface: "#0b1e12", surface2: "#102918", text: "#f1f7f2", muted: "#84a08d", border: "#183524", accent: "#1faa4b", accent2: "#e63329" }
+    club:    { label: "Club — el Agropecuario en oscuro",           mode: "dark",  bg: "#050f09", bg2: "#08170e", surface: "#0b1e12", surface2: "#102918", text: "#f1f7f2", muted: "#84a08d", border: "#183524", accent: "#f0303d", accent2: "#16b45e" }
   };
   LSD.PRESETS = PRESETS;
 
@@ -46,10 +46,10 @@
       heroImage: ""
     },
     theme: {
-      preset: "pista",
+      preset: "agro",
       mode: "light",
-      accent: "#ed4a22",
-      accent2: "#12a150",
+      accent: "#d81222",
+      accent2: "#0a7d3f",
       bg: "#ffffff",
       bg2: "#fafafa",
       surface: "#ffffff",

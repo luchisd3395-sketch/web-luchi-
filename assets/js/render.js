@@ -30,6 +30,41 @@
     return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
   }
 
+  /** Sube la luminosidad de un color manteniendo tono y saturación.
+     Mezclar hacia el blanco lo desatura: un rojo terminaría rosado. */
+  function lighten(hex, targetL) {
+    var m = /^#([0-9a-f]{6})$/i.exec(hex || "");
+    if (!m) return hex;
+    var n = parseInt(m[1], 16);
+    var r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var l = (max + min) / 2, h = 0, sat = 0, dd = max - min;
+    if (dd) {
+      sat = l > 0.5 ? dd / (2 - max - min) : dd / (max + min);
+      if (max === r) h = ((g - b) / dd + (g < b ? 6 : 0));
+      else if (max === g) h = (b - r) / dd + 2;
+      else h = (r - g) / dd + 4;
+      h /= 6;
+    }
+    if (l >= targetL) return hex;
+    l = targetL;
+    var hue = function (p, q, t) {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+    var q2 = l < 0.5 ? l * (1 + sat) : l + sat - l * sat;
+    var p2 = 2 * l - q2;
+    var out = [hue(p2, q2, h + 1 / 3), hue(p2, q2, h), hue(p2, q2, h - 1 / 3)];
+    return "#" + out.map(function (v) {
+      return ("0" + Math.round(v * 255).toString(16)).slice(-2);
+    }).join("");
+  }
+  LSD.lighten = lighten;
+
   function applyTheme() {
     var c = LSD.store.config, t = c.theme, root = d.documentElement, s = root.style;
     s.setProperty("--bg", t.bg);
@@ -42,6 +77,8 @@
     s.setProperty("--accent", t.accent);
     s.setProperty("--accent-ink", luminance(t.accent) > 0.55 ? "#0a0d08" : "#ffffff");
     s.setProperty("--accent-2", t.accent2 || t.accent);
+    s.setProperty("--accent-alt", lighten(t.accent, 0.56));
+    s.setProperty("--accent-2-alt", lighten(t.accent2 || t.accent, 0.40));
     s.setProperty("--accent-2-ink", luminance(t.accent2 || t.accent) > 0.55 ? "#0a0d08" : "#ffffff");
     s.setProperty("--radius", t.radius + "px");
     s.setProperty("--grid-gap", c.video.gap + "px");

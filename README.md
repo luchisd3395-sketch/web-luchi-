@@ -30,14 +30,19 @@ adicional.
 
 ## 2. El estilo
 
-Base **blanca con letras negras**, titulares en **condensada pesada y mayúsculas**, y el recurso
-que ordena toda la página: una **barra gruesa de color bajo cada titular**.
+Los cuatro colores del Club Agropecuario Argentino: **blanco, negro, rojo y verde**. Titulares en
+**condensada pesada y mayúsculas**, y el recurso que ordena toda la página: una **barra gruesa de
+color bajo cada titular**.
 
-- **Naranja-rojo** (`#ed4a22`) para la acción: subrayado de titulares, botón de reproducción,
-  filtro activo, enlace de navegación activo, barra inferior de las tarjetas, cargas altas.
-- **Verde** (`#12a150`) para la clasificación: códigos de bloque, etiquetas, fichas, cargas bajas.
+- **Rojo** (`#d81222`) para la acción: subrayado de titulares, botón de reproducción, filtro
+  activo, enlace de navegación activo, barra inferior de las tarjetas, cargas altas.
+- **Verde** (`#0a7d3f`) para la clasificación: códigos de bloque, etiquetas, fichas, cargas bajas.
 - **Bandas negras** que alternan con el blanco de la página, para que la sección de vídeo resalte.
   Viene activada en la sección de vídeos y se cambia sección por sección.
+
+Los dos tonos están elegidos para leerse bien sobre blanco (5,2:1 de contraste ambos). Dentro de
+las bandas negras la página los aclara sola, subiendo la luminosidad sin tocar el tono, para que
+no pierdan contraste ni se vuelvan pasteles.
 
 Las tarjetas de bloque con foto llevan la imagen a sangre, el titular en blanco abajo y la barra
 de acento en el borde inferior; la descripción aparece al pasar el cursor.
@@ -45,11 +50,12 @@ de acento en el borde inferior; la descripción aparece al pasar el cursor.
 Todo se cambia desde la terminal. Hay diez paletas, claras y oscuras (`tema lista`):
 
 ```
-tema pista                  Blanco, negro, naranja y verde (por defecto)
-tema rojo                   Igual, pero con rojo puro en vez de naranja
+tema agro                   Blanco, negro, rojo y verde del club (por defecto)
+tema pista                  Igual, con naranja en lugar del rojo
+tema club                   Los colores del club sobre fondo oscuro
 tema noir                   Negro absoluto
-color acento #ed4a22        Color principal
-color secundario #12a150    Color secundario
+color acento #d81222        Color principal (rojo)
+color secundario #0a7d3f    Color secundario (verde)
 fuente anton                anton · archivo · condensed · inter · mono · serif
 seccion invertir videos     Pone una sección sobre fondo negro
 seccion normal videos       La devuelve al fondo de la página

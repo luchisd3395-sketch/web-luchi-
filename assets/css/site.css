@@ -636,6 +636,9 @@
    ============================================================= */
 .section.is-inverted {
   background: #000; color: #fff;
+  /* Sobre negro los mismos tonos pierden contraste: se aclaran */
+  --accent: var(--accent-alt, #f0303d);
+  --accent-2: var(--accent-2-alt, #16b45e);
   --surface: #0d0d0d;
   --surface-2: #161616;
   --border: rgba(255, 255, 255, .16);
