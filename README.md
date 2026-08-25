@@ -141,8 +141,25 @@ video orden <id|#n> <posición>   Reordena
 video rm <id|#n>                 Borra un vídeo
 video vaciar --si                Borra todos
 video export · video import      Descarga o carga el archivo en JSON
+lote                             Carga muchos vídeos de una vez, pegando una lista
 demo                             Carga 10 vídeos de ejemplo para probar los formatos
 ```
+
+**Carga por lotes.** Para muchos vídeos, `lote` abre un cuadro donde se pega una lista de texto,
+una línea por vídeo:
+
+```
+Rondo 4v2 · circulación | posesion | https://youtu.be/xxxxxxx
+SSG 4v4 cuatro mini-arcos | ssg | https://youtu.be/yyyyyyy
+Nordic curl · progresión | fuerza | https://youtu.be/zzzzzzz | prevencion | prevención,isquiosurales
+```
+
+Los tres primeros campos son obligatorios (título, bloque, URL); los dos últimos, opcionales
+(unidad de trabajo y etiquetas). El separador puede ser `|`, `;` o un tabulador, así que se puede
+pegar directo desde una planilla. Las líneas vacías y las que empiezan con `#` se ignoran.
+
+Si alguna línea tiene un error, **no se carga ninguna** y se listan los problemas con su número de
+línea, para corregir y volver a pegar. Con `lote --parcial` se cargan sólo las correctas.
 
 **Plataformas admitidas:** YouTube (incluidos Shorts), Vimeo, Google Drive, Dailymotion, Streamable
 y archivos de vídeo directos (`.mp4`, `.webm`, `.mov`). Basta con pegar el enlace tal cual: el

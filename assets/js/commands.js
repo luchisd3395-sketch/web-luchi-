@@ -119,7 +119,7 @@
     { g: "Básicos",       cmds: ["ayuda", "estado", "limpiar", "abrir", "salir", "acerca"] },
     { g: "Configuración", cmds: ["config", "set", "get", "reset", "texto"] },
     { g: "Aspecto",       cmds: ["tema", "color", "fuente", "densidad", "layout", "portada", "nav", "tarjeta"] },
-    { g: "Vídeos",        cmds: ["video", "videos"] },
+    { g: "Vídeos",        cmds: ["video", "videos", "lote"] },
     { g: "Imágenes",      cmds: ["imagen"] },
     { g: "Contenido",     cmds: ["bloques", "trabajos", "buscar", "seccion"] },
     { g: "Datos",         cmds: ["exportar", "importar", "publicar", "demo", "clave"] }
@@ -1036,6 +1036,123 @@
     }
   });
 
+
+  /* =========================================================
+     CARGA POR LOTES
+     ========================================================= */
+  T.register({
+    name: "lote", alias: ["batch", "pegar", "lista"],
+    desc: "Carga muchos vídeos de una vez, pegando una lista de texto",
+    usage: "lote",
+    help: function () {
+      T.space();
+      T.dim("Abre un cuadro para pegar una lista, una línea por vídeo:");
+      T.dim("");
+      T.dim("   Título del vídeo | bloque | https://youtu.be/xxxx");
+      T.dim("");
+      T.dim("El separador puede ser  |  o  ;  o un tabulador.");
+      T.dim("Se admiten dos campos opcionales más, en este orden:");
+      T.dim("");
+      T.dim("   Título | bloque | url | unidad | etiquetas,con,comas");
+      T.dim("");
+      T.dim("Las líneas vacías y las que empiecen con # se ignoran.");
+      T.dim("Si alguna línea falla no se carga ninguna, para que puedas");
+      T.dim("corregirla antes. Con  lote --parcial  se cargan las correctas.");
+    },
+    run: function (args, flags) {
+      var texto = args.join(" ");
+      if (texto) { procesarLote(texto, flags); return; }
+      openPasteBox("Pegá la lista de vídeos — una línea por vídeo", function (txt) {
+        procesarLote(txt, flags);
+      }, EJEMPLO_LOTE);
+    }
+  });
+
+  var EJEMPLO_LOTE =
+    "Rondo 4v2 · circulación | posesion | https://youtu.be/xxxxxxx\n" +
+    "SSG 4v4 cuatro mini-arcos | ssg | https://youtu.be/yyyyyyy\n" +
+    "Nordic curl · progresión | fuerza | https://youtu.be/zzzzzzz | prevencion | prevención,isquiosurales";
+
+  function procesarLote(texto, flags) {
+    var lineas = String(texto).split(/\r?\n/);
+    var altas = [], fallos = [], n = 0;
+
+    lineas.forEach(function (linea, i) {
+      var cruda = linea.trim();
+      if (!cruda || cruda.charAt(0) === "#") return;
+      n++;
+      var partes = cruda.split(/\s*[|;\t]\s*/).filter(function (x) { return x !== ""; });
+
+      if (partes.length < 3) {
+        fallos.push([i + 1, cruda, "hacen falta al menos: título | bloque | url"]);
+        return;
+      }
+      var titulo = partes[0];
+      var bloque = findBlock(partes[1]);
+      if (!bloque) { fallos.push([i + 1, cruda, "bloque desconocido: «" + partes[1] + "»"]); return; }
+
+      var parsed = LSD.parseMedia(partes[2]);
+      if (!parsed || !parsed.url) { fallos.push([i + 1, cruda, "no se pudo leer la URL"]); return; }
+
+      var unidad = null;
+      if (partes[3]) {
+        var w = findWork(partes[3]);
+        if (!w) { fallos.push([i + 1, cruda, "unidad desconocida: «" + partes[3] + "»"]); return; }
+        if (w.block.id !== bloque.id) {
+          fallos.push([i + 1, cruda, "la unidad «" + w.item.id + "» es del bloque «" + w.block.id + "», no de «" + bloque.id + "»"]);
+          return;
+        }
+        unidad = w.item.id;
+      }
+      var etiquetas = partes[4] ? partes[4].split(/\s*,\s*/).filter(Boolean) : [];
+
+      altas.push({
+        id: uniqueId(LSD.slug(titulo)),
+        title: titulo,
+        url: parsed.url, provider: parsed.provider, vid: parsed.vid,
+        block: bloque.id, work: unidad,
+        tags: etiquetas, duration: "", desc: "", poster: "",
+        featured: false,
+        added: new Date().toISOString().slice(0, 10)
+      });
+    });
+
+    if (!n) { T.warn("No había ninguna línea con contenido."); return; }
+
+    if (fallos.length && !flags.parcial && !flags.forzar) {
+      T.err(fallos.length + " de " + n + " líneas tienen un problema. No se cargó ninguna.");
+      T.space();
+      fallos.forEach(function (f) {
+        T.html('<div class="t-line"><span class="t-err">línea ' + f[0] + "</span> " +
+          '<span class="t-dim">' + esc(f[1].slice(0, 70)) + "</span>" +
+          '<div style="padding-left:1.2rem" class="t-warn">' + esc(f[2]) + "</div></div>");
+      });
+      T.space();
+      T.dim("Corregí esas líneas y volvé a pegar la lista.");
+      T.dim("Para cargar igual las " + altas.length + " que sí están bien:  lote --parcial");
+      T.dim("Bloques válidos:");
+      T.chips(blockIds());
+      return;
+    }
+
+    if (!altas.length) { T.err("Ninguna línea se pudo cargar."); return; }
+
+    S.write(function (st) {
+      altas.forEach(function (v) { st.media.videos.push(v); });
+    });
+
+    T.ok(altas.length + " vídeos cargados.");
+    var porBloque = {};
+    altas.forEach(function (v) { porBloque[v.block] = (porBloque[v.block] || 0) + 1; });
+    Object.keys(porBloque).forEach(function (b) {
+      var bl = LSD.blockById(b);
+      T.dim("  " + (bl ? bl.code + " " + bl.title : b) + ": " + porBloque[b]);
+    });
+    if (fallos.length) T.warn(fallos.length + " líneas se saltaron por errores.");
+    T.space();
+    T.dim("Esto vive en tu navegador. Para que lo vea todo el mundo:  publicar");
+  }
+
   /* =========================================================
      CONTENIDO
      ========================================================= */
@@ -1331,7 +1448,7 @@
   /* ---------------------------------------------------------
      Cuadro para pegar JSON
      --------------------------------------------------------- */
-  function openPasteBox(title, cb) {
+  function openPasteBox(title, cb, ejemplo) {
     var ov = d.getElementById("overlay");
     ov.innerHTML =
       '<div class="modal" style="max-width:760px">' +
@@ -1339,7 +1456,8 @@
         '<button class="modal-close" aria-label="Cerrar">✕</button></div>' +
         '<div class="modal-body">' +
           '<textarea id="pasteBox" spellcheck="false" style="width:100%;min-height:280px;background:var(--surface);' +
-          'border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:.78rem;padding:1rem;line-height:1.5"></textarea>' +
+          'border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:.78rem;padding:1rem;line-height:1.5"' +
+          (ejemplo ? ' placeholder="' + esc(ejemplo) + '"' : '') + '></textarea>' +
           '<div style="display:flex;gap:.6rem;margin-top:1rem">' +
             '<button id="pasteOk" class="chip" style="background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Cargar</button>' +
             '<button id="pasteCancel" class="chip">Cancelar</button>' +

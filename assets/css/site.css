@@ -455,7 +455,9 @@
 
 /* ========================= FICHA / MODAL ========================= */
 .overlay {
-  position: fixed; inset: 0; z-index: 950; display: none;
+  /* Por encima de la terminal (1000): si se abre un cuadro desde un
+     comando, la terminal no puede quedar delante bloqueando los botones. */
+  position: fixed; inset: 0; z-index: 1050; display: none;
   background: color-mix(in srgb, #000 78%, transparent); backdrop-filter: blur(8px);
   padding: clamp(1rem, 4vh, 3rem) var(--gutter); overflow-y: auto;
 }
