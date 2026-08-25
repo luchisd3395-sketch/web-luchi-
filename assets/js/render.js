@@ -55,6 +55,7 @@
     root.setAttribute("data-hero", c.layout.hero);
     root.setAttribute("data-nav", c.layout.nav);
     root.setAttribute("data-card", c.layout.card);
+    root.setAttribute("data-blockimg", c.layout.blockImg || "bn");
     root.setAttribute("data-vhover", c.video.hover);
     root.setAttribute("data-vtitle", c.video.title ? "on" : "off");
     root.setAttribute("data-vmeta", c.video.meta ? "on" : "off");
@@ -101,9 +102,23 @@
   /* ================================================================
      PORTADA
      ================================================================ */
+  /** Sanea una URL para usarla dentro de url(...) en un atributo style. */
+  function safeUrl(u) {
+    var s = String(u || "").trim();
+    if (!s) return "";
+    if (/^\s*(javascript|vbscript)\s*:/i.test(s)) return "";
+    return s.replace(/["'()\\<>]/g, encodeURIComponent);
+  }
+  LSD.safeUrl = safeUrl;
+
   function renderHero() {
     var c = LSD.store.config, s = c.site;
     var nWorks = allWorks().length;
+    var hm = $("#heroMedia");
+    if (hm) {
+      var hi = safeUrl(s.heroImage);
+      hm.innerHTML = hi ? '<img src="' + esc(hi) + '" alt="" loading="eager">' : "";
+    }
     $("#heroEyebrow").textContent = s.role;
     $("#heroL1").textContent = s.heroLine1;
     $("#heroL2").textContent = s.heroLine2;
@@ -139,9 +154,12 @@
      BLOQUES
      ================================================================ */
   function renderBlocks() {
+    var imgs = LSD.store.config.media.images || {};
     $("#blocksGrid").innerHTML = M.blocks.map(function (b) {
       var nv = videosOf(b.id).length;
-      return '<button class="block-card reveal" data-block="' + b.id + '">' +
+      var img = safeUrl(imgs[b.id]);
+      return '<button class="block-card reveal' + (img ? " has-img" : "") + '" data-block="' + b.id + '">' +
+        (img ? '<span class="bc-img" style="background-image:url(&quot;' + esc(img) + '&quot;)"></span>' : "") +
         '<div><div class="bc-code">' + esc(b.code) + ' / ' + esc(b.short.toUpperCase()) + '</div>' +
         '<h3 class="bc-title">' + esc(b.title) + '</h3>' +
         '<p class="bc-desc">' + esc(b.desc) + '</p></div>' +

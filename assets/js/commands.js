@@ -119,6 +119,7 @@
     { g: "Configuración", cmds: ["config", "set", "get", "reset", "texto"] },
     { g: "Aspecto",       cmds: ["tema", "color", "fuente", "densidad", "layout", "portada", "nav", "tarjeta"] },
     { g: "Vídeos",        cmds: ["video", "videos"] },
+    { g: "Imágenes",      cmds: ["imagen"] },
     { g: "Contenido",     cmds: ["bloques", "trabajos", "buscar", "seccion"] },
     { g: "Datos",         cmds: ["exportar", "importar", "publicar", "demo", "clave"] }
   ];
@@ -764,6 +765,124 @@
     });
     T.ok(added + " vídeos importados.");
   }
+
+
+  /* =========================================================
+     IMÁGENES
+     ========================================================= */
+  T.register({
+    name: "imagen", alias: ["img", "foto", "imagenes"],
+    desc: "Pone la foto de la portada y la de cada bloque",
+    usage: "imagen <portada|bloque|listar|quitar|trato> …",
+    complete: function (prev) {
+      if (prev.length === 0) return [
+        { name: "portada", desc: "foto de fondo de la portada" },
+        { name: "bloque", desc: "foto de un bloque" },
+        { name: "listar", desc: "ver las fotos puestas" },
+        { name: "quitar", desc: "sacar una foto" },
+        { name: "trato", desc: "blanco y negro, color o duotono" }
+      ];
+      var sub = da(prev[0]);
+      if ((sub === "bloque" || sub === "quitar") && prev.length === 1) {
+        return sub === "quitar" ? ["portada"].concat(blockIds()) : blockIds();
+      }
+      if (sub === "trato" && prev.length === 1) return ["bn", "color", "duotono"];
+      return [];
+    },
+    help: function () {
+      T.space();
+      T.dim("PORTADA   imagen portada https://…/foto.jpg      ·   imagen portada assets/img/portada.jpg");
+      T.dim("BLOQUE    imagen bloque ssg https://…/foto.jpg");
+      T.dim("QUITAR    imagen quitar portada    ·   imagen quitar ssg");
+      T.dim("TRATO     imagen trato bn|color|duotono          (cómo se ven todas las fotos de bloque)");
+      T.space();
+      T.dim("Podés usar un enlace de internet o una ruta del propio repositorio.");
+      T.dim("Para fotos propias: guardalas en assets/img/ y referencialas como assets/img/nombre.jpg");
+    },
+    run: function (args) {
+      var sub = da(args[0] || "listar");
+      var imgs = S.config.media.images || {};
+
+      if (sub === "listar" || sub === "list" || sub === "ls") {
+        T.head("FOTOGRAFÍAS");
+        T.html('<div class="t-line"><span class="t-key">portada</span> <span class="' +
+          (S.get("site.heroImage") ? "t-ok" : "t-dim") + '">' +
+          esc(S.get("site.heroImage") || "— sin foto —") + "</span></div>");
+        M.blocks.forEach(function (b) {
+          T.html('<div class="t-line"><span class="t-key">' + esc(b.id) + '</span> <span class="' +
+            (imgs[b.id] ? "t-ok" : "t-dim") + '">' + esc(imgs[b.id] || "— sin foto —") + "</span></div>");
+        });
+        T.space();
+        T.dim("Tratamiento actual: " + S.get("layout.blockImg") + "   ·   imagen bloque <id> <url>");
+        return;
+      }
+
+      if (sub === "portada" || sub === "hero") {
+        if (!args[1]) { T.err("Uso: imagen portada <url o ruta>"); return; }
+        S.set("site.heroImage", args[1]);
+        T.ok("Foto de portada puesta.");
+        T.dim("  " + args[1]);
+        return;
+      }
+
+      if (sub === "bloque" || sub === "block") {
+        if (args.length < 3) {
+          T.err("Uso: imagen bloque <id> <url o ruta>");
+          T.dim("Bloques disponibles:");
+          T.chips(blockIds(), "imagen bloque ");
+          return;
+        }
+        var b = findBlock(args[1]);
+        if (!b) { T.err("Bloque no encontrado: «" + args[1] + "»"); T.chips(blockIds(), "imagen bloque "); return; }
+        var url = args.slice(2).join(" ");
+        S.write(function (st) {
+          if (!st.media.images) st.media.images = {};
+          st.media.images[b.id] = url;
+        });
+        T.ok("Foto puesta en " + b.code + " · " + b.title);
+        T.dim("  " + url);
+        return;
+      }
+
+      if (sub === "quitar" || sub === "rm" || sub === "borrar") {
+        if (!args[1]) { T.err("Uso: imagen quitar <portada|bloque>"); T.chips(["portada"].concat(blockIds()), "imagen quitar "); return; }
+        if (da(args[1]) === "portada" || da(args[1]) === "hero") {
+          S.set("site.heroImage", "");
+          T.ok("Foto de portada quitada.");
+          return;
+        }
+        if (da(args[1]) === "todas" || da(args[1]) === "todo") {
+          S.write(function (st) { st.media.images = {}; });
+          S.set("site.heroImage", "");
+          T.ok("Todas las fotos quitadas.");
+          return;
+        }
+        var b2 = findBlock(args[1]);
+        if (!b2) { T.err("Bloque no encontrado."); T.chips(blockIds(), "imagen quitar "); return; }
+        S.write(function (st) { delete st.media.images[b2.id]; });
+        T.ok("Foto quitada de " + b2.title);
+        return;
+      }
+
+      if (sub === "trato" || sub === "tratamiento" || sub === "estilo") {
+        if (!args[1]) {
+          T.html('<div class="t-line"><span class="t-key">layout.blockImg</span> = <span class="t-ok">' +
+            esc(S.get("layout.blockImg")) + "</span></div>");
+          T.chips(["bn", "color", "duotono"], "imagen trato ");
+          return;
+        }
+        var map = { bn: "bn", byn: "bn", blanconegro: "bn", gris: "bn", color: "color", duotono: "duotono", duo: "duotono" };
+        var v = map[da(args[1])];
+        if (!v) { T.err("Opciones: bn · color · duotono"); return; }
+        S.set("layout.blockImg", v);
+        applied("layout.blockImg");
+        return;
+      }
+
+      T.err("Subcomando desconocido: «" + args[0] + "»");
+      T.chips(["portada", "bloque", "listar", "quitar", "trato"], "imagen ");
+    }
+  });
 
   /* =========================================================
      CONTENIDO

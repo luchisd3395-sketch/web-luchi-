@@ -113,6 +113,19 @@ proveedor y la miniatura se detectan solos.
 > **Google Drive:** el vídeo tiene que estar compartido como *"Cualquier persona con el enlace"*
 > para que se vea desde la web.
 
+### Fotografías
+```
+imagen portada assets/img/foto.jpg    Foto de fondo de la portada
+imagen bloque ssg assets/img/ssg.jpg  Foto de un bloque (se ve en su tarjeta)
+imagen listar                         Qué foto tiene puesta cada cosa
+imagen quitar ssg · imagen quitar portada · imagen quitar todas
+imagen trato bn                       Tratamiento: bn · color · duotono
+```
+
+Podés usar una URL de internet o una ruta del propio repositorio. Para fotos propias, guardalas en
+`assets/img/` y referencialas como `assets/img/nombre.jpg`. Sin fotos, el sitio mantiene su aspecto
+tipográfico: las imágenes son opcionales en todos lados.
+
 ### Secciones y contenido
 ```
 bloques                     Lista los bloques y sus identificadores
@@ -162,6 +175,7 @@ assets/
   css/terminal.css          Estilos de la terminal
   js/store.js               Configuración, esquema de ajustes y persistencia
   js/media.js               Detección de proveedor de vídeo, embeds y miniaturas
+  img/                      Tus fotografías (ver assets/img/LEEME.txt)
   js/render.js              Aplicación del tema y pintado de la página
   js/terminal.js            Motor de la consola (historial, autocompletado, parser)
   js/commands.js            Todos los comandos

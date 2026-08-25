@@ -40,7 +40,8 @@
       intro: "Archivo metodológico construido a lo largo de años de trabajo en el Club Agropecuario Argentino junto a distintos cuerpos técnicos. Fuerza, juegos reducidos, posesión, trabajos tácticos y control de carga: cada bloque documentado con el mismo criterio y con el vídeo de la tarea real.",
       email: "",
       instagram: "",
-      footerNote: "Documento vivo. Se actualiza con cada temporada."
+      footerNote: "Documento vivo. Se actualiza con cada temporada.",
+      heroImage: ""
     },
     theme: {
       preset: "noir",
@@ -65,6 +66,7 @@
       hero: "full",
       nav: "top",
       card: "sharp",
+      blockImg: "bn",
       sections: ["bloques", "trabajos", "videos", "microciclo"],
       hidden: []
     },
@@ -91,7 +93,8 @@
       pass: ""
     },
     media: {
-      videos: []
+      videos: [],
+      images: {}
     }
   };
   LSD.DEFAULTS = DEFAULTS;
@@ -114,6 +117,7 @@
     "site.email":      C("text", "Email de contacto (opcional)"),
     "site.instagram":  C("text", "Usuario de Instagram (opcional)"),
     "site.footerNote": C("text", "Nota del pie de página"),
+    "site.heroImage":  C("text", "Imagen de fondo de la portada (URL o ruta del repositorio)"),
 
     "theme.preset":    C("enum", "Paleta completa", { values: Object.keys(PRESETS) }),
     "theme.mode":      C("enum", "Modo de color", { values: ["dark", "light"] }),
@@ -281,6 +285,7 @@
     } catch (e) { local = null; }
     state = deepMerge(deepMerge(DEFAULTS, published), local || {});
     if (!Array.isArray(state.media.videos)) state.media.videos = [];
+    if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
     if (!Array.isArray(state.layout.sections)) state.layout.sections = clone(DEFAULTS.layout.sections);
     if (!Array.isArray(state.layout.hidden)) state.layout.hidden = [];
     return state;
@@ -350,6 +355,7 @@
     replace: function (obj) {
       state = deepMerge(clone(DEFAULTS), obj || {});
       if (!Array.isArray(state.media.videos)) state.media.videos = [];
+    if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
       persist();
       store.emit("*");
     },

@@ -182,14 +182,37 @@
 
 .block-card {
   position: relative; display: flex; flex-direction: column; justify-content: space-between;
-  min-height: 260px; padding: 1.6rem; border: 1px solid var(--border);
+  text-align: left; min-height: 260px; padding: 1.6rem; border: 1px solid var(--border);
   background: var(--surface); border-radius: var(--radius); overflow: hidden;
   transition: border-color .35s var(--ease), transform .45s var(--ease), background-color .35s var(--ease);
 }
 .block-card::before {
-  content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 3px;
+  content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 3px; z-index: 3;
   background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .5s var(--ease);
 }
+
+/* --- Tarjeta de bloque con fotografía --- */
+.block-card.has-img { min-height: clamp(320px, 34vw, 420px); justify-content: flex-end; }
+.block-card.has-img > * { position: relative; z-index: 2; }
+.block-card .bc-img {
+  position: absolute; inset: 0; z-index: 0;
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  transition: transform .9s var(--ease), filter .5s var(--ease);
+}
+.block-card.has-img::after {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(0,0,0,.04) 0%, rgba(0,0,0,.28) 42%, rgba(0,0,0,.86) 100%);
+}
+.block-card.has-img:hover .bc-img { transform: scale(1.06); }
+.block-card.has-img .bc-desc { color: #d5dbd2; }
+.block-card.has-img .bc-foot { border-top-color: rgba(255,255,255,.22); }
+.block-card.has-img .bc-title, .block-card.has-img .bc-foot .label { color: #fff; }
+
+/* Tratamiento fotográfico configurable */
+[data-blockimg="bn"] .bc-img { filter: grayscale(1) contrast(1.08); }
+[data-blockimg="bn"] .block-card:hover .bc-img { filter: grayscale(0) contrast(1.04); }
+[data-blockimg="color"] .bc-img { filter: contrast(1.03); }
+[data-blockimg="duotono"] .bc-img { filter: grayscale(1) contrast(1.3) brightness(.7) sepia(1) hue-rotate(55deg) saturate(2.2); }
 .block-card:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); transform: translateY(-4px); }
 .block-card:hover::before { transform: scaleX(1); }
 .block-card .bc-code { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--accent); letter-spacing: .2em; }

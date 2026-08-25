@@ -1,0 +1,16 @@
+Carpeta para las fotografías del sitio.
+
+Guardá acá tus fotos (portada, fotos de cada bloque) y referencialas
+desde la terminal con la ruta relativa. Por ejemplo, si guardás
+"entrenamiento-fuerza.jpg" en esta carpeta:
+
+    imagen portada assets/img/entrenamiento-fuerza.jpg
+    imagen bloque fuerza assets/img/entrenamiento-fuerza.jpg
+
+También podés usar una URL de internet en vez de una ruta local.
+
+Recomendaciones:
+  · Portada: horizontal, mínimo 1920 px de ancho.
+  · Bloques: horizontal, alrededor de 1200 × 800 px.
+  · Comprimí las fotos antes de subirlas (por debajo de 400 KB cada una)
+    para que la página cargue rápido.
