@@ -28,7 +28,24 @@ adicional.
 
 ---
 
-## 2. La terminal de configuración
+## 2. El estilo
+
+El sitio arranca en **blanco con letras negras**, con **rojo** como color de acción (botones de
+reproducción, secciones destacadas, cargas altas) y **verde** como color de clasificación (códigos
+de bloque, etiquetas, cargas bajas). Las tarjetas no son cajas con borde: son piezas con relieve
+donde la fotografía y el vídeo son lo que resalta sobre el fondo blanco.
+
+Todo eso se cambia desde la terminal. Hay ocho paletas más, claras y oscuras (`tema lista`), y
+cualquier color suelto se puede sustituir:
+
+```
+color acento #e11d2e        Color principal (rojo por defecto)
+color secundario #0a8f3c    Color secundario (verde por defecto)
+color fondo blanco · color texto negro
+tema noir                   Vuelve al negro absoluto
+```
+
+## 3. La terminal de configuración
 
 Se abre de tres formas:
 
@@ -51,7 +68,7 @@ Se pueden encadenar comandos con `;` — por ejemplo: `tema cancha ; videos form
 
 ---
 
-## 3. Comandos
+## 4. Comandos
 
 ### Básicos
 ```
@@ -89,6 +106,7 @@ videos efecto elevar       zoom · elevar · ninguno
 videos reproductor ventana ventana (modal) · incrustado (dentro de la tarjeta)
 videos titulo off          Mostrar u ocultar título, meta, etiquetas, descripción
 videos autoplay on         Reproducción automática al abrir
+videos previsualizar on    Previsualiza el vídeo en silencio al pasar el cursor (archivos .mp4 propios)
 ```
 
 ### Archivo de vídeos
@@ -112,6 +130,28 @@ proveedor y la miniatura se detectan solos.
 
 > **Google Drive:** el vídeo tiene que estar compartido como *"Cualquier persona con el enlace"*
 > para que se vea desde la web.
+
+### Portada
+```
+portada video assets/video/entrenamiento.mp4   Vídeo de fondo, en bucle y SIN SONIDO
+portada video add assets/video/gimnasio.mp4    Añade otro: se van alternando solos
+portada video list · portada video rm #2       Listar y quitar
+portada foto assets/img/portada.jpg            Foto de fondo (también sirve de poster del vídeo)
+portada completa                               Estilo: completa · dividida · minima · apagada
+portada quitar                                 Deja la portada sin media
+```
+
+La portada ocupa **todo el ancho de la pantalla**, sin importar el contenedor elegido para el resto
+de la página. Los vídeos van siempre **en bucle y sin sonido** (los navegadores sólo permiten
+reproducción automática si el vídeo está silenciado). Con varios cargados, se alternan solos: los
+archivos propios pasan al siguiente al terminar; los enlaces de plataforma rotan cada 24 segundos.
+
+Cuando la portada tiene foto o vídeo detrás, su texto pasa a blanco para que se lea sobre la
+imagen. El resto de la página se mantiene en blanco con letras negras.
+
+> **Lo mejor es un `.mp4` propio** (H.264, horizontal, 10–20 s, por debajo de 5 MB). Se ve a
+> pantalla completa y sin marcas de ninguna plataforma. YouTube, Vimeo y Drive también funcionan,
+> pero recortan la imagen y dependen de la plataforma.
 
 ### Fotografías
 ```
@@ -147,7 +187,7 @@ clave miClave     Protege la terminal con una clave (protección visual, no crip
 
 ---
 
-## 4. Cómo dejar los cambios fijos para todos
+## 5. Cómo dejar los cambios fijos para todos
 
 Los cambios que hacés desde la terminal se guardan **en tu navegador** (`localStorage`), así que sólo
 los ves vos. Para que los vea cualquier visitante:
@@ -162,7 +202,7 @@ mundo al entrar.
 
 ---
 
-## 5. Estructura del proyecto
+## 6. Estructura del proyecto
 
 ```
 index.html                  Estructura de la página
@@ -176,6 +216,7 @@ assets/
   js/store.js               Configuración, esquema de ajustes y persistencia
   js/media.js               Detección de proveedor de vídeo, embeds y miniaturas
   img/                      Tus fotografías (ver assets/img/LEEME.txt)
+  video/                    Tus vídeos (ver assets/video/LEEME.txt)
   js/render.js              Aplicación del tema y pintado de la página
   js/terminal.js            Motor de la consola (historial, autocompletado, parser)
   js/commands.js            Todos los comandos
@@ -184,7 +225,7 @@ assets/
 
 ---
 
-## 6. Editar la metodología
+## 7. Editar la metodología
 
 El contenido vive en **`data/methodology.js`**. Cada bloque tiene esta forma:
 
@@ -222,7 +263,7 @@ y el autocompletado de la terminal lo recogen solos.
 
 ---
 
-## 7. Referencias metodológicas
+## 8. Referencias metodológicas
 
 La estructura de contenidos sigue el marco habitual de la planificación en fútbol profesional:
 periodización táctica y microciclo estructurado (alternancia tensión / duración / velocidad entre

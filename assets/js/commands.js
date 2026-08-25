@@ -51,7 +51,8 @@
     descripcion: "video.desc", desc: "video.desc",
     autoplay: "video.autoplay", automatico: "video.autoplay",
     silencio: "video.muted", mudo: "video.muted",
-    bucle: "video.loop", loop: "video.loop"
+    bucle: "video.loop", loop: "video.loop",
+    previsualizar: "video.hoverPlay", preview: "video.hoverPlay"
   };
 
   /* ---------------------------------------------------------
@@ -365,12 +366,13 @@
     desc: "Cambia un color concreto de la paleta",
     usage: "color <acento|fondo|texto|borde|…> <color>",
     complete: function (prev) {
-      if (prev.length === 0) return ["acento", "fondo", "fondo2", "superficie", "superficie2", "texto", "suave", "borde"];
+      if (prev.length === 0) return ["acento", "secundario", "fondo", "fondo2", "superficie", "superficie2", "texto", "suave", "borde"];
       return ["#d8ff3e", "#ff3b30", "#3d7bff", "#35e07a", "#f2c14b", "negro", "blanco", "rojo", "verde", "azul", "amarillo", "lima"];
     },
     run: function (args) {
       var map = {
-        acento: "accent", accent: "accent", fondo: "bg", bg: "bg", fondo2: "bg2", bg2: "bg2",
+        acento: "accent", accent: "accent", secundario: "accent2", acento2: "accent2", accent2: "accent2",
+        fondo: "bg", bg: "bg", fondo2: "bg2", bg2: "bg2",
         superficie: "surface", surface: "surface", superficie2: "surface2", surface2: "surface2",
         texto: "text", text: "text", suave: "muted", muted: "muted", secundario: "muted",
         borde: "border", border: "border"
@@ -413,9 +415,159 @@
   simpleSetter("fuente", ["font", "tipografia"], "theme.font", "Cambia la familia tipográfica");
   simpleSetter("densidad", ["density", "espaciado"], "theme.density", "Ajusta el espaciado general");
   simpleSetter("layout", ["diseno", "ancho", "contenedor"], "layout.container", "Ancho del contenedor de la página");
-  simpleSetter("portada", ["hero"], "layout.hero", "Estilo de la portada");
   simpleSetter("nav", ["menu", "navegacion"], "layout.nav", "Posición del menú de navegación");
   simpleSetter("tarjeta", ["card", "tarjetas"], "layout.card", "Estilo visual de las tarjetas");
+
+
+  /* =========================================================
+     PORTADA
+     ========================================================= */
+  var HERO_STYLES = LSD.SCHEMA["layout.hero"].values;
+
+  T.register({
+    name: "portada", alias: ["hero", "cabecera"],
+    desc: "Vídeos y foto de fondo de la portada, y su estilo",
+    usage: "portada <video|foto|estilo|quitar> …",
+    complete: function (prev) {
+      if (prev.length === 0) {
+        return [{ name: "video", desc: "vídeos de fondo, en bucle y sin sonido" },
+                { name: "foto", desc: "foto de fondo" },
+                { name: "estilo", desc: "completa · dividida · minima · apagada" },
+                { name: "quitar", desc: "sacar la media de la portada" }]
+          .concat(HERO_STYLES.concat(Object.keys(VALUE_ALIAS["layout.hero"] || {})).map(function (v) { return { name: v, desc: "estilo de portada" }; }));
+      }
+      var sub = da(prev[0]);
+      if (sub === "estilo") return HERO_STYLES.concat(Object.keys(VALUE_ALIAS["layout.hero"] || {}));
+      if (sub === "video" && prev.length === 1) return ["add", "list", "rm", "quitar"];
+      return [];
+    },
+    help: function () {
+      T.space();
+      T.dim("VÍDEO   portada video <url>            pone un vídeo de fondo (reemplaza los que haya)");
+      T.dim("        portada video add <url>        añade otro: se van alternando");
+      T.dim("        portada video list             lista los vídeos de portada");
+      T.dim("        portada video rm <#n>          quita uno");
+      T.dim("FOTO    portada foto <url>             foto de fondo (también sirve de poster del vídeo)");
+      T.dim("ESTILO  portada completa               completa · dividida · minima · apagada");
+      T.dim("QUITAR  portada quitar                 deja la portada sin media");
+      T.space();
+      T.dim("Los vídeos de portada van siempre en bucle y SIN SONIDO.");
+      T.dim("Lo mejor es un archivo .mp4 propio (assets/video/tuyo.mp4 o una URL directa):");
+      T.dim("se ve a pantalla completa y sin marcas de ninguna plataforma.");
+      T.dim("También acepta YouTube, Vimeo o Drive, pero recorta y depende de la plataforma.");
+    },
+    run: function (args) {
+      var sub = da(args[0] || "");
+      var cfg = S.config;
+
+      /* --- sin argumentos: estado --- */
+      if (!sub) {
+        T.head("PORTADA");
+        T.table([
+          ["estilo", cfg.layout.hero],
+          ["foto", cfg.site.heroImage || "—"],
+          ["vídeos", (cfg.media.heroVideos || []).length + " cargados"]
+        ]);
+        (cfg.media.heroVideos || []).forEach(function (v, i) {
+          T.html('<div class="t-line"><span class="t-dim">#' + (i + 1) + "</span> " +
+            '<span class="t-ok">' + esc(v.url) + '</span> <span class="t-dim">· ' +
+            esc(LSD.providerLabel(v.provider)) + "</span></div>");
+        });
+        T.space();
+        T.dim("portada video <url>   ·   portada foto <url>   ·   portada completa");
+        return;
+      }
+
+      /* --- estilo directo: `portada dividida` --- */
+      var styleVal = translate("layout.hero", args[0]);
+      if (sub === "estilo" || HERO_STYLES.indexOf(styleVal) >= 0) {
+        var v = sub === "estilo" ? translate("layout.hero", args[1] || "") : styleVal;
+        if (!args[1] && sub === "estilo") {
+          T.html('<div class="t-line"><span class="t-key">layout.hero</span> = <span class="t-ok">' + esc(cfg.layout.hero) + "</span></div>");
+          T.chips(HERO_STYLES, "portada estilo ");
+          return;
+        }
+        var res = S.set("layout.hero", v);
+        if (!res.ok) { T.err(res.err); return; }
+        applied("layout.hero");
+        return;
+      }
+
+      /* --- foto --- */
+      if (sub === "foto" || sub === "imagen") {
+        if (!args[1]) { T.err("Uso: portada foto <url o ruta>"); return; }
+        S.set("site.heroImage", args[1]);
+        T.ok("Foto de portada puesta.");
+        T.dim("  " + args[1]);
+        return;
+      }
+
+      /* --- vídeo --- */
+      if (sub === "video" || sub === "videos" || sub === "clip") {
+        var sub2 = da(args[1] || "");
+        var vids = cfg.media.heroVideos || [];
+
+        if (sub2 === "list" || sub2 === "listar" || sub2 === "ls") {
+          if (!vids.length) { T.warn("No hay vídeos de portada."); T.dim("Ponés el primero con:  portada video <url>"); return; }
+          T.head("VÍDEOS DE PORTADA (" + vids.length + ")");
+          vids.forEach(function (v, i) {
+            T.html('<div class="t-line"><span class="t-dim">#' + (i + 1) + "</span> " +
+              '<span class="t-ok">' + esc(v.url) + '</span><div class="t-dim" style="padding-left:2.2rem">' +
+              esc(LSD.providerLabel(v.provider)) +
+              (v.provider === "file" ? "  ·  se alterna al terminar" : "  ·  se alterna cada 24 s") + "</div></div>");
+          });
+          return;
+        }
+
+        if (sub2 === "rm" || sub2 === "borrar" || sub2 === "quitar" || sub2 === "eliminar") {
+          if (!args[2]) {
+            S.write(function (st) { st.media.heroVideos = []; });
+            T.ok("Vídeos de portada quitados.");
+            return;
+          }
+          var n = parseInt(String(args[2]).replace("#", ""), 10) - 1;
+          if (isNaN(n) || !vids[n]) { T.err("No existe el vídeo #" + args[2] + ". Listá con:  portada video list"); return; }
+          S.write(function (st) { st.media.heroVideos.splice(n, 1); });
+          T.ok("Vídeo de portada #" + (n + 1) + " quitado.");
+          return;
+        }
+
+        var isAdd = (sub2 === "add" || sub2 === "anadir" || sub2 === "agregar" || sub2 === "sumar");
+        var url = isAdd ? args[2] : args[1];
+        if (!url) {
+          T.err("Uso: portada video <url>     (o  portada video add <url>  para sumar otro)");
+          T.dim("Ejemplo con un archivo propio:  portada video assets/video/entrenamiento.mp4");
+          return;
+        }
+        var parsed = LSD.parseMedia(url);
+        if (!parsed) { T.err("No se pudo interpretar la URL."); return; }
+        S.write(function (st) {
+          if (!Array.isArray(st.media.heroVideos)) st.media.heroVideos = [];
+          if (!isAdd) st.media.heroVideos = [];
+          st.media.heroVideos.push({ url: parsed.url, provider: parsed.provider, vid: parsed.vid });
+        });
+        if (LSD.renderHeroMedia) LSD.renderHeroMedia(true);
+        var total = S.config.media.heroVideos.length;
+        T.ok((isAdd ? "Vídeo añadido a la portada" : "Vídeo de portada puesto") + "  ·  " + LSD.providerLabel(parsed.provider));
+        if (parsed.provider !== "file") {
+          T.warn("Con " + LSD.providerLabel(parsed.provider) + " el vídeo se recorta y depende de la plataforma.");
+          T.dim("Para que se vea impecable, subí el .mp4 al repositorio y usá su ruta.");
+        }
+        if (total > 1) T.dim("  Hay " + total + " vídeos: se van alternando solos.");
+        return;
+      }
+
+      if (sub === "quitar" || sub === "limpiar" || sub === "sin") {
+        S.write(function (st) { st.media.heroVideos = []; });
+        S.set("site.heroImage", "");
+        T.ok("Portada sin foto ni vídeo.");
+        return;
+      }
+
+      T.err("Subcomando desconocido: «" + args[0] + "»");
+      T.chips(["video", "foto", "estilo", "quitar", "completa", "dividida", "minima"], "portada ");
+    }
+  });
 
   /* =========================================================
      VÍDEOS — configuración de visualización
@@ -426,7 +578,7 @@
     usage: "videos <propiedad> <valor>",
     complete: function (prev, partial) {
       if (prev.length === 0) {
-        return ["formato", "columnas", "proporcion", "tamano", "alineacion", "separacion", "efecto", "reproductor", "titulo", "meta", "etiquetas", "descripcion", "autoplay", "silencio", "bucle"];
+        return ["formato", "columnas", "proporcion", "tamano", "alineacion", "separacion", "efecto", "reproductor", "titulo", "meta", "etiquetas", "descripcion", "autoplay", "silencio", "bucle", "previsualizar"];
       }
       var path = VIDEO_PROP[da(prev[0])];
       if (!path) return [];

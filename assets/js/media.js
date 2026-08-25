@@ -73,6 +73,33 @@
     }
   };
 
+
+  /** URL de reproducción para el fondo de portada: en bucle, en silencio y sin adornos. */
+  LSD.heroEmbedUrl = function (v) {
+    switch (v.provider) {
+      case "youtube":
+        return "https://www.youtube-nocookie.com/embed/" + v.vid +
+          "?autoplay=1&mute=1&loop=1&playlist=" + v.vid +
+          "&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&disablekb=1&iv_load_policy=3";
+      case "vimeo":
+        return "https://player.vimeo.com/video/" + v.vid +
+          "?autoplay=1&muted=1&loop=1&background=1&dnt=1";
+      case "drive":
+        return "https://drive.google.com/file/d/" + v.vid + "/preview";
+      case "dailymotion":
+        return "https://www.dailymotion.com/embed/video/" + v.vid + "?autoplay=1&mute=1&controls=0&ui-logo=0";
+      case "streamable":
+        return "https://streamable.com/e/" + v.vid + "?autoplay=1&muted=1&loop=1&nocontrols=1";
+      default:
+        return v.url;
+    }
+  };
+
+  /** ¿Se puede previsualizar en la propia tarjeta al pasar el cursor? */
+  LSD.canHoverPreview = function (v) {
+    return v && v.provider === "file" && !!v.url;
+  };
+
   /** Miniatura automática según proveedor. */
   LSD.thumbUrl = function (v) {
     if (v.poster) return v.poster;
@@ -95,7 +122,7 @@
       '<rect width="640" height="360" fill="' + bg + '"/>' +
       '<rect width="640" height="360" fill="url(#p)"/>' +
       '<rect x="0" y="0" width="640" height="4" fill="' + accent + '"/>' +
-      '<text x="320" y="196" text-anchor="middle" font-family="monospace" font-size="18" letter-spacing="3" fill="' + fg + '">' +
+      '<text x="320" y="318" text-anchor="middle" font-family="monospace" font-size="17" letter-spacing="3" fill="' + fg + '">' +
       esc(txt) + '</text></svg>';
     return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
   };

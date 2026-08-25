@@ -41,6 +41,8 @@
     s.setProperty("--border", t.border);
     s.setProperty("--accent", t.accent);
     s.setProperty("--accent-ink", luminance(t.accent) > 0.55 ? "#0a0d08" : "#ffffff");
+    s.setProperty("--accent-2", t.accent2 || t.accent);
+    s.setProperty("--accent-2-ink", luminance(t.accent2 || t.accent) > 0.55 ? "#0a0d08" : "#ffffff");
     s.setProperty("--radius", t.radius + "px");
     s.setProperty("--grid-gap", c.video.gap + "px");
     s.setProperty("--term-height", c.terminal.height + "vh");
@@ -114,11 +116,7 @@
   function renderHero() {
     var c = LSD.store.config, s = c.site;
     var nWorks = allWorks().length;
-    var hm = $("#heroMedia");
-    if (hm) {
-      var hi = safeUrl(s.heroImage);
-      hm.innerHTML = hi ? '<img src="' + esc(hi) + '" alt="" loading="eager">' : "";
-    }
+    renderHeroMedia();
     $("#heroEyebrow").textContent = s.role;
     $("#heroL1").textContent = s.heroLine1;
     $("#heroL2").textContent = s.heroLine2;
@@ -135,6 +133,88 @@
     $("#brandMark").textContent = initials(s.author);
     d.title = s.title + " · " + s.author;
   }
+
+  /* ----------------------------------------------------------------
+     FONDO DE PORTADA
+     Reproduce en bucle y sin sonido los vídeos cargados. Con varios,
+     va pasando de uno al siguiente. Si no hay vídeos usa la foto.
+     ---------------------------------------------------------------- */
+  var heroTimer = null;
+  var heroIndex = 0;
+  var heroSig = null;
+
+  function heroMediaSignature() {
+    var c = LSD.store.config;
+    return JSON.stringify((c.media.heroVideos || []).map(function (v) { return v.url; })) + "|" + (c.site.heroImage || "");
+  }
+
+  function renderHeroMedia(force) {
+    var host = $("#heroMedia");
+    if (!host) return;
+    var c = LSD.store.config;
+    var sig = heroMediaSignature();
+    var hero = $(".hero");
+
+    var vids = c.media.heroVideos || [];
+    var img = safeUrl(c.site.heroImage);
+    var hasMedia = vids.length > 0 || !!img;
+
+    if (hero) hero.classList.toggle("has-media", hasMedia);
+    d.documentElement.setAttribute("data-heromedia", hasMedia ? "on" : "off");
+
+    // No reiniciar la reproducción si la media no cambió
+    if (sig === heroSig && !force) return;
+    heroSig = sig;
+    heroIndex = 0;
+    if (heroTimer) { clearTimeout(heroTimer); heroTimer = null; }
+
+    if (!hasMedia) { host.innerHTML = ""; return; }
+    if (!vids.length) {
+      host.innerHTML = '<img src="' + esc(img) + '" alt="" loading="eager">' + mutedTag(false);
+      return;
+    }
+    paintHeroVideo();
+  }
+
+  function mutedTag(show) {
+    return show ? '<span class="hero-muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">' +
+      '<path d="M3 9v6h4l5 5V4L7 9H3zm13.6 3l2.7-2.7-1.4-1.4L15.2 10.6 12.5 7.9l-1.4 1.4 2.7 2.7-2.7 2.7 1.4 1.4 2.7-2.7 2.7 2.7 1.4-1.4L16.6 12z"/>' +
+      "</svg> Sin sonido</span>" : "";
+  }
+
+  function paintHeroVideo() {
+    var host = $("#heroMedia");
+    var vids = LSD.store.config.media.heroVideos || [];
+    if (!vids.length) return;
+    heroIndex = heroIndex % vids.length;
+    var v = vids[heroIndex];
+    var solo = vids.length === 1;
+    var poster = safeUrl(LSD.store.config.site.heroImage);
+
+    if (v.provider === "file") {
+      host.innerHTML = '<video src="' + esc(safeUrl(v.url)) + '" autoplay muted playsinline ' +
+        (solo ? "loop " : "") + (poster ? 'poster="' + esc(poster) + '" ' : "") +
+        'preload="auto"></video>' + mutedTag(true);
+      var el = host.querySelector("video");
+      el.muted = true;                       // Safari exige fijarlo también por propiedad
+      var play = el.play();
+      if (play && play.catch) play.catch(function () {});
+      if (!solo) {
+        el.addEventListener("ended", function () { heroIndex++; paintHeroVideo(); });
+        el.addEventListener("error", function () { heroIndex++; if (heroIndex < vids.length * 2) paintHeroVideo(); });
+      }
+      return;
+    }
+
+    // Proveedores embebidos: siempre en silencio, sin controles ni marca
+    host.innerHTML = '<iframe src="' + esc(LSD.heroEmbedUrl(v)) + '" title="" tabindex="-1" ' +
+      'allow="autoplay; encrypted-media" frameborder="0"></iframe>' + mutedTag(true);
+    if (!solo) {
+      heroTimer = setTimeout(function () { heroIndex++; paintHeroVideo(); }, 24000);
+    }
+  }
+  LSD.renderHeroMedia = renderHeroMedia;
+
   function stat(n, l) {
     return '<div class="stat"><div class="stat-num">' + esc(String(n).padStart(2, "0")) +
            '</div><div class="stat-lbl label">' + esc(l) + '</div></div>';
@@ -263,6 +343,9 @@
           '<svg width="17" height="19" viewBox="0 0 17 19" fill="currentColor"><path d="M0 0l17 9.5L0 19V0z"/></svg>' +
         '</span>' +
         (v.duration ? '<span class="video-dur">' + esc(v.duration) + '</span>' : '') +
+        (c.video.hoverPlay && LSD.canHoverPreview(v)
+          ? '<video class="hover-preview" src="' + esc(LSD.safeUrl(v.url)) + '" muted loop playsinline preload="none"></video>'
+          : '') +
         '</div>';
     }
 
@@ -299,6 +382,26 @@
       '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';
   }
   LSD.playerMarkup = playerMarkup;
+
+
+  /** Arranca y detiene la previsualización silenciosa al pasar el cursor. */
+  function bindHoverPreview(scope) {
+    $$(".video-card", scope).forEach(function (card) {
+      var vid = $(".hover-preview", card);
+      if (!vid) return;
+      card.addEventListener("mouseenter", function () {
+        vid.muted = true;
+        var p = vid.play();
+        if (p && p.then) p.then(function () { vid.classList.add("is-ready"); }).catch(function () {});
+        else vid.classList.add("is-ready");
+      });
+      card.addEventListener("mouseleave", function () {
+        vid.pause();
+        vid.classList.remove("is-ready");
+        try { vid.currentTime = 0; } catch (e) {}
+      });
+    });
+  }
 
   function renderVideos() {
     var c = LSD.store.config, cfg = c.video;
@@ -343,6 +446,7 @@
 
     strip.innerHTML = "";
     host.innerHTML = list.map(function (v, i) { return videoCard(v, i); }).join("");
+    bindHoverPreview(host);
     $$("#videoCollection .video-card").forEach(function (el) {
       el.addEventListener("click", function () {
         var v = list[parseInt(el.getAttribute("data-i"), 10)];
@@ -370,7 +474,8 @@
         '<td class="muted">' + esc(r.foco) + '</td>' +
         '<td class="muted">' + esc(r.contenidos) + '</td>' +
         '<td style="white-space:nowrap">' + esc(r.dur) + '</td>' +
-        '<td><span class="load-bar" style="width:' + (r.carga * 0.9) + 'px"></span> <span class="muted">' + r.carga + '%</span></td></tr>';
+        '<td><span class="load-bar" data-nivel="' + (r.carga > 75 ? "alto" : r.carga > 40 ? "medio" : "bajo") +
+          '" style="width:' + (r.carga * 0.9) + 'px"></span> <span class="muted">' + r.carga + '%</span></td></tr>';
     }).join("");
   }
 

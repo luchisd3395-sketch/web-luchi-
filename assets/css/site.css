@@ -102,12 +102,57 @@
 [data-hero="minimal"] .hero-title { font-size: var(--fs-h1); }
 [data-hero="minimal"] .hero-media { display: none; }
 
-.hero-media { position: absolute; inset: 0; z-index: -2; }
+/* La portada siempre ocupa todo el ancho, sin importar el contenedor elegido */
+.hero > .wrap { max-width: 100%; }
+
+.hero-media { position: absolute; inset: 0; z-index: -2; overflow: hidden; background: #000; }
 .hero-media::after {
-  content: ""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--bg) 72%, transparent) 0%, color-mix(in srgb, var(--bg) 40%, transparent) 42%, var(--bg) 100%);
+  content: ""; position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(180deg, rgba(0,0,0,.58) 0%, rgba(0,0,0,.26) 38%, rgba(0,0,0,.30) 62%, rgba(0,0,0,.80) 100%);
 }
-.hero-media img, .hero-media video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.55) contrast(1.08); }
+.hero-media img, .hero-media video {
+  width: 100%; height: 100%; object-fit: cover; object-position: center;
+}
+/* Los reproductores embebidos se recortan para cubrir toda la portada */
+.hero-media iframe {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 100vw; height: 56.25vw; min-height: 100%; min-width: 177.78vh;
+  border: 0; pointer-events: none;
+}
+
+/* Con foto o vídeo detrás, el texto de la portada pasa a blanco */
+.hero.has-media { --hero-ink: #ffffff; }
+.hero.has-media .hero-title,
+.hero.has-media .stat-num { color: var(--hero-ink); }
+.hero.has-media .hero-title .line:nth-child(3) { color: var(--accent); }
+.hero.has-media .lede { color: rgba(255,255,255,.86); }
+.hero.has-media .label { color: rgba(255,255,255,.72); }
+.hero.has-media .hero-bottom { border-top-color: rgba(255,255,255,.3); }
+.hero.has-media .scroll-cue .line-v { background: rgba(255,255,255,.35); }
+.hero.has-media .hero-grid-lines { opacity: .18; }
+.hero.has-media .hero-eyebrow .bar { background: var(--accent); }
+
+/* Cabecera transparente sobre la portada con media */
+[data-heromedia="on"] .site-header:not(.is-stuck) .brand-name,
+[data-heromedia="on"] .site-header:not(.is-stuck) .brand-sub,
+[data-heromedia="on"] .site-header:not(.is-stuck) .nav a,
+[data-heromedia="on"] .site-header:not(.is-stuck) .btn-term { color: rgba(255,255,255,.9); }
+[data-heromedia="on"] .site-header:not(.is-stuck) .nav a:hover,
+[data-heromedia="on"] .site-header:not(.is-stuck) .nav a.is-active { color: #fff; }
+[data-heromedia="on"] .site-header:not(.is-stuck) .btn-term { border-color: rgba(255,255,255,.35); }
+[data-heromedia="on"] .site-header:not(.is-stuck) .nav-toggle { border-color: rgba(255,255,255,.35); }
+[data-heromedia="on"] .site-header:not(.is-stuck) .nav-toggle span,
+[data-heromedia="on"] .site-header:not(.is-stuck) .nav-toggle span::before,
+[data-heromedia="on"] .site-header:not(.is-stuck) .nav-toggle span::after { background: #fff; }
+
+/* Indicador de sonido desactivado */
+.hero-muted {
+  position: absolute; right: var(--gutter); top: 50%; z-index: 3;
+  display: flex; align-items: center; gap: .5rem;
+  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .16em;
+  text-transform: uppercase; color: rgba(255,255,255,.6);
+}
+@media (max-width: 900px) { .hero-muted { display: none; } }
 .hero-grid-lines {
   position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
   background-image: linear-gradient(90deg, var(--border) 1px, transparent 1px);
@@ -207,6 +252,7 @@
 .block-card.has-img .bc-desc { color: #d5dbd2; }
 .block-card.has-img .bc-foot { border-top-color: rgba(255,255,255,.22); }
 .block-card.has-img .bc-title, .block-card.has-img .bc-foot .label { color: #fff; }
+.block-card.has-img .bc-code { color: #fff; }
 
 /* Tratamiento fotográfico configurable */
 [data-blockimg="bn"] .bc-img { filter: grayscale(1) contrast(1.08); }
@@ -215,7 +261,7 @@
 [data-blockimg="duotono"] .bc-img { filter: grayscale(1) contrast(1.3) brightness(.7) sepia(1) hue-rotate(55deg) saturate(2.2); }
 .block-card:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); transform: translateY(-4px); }
 .block-card:hover::before { transform: scaleX(1); }
-.block-card .bc-code { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--accent); letter-spacing: .2em; }
+.block-card .bc-code { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--accent-2); letter-spacing: .2em; }
 .block-card .bc-title { font-size: var(--fs-h3); margin-top: 1.1rem; text-transform: uppercase; }
 .block-card .bc-desc { color: var(--muted); font-size: .9rem; margin-top: .7rem; line-height: 1.55; }
 .block-card .bc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 1.6rem; padding-top: 1rem; border-top: 1px solid var(--border); }
@@ -238,7 +284,7 @@
   padding: .5rem .9rem; border: 1px solid var(--border); color: var(--muted);
   border-radius: var(--radius); transition: all .25s var(--ease); white-space: nowrap;
 }
-.chip:hover { color: var(--text); border-color: var(--muted); }
+.chip:hover { color: var(--text); border-color: var(--accent-2); }
 .chip.is-active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 
 /* ======================= TARJETA DE TRABAJO ======================= */
@@ -252,7 +298,7 @@
 }
 .work-card:hover { border-color: color-mix(in srgb, var(--accent) 60%, var(--border)); transform: translateY(-3px); }
 .wc-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.wc-tag { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.wc-tag { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .16em; text-transform: uppercase; color: var(--accent-2); }
 .wc-vid { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); display: flex; align-items: center; gap: .35rem; }
 .wc-title { font-size: 1.06rem; font-family: var(--font-display); text-transform: uppercase; margin-top: .95rem; line-height: 1.08; }
 [data-titlecase="normal"] .wc-title { text-transform: none; }
@@ -432,7 +478,7 @@
 .modal-player iframe, .modal-player video { width: 100%; height: 100%; border: 0; }
 
 .ficha-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
-.ficha-item { border-left: 2px solid var(--accent); padding-left: .9rem; }
+.ficha-item { border-left: 2px solid var(--accent-2); padding-left: .9rem; }
 .ficha-item dt { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: .35rem; }
 .ficha-item dd { font-size: .92rem; line-height: 1.5; }
 .ficha-h { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin: 2rem 0 .9rem; }
@@ -447,7 +493,9 @@
 .micro-table tbody tr:hover { background: var(--surface); }
 .micro-table .md { font-family: var(--font-display); font-weight: 800; font-size: 1rem; white-space: nowrap; }
 .micro-table .muted { color: var(--muted); }
-.load-bar { display: inline-block; height: 6px; background: var(--accent); min-width: 4px; }
+.load-bar { display: inline-block; height: 7px; background: var(--accent-2); min-width: 4px; vertical-align: middle; }
+.load-bar[data-nivel="medio"] { background: #e8a33d; }
+.load-bar[data-nivel="alto"]  { background: var(--accent); }
 
 /* ========================= FOOTER ========================= */
 .site-footer { border-top: 1px solid var(--border); padding-block: clamp(2.5rem, 6vw, 5rem) 2rem; background: var(--bg-2); }
@@ -485,3 +533,64 @@
 @media (min-width: 1081px) {
   .hero-bottom { padding-right: 160px; }
 }
+
+/* =============================================================
+   TRATAMIENTO SOBRE FONDO CLARO
+   Las tarjetas dejan de ser cajas con borde y pasan a ser piezas
+   con relieve: la imagen y el vídeo son el elemento que resalta.
+   ============================================================= */
+[data-mode="light"] .video-card,
+[data-mode="light"] .block-card,
+[data-mode="light"] .work-card {
+  border-color: #ececec;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+[data-mode="light"] .video-card:hover,
+[data-mode="light"] .block-card:hover {
+  border-color: transparent;
+  box-shadow: 0 26px 54px -22px rgba(0, 0, 0, .40);
+}
+[data-mode="light"] .work-card:hover {
+  border-color: var(--accent-2);
+  box-shadow: 0 18px 38px -22px rgba(0, 0, 0, .30);
+}
+
+/* Sobre blanco la miniatura no necesita velo oscuro: sólo el pie,
+   para que la duración se lea. */
+[data-mode="light"] .video-thumb::after {
+  background: linear-gradient(180deg, transparent 62%, rgba(0, 0, 0, .55));
+  opacity: 1;
+}
+[data-mode="light"] .video-thumb { background: #ededed; }
+
+/* La media queda a sangre dentro de la tarjeta */
+[data-mode="light"] .video-collection[data-layout="list"] .video-card { box-shadow: none; border-color: transparent; }
+[data-mode="light"] .video-collection[data-layout="list"] .video-card { border-bottom: 1px solid var(--border); }
+
+/* Cabecera sólida cuando no hay media detrás */
+[data-mode="light"] .site-header.is-stuck { background: rgba(255, 255, 255, .9); }
+
+/* Marquesina en negativo: separa bloques sobre el blanco */
+[data-mode="light"] .marquee { background: var(--text); color: var(--bg); border-color: var(--text); }
+[data-mode="light"] .marquee-item i { background: var(--accent); }
+
+/* Pie en gris muy claro */
+[data-mode="light"] .site-footer { background: var(--surface-2); }
+
+/* Tabla del microciclo */
+[data-mode="light"] .micro-table thead th { background: var(--text); color: #fff; }
+[data-mode="light"] .micro-table thead th { letter-spacing: .16em; }
+[data-mode="light"] .micro-table tbody tr:hover { background: var(--surface-2); }
+
+/* =============================================================
+   PREVISUALIZACIÓN AL PASAR EL CURSOR
+   Los vídeos propios se reproducen en silencio dentro de la
+   tarjeta mientras el cursor esté encima.
+   ============================================================= */
+.video-thumb .hover-preview {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0; transition: opacity .45s var(--ease);
+  pointer-events: none; z-index: 1;
+}
+.video-card:hover .video-thumb .hover-preview.is-ready { opacity: 1; }
+.video-card:hover .video-thumb .hover-preview.is-ready ~ .play-btn { opacity: .55; }

@@ -12,14 +12,15 @@
      PRESETS DE TEMA
      ------------------------------------------------------------------ */
   var PRESETS = {
-    noir:    { label: "Noir — negro absoluto y volt",     mode: "dark",  bg: "#080908", bg2: "#0f110f", surface: "#131613", surface2: "#1b1f1b", text: "#f2f4f0", muted: "#8e948b", border: "#262a26", accent: "#d8ff3e" },
-    cancha:  { label: "Cancha — verde profundo",          mode: "dark",  bg: "#05130b", bg2: "#081a10", surface: "#0b2115", surface2: "#0f2c1c", text: "#eef7f0", muted: "#7f9b89", border: "#173726", accent: "#35e07a" },
-    acero:   { label: "Acero — grafito y azul eléctrico", mode: "dark",  bg: "#0a0c10", bg2: "#0f1319", surface: "#131822", surface2: "#1a212d", text: "#eef1f6", muted: "#8792a4", border: "#232b38", accent: "#3d7bff" },
-    sangre:  { label: "Sangre — negro y rojo",            mode: "dark",  bg: "#0a0708", bg2: "#110c0d", surface: "#171011", surface2: "#1f1618", text: "#f6f0f0", muted: "#9b8a8c", border: "#2b1e20", accent: "#ff3b30" },
-    arena:   { label: "Arena — tierra y ámbar",           mode: "dark",  bg: "#100e0a", bg2: "#17140f", surface: "#1d1913", surface2: "#26211a", text: "#f5f0e6", muted: "#9c9083", border: "#2e281f", accent: "#e8a33d" },
-    blanco:  { label: "Blanco — claro editorial",         mode: "light", bg: "#f4f4f1", bg2: "#ffffff", surface: "#ffffff", surface2: "#ececE6", text: "#0b0d0a", muted: "#5f645c", border: "#d9dad4", accent: "#111111" },
-    hielo:   { label: "Hielo — claro y azul",             mode: "light", bg: "#f3f6fa", bg2: "#ffffff", surface: "#ffffff", surface2: "#e8eef6", text: "#0a1220", muted: "#5b6b80", border: "#d3dce8", accent: "#0057ff" },
-    club:    { label: "Club — verde, rojo y blanco",      mode: "dark",  bg: "#050f09", bg2: "#08170e", surface: "#0b1e12", surface2: "#102918", text: "#f1f7f2", muted: "#84a08d", border: "#183524", accent: "#1faa4b" }
+    pista:   { label: "Pista — blanco, negro, rojo y verde",  mode: "light", bg: "#ffffff", bg2: "#fafafa", surface: "#ffffff", surface2: "#f2f2f2", text: "#0b0b0b", muted: "#6e6e6e", border: "#e3e3e3", accent: "#e11d2e", accent2: "#0a8f3c" },
+    papel:   { label: "Papel — crema editorial",              mode: "light", bg: "#f6f4ef", bg2: "#ffffff", surface: "#ffffff", surface2: "#edeae3", text: "#14120e", muted: "#6b665c", border: "#ddd8cd", accent: "#c8331f", accent2: "#2f6b3a" },
+    hielo:   { label: "Hielo — claro y azul",                 mode: "light", bg: "#f3f6fa", bg2: "#ffffff", surface: "#ffffff", surface2: "#e8eef6", text: "#0a1220", muted: "#5b6b80", border: "#d3dce8", accent: "#0057ff", accent2: "#00a37a" },
+    noir:    { label: "Noir — negro absoluto y volt",         mode: "dark",  bg: "#080908", bg2: "#0f110f", surface: "#131613", surface2: "#1b1f1b", text: "#f2f4f0", muted: "#8e948b", border: "#262a26", accent: "#d8ff3e", accent2: "#ff4d3d" },
+    cancha:  { label: "Cancha — verde profundo",              mode: "dark",  bg: "#05130b", bg2: "#081a10", surface: "#0b2115", surface2: "#0f2c1c", text: "#eef7f0", muted: "#7f9b89", border: "#173726", accent: "#35e07a", accent2: "#ffd23f" },
+    acero:   { label: "Acero — grafito y azul eléctrico",     mode: "dark",  bg: "#0a0c10", bg2: "#0f1319", surface: "#131822", surface2: "#1a212d", text: "#eef1f6", muted: "#8792a4", border: "#232b38", accent: "#3d7bff", accent2: "#30d5a0" },
+    sangre:  { label: "Sangre — negro y rojo",                mode: "dark",  bg: "#0a0708", bg2: "#110c0d", surface: "#171011", surface2: "#1f1618", text: "#f6f0f0", muted: "#9b8a8c", border: "#2b1e20", accent: "#ff3b30", accent2: "#f5f5f5" },
+    arena:   { label: "Arena — tierra y ámbar",               mode: "dark",  bg: "#100e0a", bg2: "#17140f", surface: "#1d1913", surface2: "#26211a", text: "#f5f0e6", muted: "#9c9083", border: "#2e281f", accent: "#e8a33d", accent2: "#7fb069" },
+    club:    { label: "Club — verde, rojo y blanco",          mode: "dark",  bg: "#050f09", bg2: "#08170e", surface: "#0b1e12", surface2: "#102918", text: "#f1f7f2", muted: "#84a08d", border: "#183524", accent: "#1faa4b", accent2: "#e63329" }
   };
   LSD.PRESETS = PRESETS;
 
@@ -44,16 +45,17 @@
       heroImage: ""
     },
     theme: {
-      preset: "noir",
-      mode: "dark",
-      accent: "#d8ff3e",
-      bg: "#080908",
-      bg2: "#0f110f",
-      surface: "#131613",
-      surface2: "#1b1f1b",
-      text: "#f2f4f0",
-      muted: "#8e948b",
-      border: "#262a26",
+      preset: "pista",
+      mode: "light",
+      accent: "#e11d2e",
+      accent2: "#0a8f3c",
+      bg: "#ffffff",
+      bg2: "#fafafa",
+      surface: "#ffffff",
+      surface2: "#f2f2f2",
+      text: "#0b0b0b",
+      muted: "#6e6e6e",
+      border: "#e3e3e3",
       font: "archivo",
       radius: 0,
       density: "normal",
@@ -85,7 +87,8 @@
       desc: false,
       autoplay: true,
       muted: false,
-      loop: false
+      loop: false,
+      hoverPlay: true
     },
     terminal: {
       dock: "bottom",
@@ -94,7 +97,8 @@
     },
     media: {
       videos: [],
-      images: {}
+      images: {},
+      heroVideos: []
     }
   };
   LSD.DEFAULTS = DEFAULTS;
@@ -121,7 +125,8 @@
 
     "theme.preset":    C("enum", "Paleta completa", { values: Object.keys(PRESETS) }),
     "theme.mode":      C("enum", "Modo de color", { values: ["dark", "light"] }),
-    "theme.accent":    C("color", "Color de acento"),
+    "theme.accent":    C("color", "Color de acento principal"),
+    "theme.accent2":   C("color", "Color secundario"),
     "theme.bg":        C("color", "Fondo principal"),
     "theme.bg2":       C("color", "Fondo secundario"),
     "theme.surface":   C("color", "Superficie de tarjetas"),
@@ -156,6 +161,7 @@
     "video.autoplay": C("bool", "Reproducir automáticamente al abrir"),
     "video.muted":    C("bool", "Iniciar sin sonido"),
     "video.loop":     C("bool", "Repetir en bucle"),
+    "video.hoverPlay": C("bool", "Previsualizar el vídeo al pasar el cursor (archivos propios)"),
 
     "terminal.dock":   C("enum", "Posición de la terminal", { values: ["bottom", "float", "right", "full"] }),
     "terminal.height": C("num", "Altura de la terminal (% de pantalla)", { min: 25, max: 95 }),
@@ -286,6 +292,7 @@
     state = deepMerge(deepMerge(DEFAULTS, published), local || {});
     if (!Array.isArray(state.media.videos)) state.media.videos = [];
     if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
+    if (!Array.isArray(state.media.heroVideos)) state.media.heroVideos = [];
     if (!Array.isArray(state.layout.sections)) state.layout.sections = clone(DEFAULTS.layout.sections);
     if (!Array.isArray(state.layout.hidden)) state.layout.hidden = [];
     return state;
@@ -309,7 +316,7 @@
       if (!res.ok) return res;
       setPath(state, path, res.value);
       if (path === "theme.preset") store.applyPreset(res.value, true);
-      if (path.indexOf("theme.") === 0 && path !== "theme.preset" && ["accent","bg","bg2","surface","surface2","text","muted","border","mode"].indexOf(path.split(".")[1]) >= 0) {
+      if (path.indexOf("theme.") === 0 && path !== "theme.preset" && ["accent","accent2","bg","bg2","surface","surface2","text","muted","border","mode"].indexOf(path.split(".")[1]) >= 0) {
         state.theme.preset = "custom";
       }
       persist();
@@ -330,7 +337,7 @@
       var t = state.theme;
       t.preset = name; t.mode = p.mode; t.bg = p.bg; t.bg2 = p.bg2;
       t.surface = p.surface; t.surface2 = p.surface2; t.text = p.text;
-      t.muted = p.muted; t.border = p.border; t.accent = p.accent;
+      t.muted = p.muted; t.border = p.border; t.accent = p.accent; t.accent2 = p.accent2;
       persist();
       if (!quiet) store.emit("theme");
       return true;
@@ -356,6 +363,7 @@
       state = deepMerge(clone(DEFAULTS), obj || {});
       if (!Array.isArray(state.media.videos)) state.media.videos = [];
     if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
+    if (!Array.isArray(state.media.heroVideos)) state.media.heroVideos = [];
       persist();
       store.emit("*");
     },

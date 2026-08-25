@@ -5,17 +5,20 @@
 
 :root {
   /* --- Paleta (sobreescribible desde la terminal) --- */
-  --bg:        #080908;
-  --bg-2:      #0f110f;
-  --surface:   #131613;
-  --surface-2: #1b1f1b;
-  --text:      #f2f4f0;
-  --muted:     #8e948b;
-  --border:    #262a26;
-  --accent:    #d8ff3e;
-  --accent-ink:#0a0d08;
-  --danger:    #ff4d3d;
-  --ok:        #3ddc84;
+  --bg:         #ffffff;
+  --bg-2:       #fafafa;
+  --surface:    #ffffff;
+  --surface-2:  #f2f2f2;
+  --text:       #0b0b0b;
+  --muted:      #6e6e6e;
+  --border:     #e3e3e3;
+  --accent:     #e11d2e;   /* rojo — acción, energía */
+  --accent-ink: #ffffff;
+  --accent-2:   #0a8f3c;   /* verde — clasificación, datos */
+  --accent-2-ink: #ffffff;
+  --danger:     #e11d2e;
+  --ok:         #0a8f3c;
+  --hero-ink:   var(--text);
 
   /* --- Tipografía --- */
   --font-display: "Archivo", "Archivo Expanded", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -53,20 +56,19 @@
   --term-accent: var(--accent);
   --term-height: 52vh;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
-/* Modo claro (theme mode light) */
-[data-mode="light"] {
-  --bg:        #f4f4f1;
-  --bg-2:      #ffffff;
-  --surface:   #ffffff;
-  --surface-2: #ececE6;
-  --text:      #0b0d0a;
-  --muted:     #5f645c;
-  --border:    #d7d8d2;
-  --accent-ink:#0a0d08;
-  color-scheme: light;
+/* Modo oscuro (se activa desde la terminal con `tema noir`, `tema cancha`…) */
+[data-mode="dark"] {
+  --bg:         #080908;
+  --bg-2:       #0f110f;
+  --surface:    #131613;
+  --surface-2:  #1b1f1b;
+  --text:       #f2f4f0;
+  --muted:      #8e948b;
+  --border:     #262a26;
+  color-scheme: dark;
 }
 
 /* --- Densidad --- */
@@ -144,6 +146,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 800; line-height
 .lede { font-size: clamp(1rem, 1.35vw, 1.22rem); line-height: 1.65; color: var(--muted); max-width: 68ch; }
 
 .accent { color: var(--accent); }
+.accent-2 { color: var(--accent-2); }
 
 /* ========================= UTILIDADES ========================= */
 .wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
