@@ -7,6 +7,26 @@
      2. Ajustá el sitio a gusto.
      3. Escribí `publicar` — se descarga un config.js.
      4. Reemplazá este archivo con el descargado y subí el cambio.
-   Dejalo como un objeto vacío para usar los valores por defecto.
    ============================================================= */
-window.LSD_CONFIG = {};
+window.LSD_CONFIG = {
+
+  /* Foto de fondo de la portada.
+     Para poner un vídeo en su lugar:  portada video <url> */
+  site: {
+    heroImage: "assets/img/portada-entrada-en-calor.jpg"
+  },
+
+  media: {
+    /* Foto de cada bloque. Para cambiarlas:
+         imagen bloque <id> assets/img/<archivo>.jpg
+       Sin foto todavía: posesion · finalizacion · abp */
+    images: {
+      marco:      "assets/img/cuerpo-tecnico.jpg",
+      fuerza:     "assets/img/coordinacion.jpg",
+      ssg:        "assets/img/grupo-entrenamiento.jpg",
+      tactico:    "assets/img/direccion-de-sesion.jpg",
+      carga:      "assets/img/control-de-carga.jpg",
+      microciclo: "assets/img/plantel.jpg"
+    }
+  }
+};
