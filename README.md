@@ -30,20 +30,34 @@ adicional.
 
 ## 2. El estilo
 
-El sitio arranca en **blanco con letras negras**, con **rojo** como color de acción (botones de
-reproducción, secciones destacadas, cargas altas) y **verde** como color de clasificación (códigos
-de bloque, etiquetas, cargas bajas). Las tarjetas no son cajas con borde: son piezas con relieve
-donde la fotografía y el vídeo son lo que resalta sobre el fondo blanco.
+Base **blanca con letras negras**, titulares en **condensada pesada y mayúsculas**, y el recurso
+que ordena toda la página: una **barra gruesa de color bajo cada titular**.
 
-Todo eso se cambia desde la terminal. Hay ocho paletas más, claras y oscuras (`tema lista`), y
-cualquier color suelto se puede sustituir:
+- **Naranja-rojo** (`#ed4a22`) para la acción: subrayado de titulares, botón de reproducción,
+  filtro activo, enlace de navegación activo, barra inferior de las tarjetas, cargas altas.
+- **Verde** (`#12a150`) para la clasificación: códigos de bloque, etiquetas, fichas, cargas bajas.
+- **Bandas negras** que alternan con el blanco de la página, para que la sección de vídeo resalte.
+  Viene activada en la sección de vídeos y se cambia sección por sección.
+
+Las tarjetas de bloque con foto llevan la imagen a sangre, el titular en blanco abajo y la barra
+de acento en el borde inferior; la descripción aparece al pasar el cursor.
+
+Todo se cambia desde la terminal. Hay diez paletas, claras y oscuras (`tema lista`):
 
 ```
-color acento #e11d2e        Color principal (rojo por defecto)
-color secundario #0a8f3c    Color secundario (verde por defecto)
-color fondo blanco · color texto negro
-tema noir                   Vuelve al negro absoluto
+tema pista                  Blanco, negro, naranja y verde (por defecto)
+tema rojo                   Igual, pero con rojo puro en vez de naranja
+tema noir                   Negro absoluto
+color acento #ed4a22        Color principal
+color secundario #12a150    Color secundario
+fuente anton                anton · archivo · condensed · inter · mono · serif
+seccion invertir videos     Pone una sección sobre fondo negro
+seccion normal videos       La devuelve al fondo de la página
 ```
+
+> **La tipografía de titulares es Anton**, que se descarga de Google Fonts. Si no llega a cargar
+> (sin conexión, o una red que la bloquee), la página lo detecta midiendo el ancho del texto y
+> cambia sola a una alternativa que aguanta el peso, en vez de quedar con una fuente fina.
 
 ## 3. La terminal de configuración
 
@@ -172,6 +186,8 @@ bloques                     Lista los bloques y sus identificadores
 trabajos [bloque]           Lista las unidades de trabajo y sus identificadores
 seccion listar              Estado de las secciones de la página
 seccion ocultar videos      Oculta una sección
+seccion invertir videos     Sección sobre fondo negro
+seccion normal videos       Sección sobre el fondo de la página
 seccion orden bloques videos trabajos microciclo
 texto tagline "…"           Edita los textos del sitio (portada, intro, contacto…)
 ```

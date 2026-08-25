@@ -12,7 +12,8 @@
      PRESETS DE TEMA
      ------------------------------------------------------------------ */
   var PRESETS = {
-    pista:   { label: "Pista — blanco, negro, rojo y verde",  mode: "light", bg: "#ffffff", bg2: "#fafafa", surface: "#ffffff", surface2: "#f2f2f2", text: "#0b0b0b", muted: "#6e6e6e", border: "#e3e3e3", accent: "#e11d2e", accent2: "#0a8f3c" },
+    pista:   { label: "Pista — blanco, negro, naranja y verde", mode: "light", bg: "#ffffff", bg2: "#fafafa", surface: "#ffffff", surface2: "#f4f4f4", text: "#000000", muted: "#6b6b6b", border: "#e4e4e4", accent: "#ed4a22", accent2: "#12a150" },
+    rojo:    { label: "Rojo — blanco, negro y rojo puro",       mode: "light", bg: "#ffffff", bg2: "#fafafa", surface: "#ffffff", surface2: "#f4f4f4", text: "#000000", muted: "#6b6b6b", border: "#e4e4e4", accent: "#e11d2e", accent2: "#12a150" },
     papel:   { label: "Papel — crema editorial",              mode: "light", bg: "#f6f4ef", bg2: "#ffffff", surface: "#ffffff", surface2: "#edeae3", text: "#14120e", muted: "#6b665c", border: "#ddd8cd", accent: "#c8331f", accent2: "#2f6b3a" },
     hielo:   { label: "Hielo — claro y azul",                 mode: "light", bg: "#f3f6fa", bg2: "#ffffff", surface: "#ffffff", surface2: "#e8eef6", text: "#0a1220", muted: "#5b6b80", border: "#d3dce8", accent: "#0057ff", accent2: "#00a37a" },
     noir:    { label: "Noir — negro absoluto y volt",         mode: "dark",  bg: "#080908", bg2: "#0f110f", surface: "#131613", surface2: "#1b1f1b", text: "#f2f4f0", muted: "#8e948b", border: "#262a26", accent: "#d8ff3e", accent2: "#ff4d3d" },
@@ -47,16 +48,16 @@
     theme: {
       preset: "pista",
       mode: "light",
-      accent: "#e11d2e",
-      accent2: "#0a8f3c",
+      accent: "#ed4a22",
+      accent2: "#12a150",
       bg: "#ffffff",
       bg2: "#fafafa",
       surface: "#ffffff",
-      surface2: "#f2f2f2",
-      text: "#0b0b0b",
-      muted: "#6e6e6e",
-      border: "#e3e3e3",
-      font: "archivo",
+      surface2: "#f4f4f4",
+      text: "#000000",
+      muted: "#6b6b6b",
+      border: "#e4e4e4",
+      font: "anton",
       radius: 0,
       density: "normal",
       titlecase: "upper",
@@ -70,7 +71,8 @@
       card: "sharp",
       blockImg: "bn",
       sections: ["bloques", "trabajos", "videos", "microciclo"],
-      hidden: []
+      hidden: [],
+      inverted: ["videos"]
     },
     video: {
       layout: "grid",
@@ -134,7 +136,7 @@
     "theme.text":      C("color", "Color de texto"),
     "theme.muted":     C("color", "Texto secundario"),
     "theme.border":    C("color", "Color de bordes"),
-    "theme.font":      C("enum", "Familia tipográfica", { values: ["archivo", "condensed", "inter", "mono", "serif"] }),
+    "theme.font":      C("enum", "Familia tipográfica", { values: ["anton", "archivo", "condensed", "inter", "mono", "serif"] }),
     "theme.radius":    C("num", "Radio de esquinas (px)", { min: 0, max: 32 }),
     "theme.density":   C("enum", "Densidad de espaciado", { values: ["compact", "normal", "wide"] }),
     "theme.titlecase": C("enum", "Títulos en mayúsculas o normales", { values: ["upper", "normal"] }),
@@ -295,6 +297,7 @@
     if (!Array.isArray(state.media.heroVideos)) state.media.heroVideos = [];
     if (!Array.isArray(state.layout.sections)) state.layout.sections = clone(DEFAULTS.layout.sections);
     if (!Array.isArray(state.layout.hidden)) state.layout.hidden = [];
+    if (!Array.isArray(state.layout.inverted)) state.layout.inverted = [];
     return state;
   }
 

@@ -21,8 +21,37 @@
     }, 2600);
   };
 
+  /* Comprueba si la tipografía de titulares llegó a cargar de verdad.
+     No sirve document.fonts.check(): devuelve true tratando el nombre
+     como fuente del sistema cuando la hoja de Google Fonts no llega.
+     Se mide el ancho de un texto y se compara con el de la alternativa. */
+  function fontLoaded(name) {
+    try {
+      var ctx = d.createElement("canvas").getContext("2d");
+      var probe = "MMMWWWmmmwww0123456789";
+      var refs = ["monospace", "serif"];
+      for (var i = 0; i < refs.length; i++) {
+        ctx.font = '72px ' + refs[i];
+        var base = ctx.measureText(probe).width;
+        ctx.font = '72px "' + name + '", ' + refs[i];
+        if (ctx.measureText(probe).width !== base) return true;
+      }
+      return false;
+    } catch (e) { return false; }
+  }
+
+  function checkDisplayFont() {
+    var root = d.documentElement;
+    var mark = function () { root.setAttribute("data-anton", fontLoaded("Anton") ? "on" : "off"); };
+    mark();
+    if (d.fonts && d.fonts.ready && d.fonts.ready.then) d.fonts.ready.then(mark).catch(mark);
+    setTimeout(mark, 1500);
+    setTimeout(mark, 4000);
+  }
+
   function boot() {
     LSD.store.init();
+    checkDisplayFont();
     LSD.renderAll();
     LSD.term.mount();
 

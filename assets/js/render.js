@@ -239,7 +239,8 @@
       var nv = videosOf(b.id).length;
       var img = safeUrl(imgs[b.id]);
       return '<button class="block-card reveal' + (img ? " has-img" : "") + '" data-block="' + b.id + '">' +
-        (img ? '<span class="bc-img" style="background-image:url(&quot;' + esc(img) + '&quot;)"></span>' : "") +
+        (img ? '<span class="bc-img" style="background-image:url(&quot;' + esc(img) + '&quot;)"></span>' +
+               '<span class="bar-bottom"></span>' : "") +
         '<div><div class="bc-code">' + esc(b.code) + ' / ' + esc(b.short.toUpperCase()) + '</div>' +
         '<h3 class="bc-title">' + esc(b.title) + '</h3>' +
         '<p class="bc-desc">' + esc(b.desc) + '</p></div>' +
@@ -328,7 +329,10 @@
   function videoCard(v, i, opts) {
     opts = opts || {};
     var c = LSD.store.config;
-    var thumb = LSD.thumbUrl(v) || LSD.placeholder(v.title, c.theme.accent, c.theme.surface, c.theme.muted);
+    var ph = opts.dark
+      ? LSD.placeholder(v.title, c.theme.accent, "#191919", "#6f6f6f")
+      : LSD.placeholder(v.title, c.theme.accent, c.theme.surface, c.theme.muted);
+    var thumb = LSD.thumbUrl(v) || ph;
     var b = blockById(v.block);
     var live = opts.live;
     var inner;
@@ -337,7 +341,7 @@
     } else {
       inner = '<div class="video-thumb">' +
         '<img src="' + esc(thumb) + '" alt="' + esc(v.title) + '" loading="lazy" ' +
-        'onerror="this.onerror=null;this.src=\'' + LSD.placeholder(v.title, c.theme.accent, c.theme.surface, c.theme.muted).replace(/'/g, "%27") + '\'">' +
+        'onerror="this.onerror=null;this.src=\'' + ph.replace(/'/g, "%27") + '\'">' +
         (v.featured ? '<span class="video-badge">Destacado</span>' : '') +
         '<span class="play-btn" aria-hidden="true">' +
           '<svg width="17" height="19" viewBox="0 0 17 19" fill="currentColor"><path d="M0 0l17 9.5L0 19V0z"/></svg>' +
@@ -405,6 +409,7 @@
 
   function renderVideos() {
     var c = LSD.store.config, cfg = c.video;
+    var dark = (c.layout.inverted || []).indexOf("videos") >= 0;
     var list = videosOf(ui.filterVideos);
     var host = $("#videoCollection");
     var strip = $("#videoStrip");
@@ -429,9 +434,9 @@
     if (cfg.layout === "cinema") {
       var idx = Math.min(ui.cinemaIndex, list.length - 1);
       var main = list[idx];
-      host.innerHTML = videoCard(main, idx, { live: true });
+      host.innerHTML = videoCard(main, idx, { live: true, dark: dark });
       strip.innerHTML = list.map(function (v, i) {
-        var th = LSD.thumbUrl(v) || LSD.placeholder(v.title, c.theme.accent, c.theme.surface, c.theme.muted);
+        var th = LSD.thumbUrl(v) || LSD.placeholder(v.title, c.theme.accent, dark ? "#191919" : c.theme.surface, dark ? "#6f6f6f" : c.theme.muted);
         return '<button data-i="' + i + '" class="' + (i === idx ? "is-active" : "") + '">' +
           '<img src="' + esc(th) + '" alt=""><span class="st-title">' + esc(v.title) + '</span></button>';
       }).join("");
@@ -445,7 +450,7 @@
     }
 
     strip.innerHTML = "";
-    host.innerHTML = list.map(function (v, i) { return videoCard(v, i); }).join("");
+    host.innerHTML = list.map(function (v, i) { return videoCard(v, i, { dark: dark }); }).join("");
     bindHoverPreview(host);
     $$("#videoCollection .video-card").forEach(function (el) {
       el.addEventListener("click", function () {
@@ -518,6 +523,7 @@
       if (!el) return;
       var off = c.hidden.indexOf(id) >= 0 || c.sections.indexOf(id) < 0;
       el.classList.toggle("hidden", off);
+      el.classList.toggle("is-inverted", (c.inverted || []).indexOf(id) >= 0);
     });
     var nav = $("#nav");
     var html = ['<a href="#inicio">Inicio</a>'];

@@ -1117,9 +1117,9 @@
   T.register({
     name: "seccion", alias: ["section", "secciones"],
     desc: "Muestra, oculta o reordena las secciones de la página",
-    usage: "seccion <listar|ocultar|mostrar|orden> [ids]",
+    usage: "seccion <listar|ocultar|mostrar|invertir|normal|orden> [ids]",
     complete: function (prev) {
-      if (prev.length === 0) return ["listar", "ocultar", "mostrar", "orden"];
+      if (prev.length === 0) return ["listar", "ocultar", "mostrar", "invertir", "normal", "orden"];
       return Object.keys(LSD.SECTION_LABEL);
     },
     run: function (args) {
@@ -1131,13 +1131,16 @@
         T.head("SECCIONES");
         cfg.sections.forEach(function (id, i) {
           var off = cfg.hidden.indexOf(id) >= 0;
+          var inv = (cfg.inverted || []).indexOf(id) >= 0;
           T.html('<div class="t-line"><span class="t-dim">' + (i + 1) + ".</span> " +
             '<span class="t-key">' + esc(id) + "</span> " +
             '<span class="' + (off ? "t-err" : "t-ok") + '">' + (off ? "oculta" : "visible") + "</span> " +
+            '<span class="t-warn">' + (inv ? "fondo negro" : "") + "</span> " +
             '<span class="t-dim">' + esc(LSD.SECTION_LABEL[id] || "") + "</span></div>");
         });
         T.space();
         T.dim("seccion ocultar <id>   ·   seccion mostrar <id>   ·   seccion orden id1 id2 id3");
+        T.dim("seccion invertir <id>  ·   seccion normal <id>    (banda negra sobre la página blanca)");
         return;
       }
       if (sub === "ocultar" || sub === "hide") {
@@ -1155,6 +1158,27 @@
         T.ok("Sección visible: " + id2);
         return;
       }
+      if (sub === "invertir" || sub === "negro" || sub === "invert") {
+        if (!args[1]) { T.err("Uso: seccion invertir <id>"); T.chips(all, "seccion invertir "); return; }
+        var id3 = da(args[1]);
+        if (all.indexOf(id3) < 0) { T.err("Sección desconocida."); T.chips(all, "seccion invertir "); return; }
+        S.write(function (st) {
+          if (!Array.isArray(st.layout.inverted)) st.layout.inverted = [];
+          if (st.layout.inverted.indexOf(id3) < 0) st.layout.inverted.push(id3);
+        });
+        T.ok("Sección sobre fondo negro: " + id3);
+        return;
+      }
+      if (sub === "normal" || sub === "blanco" || sub === "revertir") {
+        if (!args[1]) { T.err("Uso: seccion normal <id>"); T.chips(all, "seccion normal "); return; }
+        var id4 = da(args[1]);
+        S.write(function (st) {
+          st.layout.inverted = (st.layout.inverted || []).filter(function (x) { return x !== id4; });
+        });
+        T.ok("Sección sobre fondo de página: " + id4);
+        return;
+      }
+
       if (sub === "orden" || sub === "order") {
         var order = args.slice(1).map(da).filter(function (x) { return all.indexOf(x) >= 0; });
         if (!order.length) { T.err("Uso: seccion orden " + all.join(" ")); return; }
@@ -1164,7 +1188,7 @@
         return;
       }
       T.err("Subcomando desconocido.");
-      T.chips(["listar", "ocultar", "mostrar", "orden"], "seccion ");
+      T.chips(["listar", "ocultar", "mostrar", "invertir", "normal", "orden"], "seccion ");
     }
   });
 
