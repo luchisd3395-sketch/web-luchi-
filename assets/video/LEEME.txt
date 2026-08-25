@@ -1,0 +1,29 @@
+Carpeta para tus vídeos.
+
+Guardá acá los vídeos que quieras subir al repositorio y referencialos
+desde la terminal con la ruta relativa:
+
+    portada video assets/video/entrenamiento.mp4
+    portada video add assets/video/gimnasio.mp4
+    video add "SSG 4v4" assets/video/ssg-4v4.mp4 --bloque ssg
+
+VÍDEOS DE PORTADA
+  · Van siempre en bucle y SIN SONIDO. Los navegadores sólo reproducen
+    automáticamente si el vídeo está silenciado: no es una limitación
+    de la página, es una regla del navegador.
+  · Con varios cargados se van alternando solos.
+  · Formato .mp4 (H.264) es el que mejor funciona en todos los navegadores.
+  · Horizontal, 1920x1080. Entre 10 y 20 segundos por clip es lo ideal.
+  · Comprimí bien: por debajo de 5 MB por clip. Un vídeo pesado hace que
+    la portada tarde en arrancar.
+
+VÍDEOS DEL ARCHIVO
+  · Si son archivos .mp4 propios, la tarjeta los previsualiza en silencio
+    al pasar el cursor por encima.
+  · Si preferís no subirlos al repositorio, podés usar enlaces de YouTube,
+    Vimeo o Google Drive: se detectan solos al pegar la URL.
+
+AVISO SOBRE EL PESO
+GitHub no acepta archivos de más de 100 MB, y un repositorio lleno de
+vídeos se vuelve lento de clonar. Para material largo o pesado, subilo a
+YouTube o Vimeo (podés ponerlo como "no listado") y usá el enlace.
