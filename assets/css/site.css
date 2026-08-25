@@ -493,9 +493,46 @@
 .micro-table tbody tr:hover { background: var(--surface); }
 .micro-table .md { font-family: var(--font-display); font-weight: 800; font-size: 1rem; white-space: nowrap; }
 .micro-table .muted { color: var(--muted); }
-.load-bar { display: inline-block; height: 7px; background: var(--accent-2); min-width: 4px; vertical-align: middle; }
-.load-bar[data-nivel="medio"] { background: #e8a33d; }
-.load-bar[data-nivel="alto"]  { background: var(--accent); }
+/* --- Escala de intensidad --- */
+.load-track {
+  display: block; width: 100%; max-width: 130px; height: 8px;
+  background: var(--surface-2); border: 1px solid var(--border); margin-bottom: .45rem;
+}
+.load-bar { display: block; height: 100%; min-width: 3px; background: var(--nivel-bajo); }
+.load-bar[data-nivel="bajo"]        { background: var(--nivel-bajo); }
+.load-bar[data-nivel="moderado"]    { background: var(--nivel-moderado); }
+.load-bar[data-nivel="intenso"]     { background: var(--nivel-intenso); }
+.load-bar[data-nivel="muy-intenso"] { background: var(--nivel-muy-intenso); }
+
+.load-tag {
+  font-family: var(--font-mono); font-size: var(--fs-micro);
+  letter-spacing: .12em; text-transform: uppercase; white-space: nowrap;
+}
+.load-tag[data-nivel="bajo"]        { color: var(--nivel-bajo-ink); }
+.load-tag[data-nivel="moderado"]    { color: var(--nivel-moderado-ink); }
+.load-tag[data-nivel="intenso"]     { color: var(--nivel-intenso-ink); }
+.load-tag[data-nivel="muy-intenso"] { color: var(--nivel-muy-intenso-ink); }
+.load-pct { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); margin-left: .4rem; }
+
+/* Leyenda de la escala */
+.load-legend {
+  display: flex; flex-wrap: wrap; gap: 1.4rem; margin-top: 1.1rem;
+  font-family: var(--font-mono); font-size: var(--fs-micro);
+  letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+.load-legend span { display: flex; align-items: center; gap: .5rem; }
+.load-legend i { width: 22px; height: 8px; display: block; border: 1px solid var(--border); }
+.load-legend i[data-nivel="bajo"]        { background: var(--nivel-bajo); }
+.load-legend i[data-nivel="moderado"]    { background: var(--nivel-moderado); }
+.load-legend i[data-nivel="intenso"]     { background: var(--nivel-intenso); }
+.load-legend i[data-nivel="muy-intenso"] { background: var(--nivel-muy-intenso); }
+
+/* Sobre banda negra la palabra usa el tono vivo, que ahí sí se lee */
+.section.is-inverted .load-tag[data-nivel="bajo"]        { color: #23c46f; }
+.section.is-inverted .load-tag[data-nivel="moderado"]    { color: var(--nivel-moderado); }
+.section.is-inverted .load-tag[data-nivel="intenso"]     { color: var(--nivel-intenso); }
+.section.is-inverted .load-tag[data-nivel="muy-intenso"] { color: #f0303d; }
+.section.is-inverted .load-track { background: #1c1c1c; border-color: rgba(255,255,255,.18); }
 
 /* ========================= FOOTER ========================= */
 .site-footer { border-top: 1px solid var(--border); padding-block: clamp(2.5rem, 6vw, 5rem) 2rem; background: var(--bg-2); }

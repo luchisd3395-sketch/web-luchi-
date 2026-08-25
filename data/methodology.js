@@ -1355,14 +1355,17 @@ window.LSD_METHODOLOGY = {
   ],
 
   /* ---------- Tabla del microciclo tipo ---------- */
+  /* nivel: bajo · moderado · intenso · muy-intenso
+     Es una valoración metodológica, no un umbral automático sobre la
+     carga: la barra muestra la magnitud y el nivel, la exigencia real. */
   microcycle: [
-    { day: "MD+1", tipo: "Recuperación", foco: "Regeneración",       contenidos: "Titulares: regenerativo y movilidad. No titulares: carga compensatoria (fuerza + juego reducido).", carga: 25, dur: "45-60'" },
-    { day: "MD+2", tipo: "Descanso",     foco: "Libre",              contenidos: "Descanso total o activación voluntaria opcional. Trabajo individual de readaptación.",              carga: 5,  dur: "—" },
-    { day: "MD-4", tipo: "Tensión",      foco: "Fuerza",             contenidos: "Fuerza en gimnasio, pliometría, COD. Espacios reducidos, alta densidad de acciones (1v1 a 4v4).",   carga: 90, dur: "80-95'" },
-    { day: "MD-3", tipo: "Duración",     foco: "Resistencia",        contenidos: "Espacios amplios, formatos grandes (8v8 a 11v11). Mayor volumen y distancia recorrida.",            carga: 100, dur: "85-95'" },
-    { day: "MD-2", tipo: "Velocidad",    foco: "Alta intensidad",    contenidos: "Sprints, transiciones, finalización. Espacios medios, series cortas y pausas largas.",              carga: 65, dur: "70-80'" },
-    { day: "MD-1", tipo: "Activación",   foco: "Plan de partido",    contenidos: "Activación, balón parado, ensayo del plan de partido. Volumen bajo, claridad alta.",                carga: 30, dur: "55-65'" },
-    { day: "MD",   tipo: "Competencia",  foco: "Partido",            contenidos: "Partido oficial. Referencia máxima de carga del ciclo.",                                           carga: 100, dur: "90'+" }
+    { day: "MD+1", tipo: "Recuperación", foco: "Regeneración",    contenidos: "Titulares: regenerativo y movilidad. No titulares: carga compensatoria (fuerza + juego reducido).", carga: 40,  nivel: "moderado",    dur: "45-60'" },
+    { day: "MD+2", tipo: "Descanso",     foco: "Libre",           contenidos: "Descanso total o activación voluntaria opcional. Trabajo individual de readaptación.",              carga: 5,   nivel: "bajo",        dur: "—" },
+    { day: "MD-4", tipo: "Tensión",      foco: "Fuerza",          contenidos: "Fuerza en gimnasio, pliometría, COD. Espacios reducidos, alta densidad de acciones (1v1 a 4v4).",   carga: 90,  nivel: "muy-intenso", dur: "80-95'" },
+    { day: "MD-3", tipo: "Duración",     foco: "Resistencia",     contenidos: "Espacios amplios, formatos grandes (8v8 a 11v11). Mayor volumen y distancia recorrida.",            carga: 100, nivel: "muy-intenso", dur: "85-95'" },
+    { day: "MD-2", tipo: "Velocidad",    foco: "Alta intensidad", contenidos: "Sprints, transiciones, finalización. Espacios medios, series cortas y pausas largas.",              carga: 65,  nivel: "intenso",     dur: "70-80'" },
+    { day: "MD-1", tipo: "Activación",   foco: "Plan de partido", contenidos: "Activación, balón parado, ensayo del plan de partido. Volumen bajo, claridad alta.",                carga: 30,  nivel: "bajo",        dur: "55-65'" },
+    { day: "MD",   tipo: "Competencia",  foco: "Partido",         contenidos: "Partido oficial. Referencia máxima de carga del ciclo.",                                           carga: 100, nivel: "muy-intenso", dur: "90'+" }
   ],
 
   /* ---------- Principios rectores (marquesina + footer) ---------- */

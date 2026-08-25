@@ -285,7 +285,34 @@ y el autocompletado de la terminal lo recogen solos.
 
 ---
 
-## 8. Referencias metodológicas
+## 8. La escala de intensidad del microciclo
+
+Cada día del microciclo lleva un nivel declarado, con su color:
+
+| Nivel | Color | Días |
+|---|---|---|
+| **Muy intenso** | Rojo | MD-4 · MD-3 · MD |
+| **Intenso** | Naranja | MD-2 |
+| **Moderado** | Amarillo | MD+1 |
+| **Bajo** | Verde | MD+2 · MD-1 |
+
+El nivel está declarado en `data/methodology.js` (campo `nivel`), no se deduce del porcentaje: la
+exigencia de un día es una valoración metodológica, no una cuenta. La barra muestra la magnitud
+relativa; el nivel, lo que se le pide al jugador. Si un día no lleva `nivel`, se deduce de la carga
+(≥85 muy intenso · ≥60 intenso · ≥35 moderado · resto bajo).
+
+```js
+{ day: "MD-4", tipo: "Tensión", carga: 90, nivel: "muy-intenso", … }
+```
+
+Dos detalles de la implementación:
+
+- **El amarillo no se usa como texto sobre blanco**: tiene 1,6:1 de contraste, es ilegible. El
+  relleno de la barra va en amarillo vivo y la palabra en un ámbar oscuro que sí se lee.
+- **La barra va sobre un carril gris** que representa el 100%, para que se vea la proporción y no
+  sólo una barra suelta.
+
+## 9. Referencias metodológicas
 
 La estructura de contenidos sigue el marco habitual de la planificación en fútbol profesional:
 periodización táctica y microciclo estructurado (alternancia tensión / duración / velocidad entre

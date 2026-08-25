@@ -510,15 +510,48 @@
   /* ================================================================
      MICROCICLO
      ================================================================ */
+  var NIVELES = [
+    { id: "bajo",        label: "Bajo" },
+    { id: "moderado",    label: "Moderado" },
+    { id: "intenso",     label: "Intenso" },
+    { id: "muy-intenso", label: "Muy intenso" }
+  ];
+
+  /** Nivel de un día: el declarado en los datos, o deducido de la carga. */
+  function nivelDe(r) {
+    var ids = NIVELES.map(function (n) { return n.id; });
+    if (r.nivel && ids.indexOf(r.nivel) >= 0) return r.nivel;
+    if (r.carga >= 85) return "muy-intenso";
+    if (r.carga >= 60) return "intenso";
+    if (r.carga >= 35) return "moderado";
+    return "bajo";
+  }
+  function nivelLabel(id) {
+    for (var i = 0; i < NIVELES.length; i++) if (NIVELES[i].id === id) return NIVELES[i].label;
+    return id;
+  }
+
   function renderMicro() {
     $("#microBody").innerHTML = M.microcycle.map(function (r) {
+      var n = nivelDe(r);
       return '<tr><td class="md">' + esc(r.day) + '</td><td>' + esc(r.tipo) + '</td>' +
         '<td class="muted">' + esc(r.foco) + '</td>' +
         '<td class="muted">' + esc(r.contenidos) + '</td>' +
         '<td style="white-space:nowrap">' + esc(r.dur) + '</td>' +
-        '<td><span class="load-bar" data-nivel="' + (r.carga > 75 ? "alto" : r.carga > 40 ? "medio" : "bajo") +
-          '" style="width:' + (r.carga * 0.9) + 'px"></span> <span class="muted">' + r.carga + '%</span></td></tr>';
+        '<td>' +
+          '<span class="load-track"><span class="load-bar" data-nivel="' + n +
+            '" style="width:' + Math.max(3, r.carga) + '%"></span></span>' +
+          '<span class="load-tag" data-nivel="' + n + '">' + esc(nivelLabel(n)) + '</span>' +
+          '<span class="load-pct">' + r.carga + '%</span>' +
+        '</td></tr>';
     }).join("");
+
+    var leg = $("#microLegend");
+    if (leg) {
+      leg.innerHTML = NIVELES.map(function (n) {
+        return '<span><i data-nivel="' + n.id + '"></i>' + esc(n.label) + "</span>";
+      }).join("");
+    }
   }
 
   /* ================================================================
