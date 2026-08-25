@@ -135,7 +135,11 @@ video add "Rondo 4v2" https://youtu.be/XXXX --bloque posesion
 video add "Nordic curl" https://youtu.be/YYYY --trabajo prevencion --tags "prevención,isquios" --dur 1:40
 video list [bloque]              Lista el archivo, numerado
 video edit <id|#n> <campo> <v>   campos: titulo, url, bloque, trabajo, tags, dur, desc, poster, destacado
-video mover <id|#n> <bloque>     Cambia el vídeo de bloque
+mover 3 ssg                      Mueve vídeos: uno, varios (1 2 5), un rango (2-7) o todos
+mover 3 ssg-3v3                  El destino también puede ser una unidad de trabajo
+mover --de posesion --a ssg      Mueve todo un bloque de una vez
+renombrar                        Abre la lista completa de nombres para editarla de una sentada
+renombrar 3 "Rondo 5v2"          Renombra uno solo
 video destacar <id|#n>           Marca o desmarca como destacado
 video orden <id|#n> <posición>   Reordena
 video rm <id|#n>                 Borra un vídeo
@@ -166,6 +170,25 @@ Actividad sin fin declarado | 3:30
 Nombre e inicio son obligatorios; el fin, la unidad de trabajo y las etiquetas son opcionales. Si
 no ponés el fin se usan 20 segundos (`--duracion 15` cambia ese valor). Los tiempos admiten
 `2:05`, `125` o `1:02:05`. Avisa si dos tramos se pisan.
+
+**También podés pegar sólo los tiempos**, sin nombrar nada:
+
+```
+0:12 | 0:32
+1:05 | 1:25
+2:40 | 3:00
+```
+
+Se numeran solas como *Actividad 1, 2, 3…* y les ponés nombre después con `renombrar`, que abre
+la lista entera para editarla de una sentada:
+
+```
+1 | Entrada en calor con balón        (0:12–0:32)
+2 | Rondo 5v2                         (1:05–1:25)
+```
+
+Cambiás el texto a la derecha de la barra y listo. Las líneas que no toques quedan igual, y el
+tiempo entre paréntesis es informativo: no hace falta borrarlo.
 
 Para un fragmento suelto: `video add "Título" <url> --bloque ssg --desde 2:05 --hasta 2:25`, y
 `video edit <id> desde 2:10` para ajustarlo después. La duración se recalcula sola.

@@ -119,7 +119,7 @@
     { g: "Básicos",       cmds: ["ayuda", "estado", "limpiar", "abrir", "salir", "acerca"] },
     { g: "Configuración", cmds: ["config", "set", "get", "reset", "texto"] },
     { g: "Aspecto",       cmds: ["tema", "color", "fuente", "densidad", "layout", "portada", "nav", "tarjeta"] },
-    { g: "Vídeos",        cmds: ["video", "videos", "lote", "fragmentos"] },
+    { g: "Vídeos",        cmds: ["video", "videos", "lote", "fragmentos", "mover", "renombrar"] },
     { g: "Imágenes",      cmds: ["imagen"] },
     { g: "Contenido",     cmds: ["bloques", "trabajos", "buscar", "seccion"] },
     { g: "Datos",         cmds: ["exportar", "importar", "publicar", "demo", "clave"] }
@@ -1071,6 +1071,251 @@
 
 
 
+
+  /* =========================================================
+     MOVER Y RENOMBRAR
+     ========================================================= */
+
+  /** Resuelve "1", "#3", "2-6", "todos" o un id a una lista de índices. */
+  function resolverIndices(tokens) {
+    var vids = S.config.media.videos;
+    var out = [], errores = [];
+    tokens.forEach(function (tk) {
+      var t = String(tk).trim().replace(/^#/, "");
+      if (!t) return;
+      if (da(t) === "todos" || da(t) === "todo" || t === "*") {
+        vids.forEach(function (_, i) { out.push(i); });
+        return;
+      }
+      var rango = t.match(/^(\d+)\s*[-–]\s*(\d+)$/);
+      if (rango) {
+        var a = parseInt(rango[1], 10), b = parseInt(rango[2], 10);
+        if (a > b) { var tmp = a; a = b; b = tmp; }
+        for (var k = a; k <= b; k++) {
+          if (vids[k - 1]) out.push(k - 1); else errores.push("#" + k);
+        }
+        return;
+      }
+      if (/^\d+$/.test(t)) {
+        var n = parseInt(t, 10) - 1;
+        if (vids[n]) out.push(n); else errores.push("#" + t);
+        return;
+      }
+      var idx = -1;
+      for (var j = 0; j < vids.length; j++) if (vids[j].id === t) { idx = j; break; }
+      if (idx >= 0) out.push(idx); else errores.push(t);
+    });
+    // sin repetidos, en orden
+    out = out.filter(function (v, i) { return out.indexOf(v) === i; }).sort(function (x, y) { return x - y; });
+    return { indices: out, errores: errores };
+  }
+
+  /** Un destino puede ser un bloque o una unidad de trabajo. */
+  function resolverDestino(txt) {
+    var w = findWork(txt);
+    if (w) return { block: w.block, work: w.item, label: w.block.code + " · " + w.block.short + " › " + w.item.name };
+    var b = findBlock(txt);
+    if (b) return { block: b, work: null, label: b.code + " · " + b.title };
+    return null;
+  }
+
+  T.register({
+    name: "mover", alias: ["move", "reubicar"],
+    desc: "Mueve vídeos a otro bloque o unidad de trabajo",
+    usage: "mover <nº|id|rango|todos> <bloque o unidad>",
+    complete: function (prev) {
+      if (prev.length === 0) {
+        return S.config.media.videos.map(function (v, i) {
+          return { name: String(i + 1), desc: v.title };
+        }).concat([{ name: "todos", desc: "todos los vídeos" }]);
+      }
+      return blockIds().concat(workIds());
+    },
+    help: function () {
+      T.space();
+      T.dim("UNO        mover 3 ssg              ·  mover rondo-4v2 posesion");
+      T.dim("VARIOS     mover 1 2 5 ssg          ·  mover 2-7 fuerza");
+      T.dim("TODOS      mover todos ssg");
+      T.dim("POR BLOQUE mover --de posesion --a ssg");
+      T.space();
+      T.dim("El destino puede ser un bloque (ssg) o una unidad (ssg-3v3).");
+      T.dim("Si es una unidad, el bloque se ajusta solo al que corresponde.");
+      T.dim("Listá los vídeos con su número:  video list");
+    },
+    run: function (args, flags) {
+      var vids = S.config.media.videos;
+      if (!vids.length) { T.warn("No hay vídeos cargados todavía."); return; }
+
+      // --- mover un bloque entero ---
+      if (flags.de || flags.desde_bloque) {
+        var origen = findBlock(String(flags.de || flags.desde_bloque));
+        if (!origen) { T.err("Bloque de origen no encontrado."); T.chips(blockIds()); return; }
+        if (!flags.a && !flags.hacia) { T.err("Falta el destino:  mover --de " + origen.id + " --a <bloque>"); return; }
+        var dest0 = resolverDestino(String(flags.a || flags.hacia));
+        if (!dest0) { T.err("Destino no encontrado."); T.chips(blockIds()); return; }
+        var mov = 0;
+        S.write(function (st) {
+          st.media.videos.forEach(function (v) {
+            if (v.block !== origen.id) return;
+            v.block = dest0.block.id;
+            v.work = dest0.work ? dest0.work.id : null;
+            mov++;
+          });
+        });
+        if (!mov) { T.warn("No había vídeos en «" + origen.id + "»."); return; }
+        T.ok(mov + " vídeos movidos de " + origen.code + " · " + origen.short + "  →  " + dest0.label);
+        return;
+      }
+
+      if (args.length < 2) {
+        T.err("Uso: mover <nº|id|rango|todos> <bloque o unidad>");
+        T.dim("Por ejemplo:  mover 3 ssg   ·   mover 1 2 5 fuerza   ·   mover 2-7 posesion");
+        T.dim("Destinos posibles:");
+        T.chips(blockIds(), "mover ");
+        return;
+      }
+
+      var destinoTxt = args[args.length - 1];
+      var destino = resolverDestino(destinoTxt);
+      if (!destino) {
+        T.err("No existe el bloque ni la unidad «" + destinoTxt + "».");
+        T.dim("Bloques:");
+        T.chips(blockIds());
+        return;
+      }
+
+      var r = resolverIndices(args.slice(0, -1));
+      if (r.errores.length) {
+        T.err("No encontré: " + r.errores.join(", "));
+        T.dim("Listá los vídeos con su número:  video list");
+        if (!r.indices.length) return;
+      }
+      if (!r.indices.length) { T.err("No indicaste ningún vídeo válido."); return; }
+
+      var movidos = [];
+      S.write(function (st) {
+        r.indices.forEach(function (i) {
+          var v = st.media.videos[i];
+          movidos.push({ n: i + 1, title: v.title, antes: v.block });
+          v.block = destino.block.id;
+          v.work = destino.work ? destino.work.id : null;
+        });
+      });
+
+      T.ok(movidos.length + (movidos.length === 1 ? " vídeo movido a " : " vídeos movidos a ") + destino.label);
+      movidos.forEach(function (m) {
+        var ba = LSD.blockById(m.antes);
+        T.html('<div class="t-line"><span class="t-dim">#' + m.n + "</span>  " +
+          '<span class="t-ok">' + esc(m.title) + "</span>" +
+          '<span class="t-dim">  ' + esc(ba ? ba.short : m.antes) + " → " + esc(destino.block.short) + "</span></div>");
+      });
+    }
+  });
+
+  T.register({
+    name: "renombrar", alias: ["rename", "nombrar", "titulos"],
+    desc: "Cambia el nombre de un vídeo, o de todos de una sentada",
+    usage: "renombrar [nº|id] [nombre nuevo]",
+    complete: function (prev) {
+      if (prev.length === 0) {
+        return S.config.media.videos.map(function (v, i) { return { name: String(i + 1), desc: v.title }; })
+          .concat(blockIds().map(function (b) { return { name: b, desc: "renombrar los de este bloque" }; }));
+      }
+      return [];
+    },
+    help: function () {
+      T.space();
+      T.dim("UNO     renombrar 3 \"Rondo 5v2 con salida\"");
+      T.dim("TODOS   renombrar            abre la lista completa para editar");
+      T.dim("BLOQUE  renombrar ssg        abre sólo los de ese bloque");
+      T.space();
+      T.dim("En el cuadro, cada línea es:   número | nombre");
+      T.dim("Cambiá lo que está a la derecha de la barra y dale a Cargar.");
+      T.dim("Las líneas que no toques quedan igual.");
+    },
+    run: function (args) {
+      var vids = S.config.media.videos;
+      if (!vids.length) { T.warn("No hay vídeos cargados todavía."); return; }
+
+      // Renombrado directo de uno
+      if (args.length >= 2) {
+        var r1 = videoRef(args[0]);
+        if (!r1) { T.err("No encontré el vídeo «" + args[0] + "». Listá con:  video list"); return; }
+        var nuevo = args.slice(1).join(" ");
+        S.write(function (st) { st.media.videos[r1.i].title = nuevo; });
+        T.ok("#" + (r1.i + 1) + "  «" + r1.v.title + "»  →  «" + nuevo + "»");
+        return;
+      }
+
+      // Lista completa o de un bloque
+      var filtro = null;
+      if (args[0]) {
+        filtro = findBlock(args[0]);
+        if (!filtro) { T.err("Bloque no encontrado: «" + args[0] + "»"); T.chips(blockIds(), "renombrar "); return; }
+      }
+      var lista = [];
+      vids.forEach(function (v, i) {
+        if (filtro && v.block !== filtro.id) return;
+        lista.push({ n: i + 1, v: v });
+      });
+      if (!lista.length) { T.warn("No hay vídeos en «" + filtro.id + "»."); return; }
+
+      var valor = lista.map(function (x) {
+        return x.n + " | " + x.v.title +
+          (x.v.start != null ? "        (" + LSD.formatTime(x.v.start) +
+            (x.v.end != null ? "–" + LSD.formatTime(x.v.end) : "") + ")" : "");
+      }).join("\n");
+
+      openPasteBox(
+        "Nombres — cambiá el texto a la derecha de la barra",
+        function (txt) { aplicarNombres(txt); },
+        null,
+        valor
+      );
+    }
+  });
+
+  function aplicarNombres(texto) {
+    var lineas = String(texto).split(/\r?\n/);
+    var cambios = [], fallos = [];
+
+    lineas.forEach(function (linea, i) {
+      var cruda = linea.trim();
+      if (!cruda || cruda.charAt(0) === "#") return;
+      var m = cruda.match(/^(\d+)\s*[|;\t]\s*(.+)$/);
+      if (!m) { fallos.push([i + 1, cruda, "se esperaba:  número | nombre"]); return; }
+      var n = parseInt(m[1], 10) - 1;
+      // El tiempo entre paréntesis al final es informativo: se descarta
+      var nombre = m[2].replace(/\s{2,}\([\d:–\-]+\)\s*$/, "").trim();
+      if (!S.config.media.videos[n]) { fallos.push([i + 1, cruda, "no existe el vídeo #" + m[1]]); return; }
+      if (!nombre) { fallos.push([i + 1, cruda, "el nombre no puede quedar vacío"]); return; }
+      if (S.config.media.videos[n].title !== nombre) cambios.push({ i: n, antes: S.config.media.videos[n].title, nuevo: nombre });
+    });
+
+    if (fallos.length) {
+      T.err(fallos.length + " líneas tienen un problema. No se cambió nada.");
+      fallos.forEach(function (f) {
+        T.html('<div class="t-line"><span class="t-err">línea ' + f[0] + "</span> " +
+          '<span class="t-dim">' + esc(f[1].slice(0, 60)) + "</span>" +
+          '<div style="padding-left:1.2rem" class="t-warn">' + esc(f[2]) + "</div></div>");
+      });
+      return;
+    }
+    if (!cambios.length) { T.warn("No cambiaste ningún nombre."); return; }
+
+    S.write(function (st) {
+      cambios.forEach(function (c) { st.media.videos[c.i].title = c.nuevo; });
+    });
+    T.ok(cambios.length + (cambios.length === 1 ? " nombre cambiado." : " nombres cambiados."));
+    cambios.forEach(function (c) {
+      T.html('<div class="t-line"><span class="t-dim">#' + (c.i + 1) + "</span>  " +
+        '<span class="t-dim">' + esc(c.antes) + '</span>  <span class="t-key">→</span>  ' +
+        '<span class="t-ok">' + esc(c.nuevo) + "</span></div>");
+    });
+    T.space();
+    T.dim("Para publicarlo en el sitio:  publicar");
+  }
+
   /* =========================================================
      FRAGMENTOS DE UN MISMO VÍDEO
      ========================================================= */
@@ -1094,6 +1339,14 @@
       T.space();
       T.dim("Los tiempos admiten 2:05, 125 o 1:02:05.");
       T.dim("Si sólo ponés el de inicio, se usan 20 segundos por defecto.");
+      T.space();
+      T.dim("También podés pegar sólo los tiempos, sin nombre:");
+      T.space();
+      T.dim("   0:12 | 0:32");
+      T.dim("   1:05 | 1:25");
+      T.space();
+      T.dim("Se numeran solas como Actividad 1, 2, 3… y las renombrás");
+      T.dim("después de una sentada con el comando  renombrar.");
     },
     run: function (args, flags) {
       var url = args[0];
@@ -1145,8 +1398,13 @@
       n++;
       var partes = cruda.split(/\s*[|;\t]\s*/).filter(function (x) { return x !== ""; });
 
+      // Una línea puede venir sin nombre, sólo con los tiempos: se
+      // numera sola y se renombra después con `renombrar`.
+      var sinNombre = LSD.parseTime(partes[0]) != null && !/^\d{1,2}$/.test(partes[0]);
+      if (sinNombre) partes.unshift("Actividad " + (altas.length + 1));
+
       if (partes.length < 2) {
-        fallos.push([i + 1, cruda, "hacen falta al menos: nombre | inicio"]);
+        fallos.push([i + 1, cruda, "hacen falta al menos: nombre | inicio   (o sólo   inicio | fin)"]);
         return;
       }
       var nombre = partes[0];
@@ -1636,7 +1894,7 @@
   /* ---------------------------------------------------------
      Cuadro para pegar JSON
      --------------------------------------------------------- */
-  function openPasteBox(title, cb, ejemplo) {
+  function openPasteBox(title, cb, ejemplo, valor) {
     var ov = d.getElementById("overlay");
     ov.innerHTML =
       '<div class="modal" style="max-width:760px">' +
@@ -1645,7 +1903,7 @@
         '<div class="modal-body">' +
           '<textarea id="pasteBox" spellcheck="false" style="width:100%;min-height:280px;background:var(--surface);' +
           'border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:.78rem;padding:1rem;line-height:1.5"' +
-          (ejemplo ? ' placeholder="' + esc(ejemplo) + '"' : '') + '></textarea>' +
+          (ejemplo ? ' placeholder="' + esc(ejemplo) + '"' : '') + '>' + esc(valor || "") + '</textarea>' +
           '<div style="display:flex;gap:.6rem;margin-top:1rem">' +
             '<button id="pasteOk" class="chip" style="background:var(--accent);color:var(--accent-ink);border-color:var(--accent)">Cargar</button>' +
             '<button id="pasteCancel" class="chip">Cancelar</button>' +
