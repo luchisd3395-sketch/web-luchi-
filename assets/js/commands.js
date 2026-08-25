@@ -120,7 +120,7 @@
     { g: "Configuración", cmds: ["config", "set", "get", "reset", "texto"] },
     { g: "Aspecto",       cmds: ["tema", "color", "fuente", "densidad", "layout", "portada", "nav", "tarjeta"] },
     { g: "Vídeos",        cmds: ["video", "videos", "lote", "fragmentos", "mover", "renombrar"] },
-    { g: "Imágenes",      cmds: ["imagen"] },
+    { g: "Imágenes",      cmds: ["imagen", "momentos"] },
     { g: "Contenido",     cmds: ["bloques", "trabajos", "buscar", "seccion"] },
     { g: "Datos",         cmds: ["exportar", "importar", "publicar", "demo", "clave"] }
   ];
@@ -1071,6 +1071,214 @@
 
 
 
+
+
+  /* =========================================================
+     MOMENTOS EN EL CLUB
+     ========================================================= */
+  var MOM_PROP = {
+    formato: "gallery.layout", disposicion: "gallery.layout", layout: "gallery.layout",
+    intervalo: "gallery.interval", segundos: "gallery.interval", tiempo: "gallery.interval",
+    proporcion: "gallery.ratio", ratio: "gallery.ratio",
+    tamano: "gallery.size", size: "gallery.size",
+    /* «pie» no va acá: es el subcomando para escribir el pie de una foto */
+    pies: "gallery.captions", textos: "gallery.captions",
+    automatico: "gallery.autoplay", autoplay: "gallery.autoplay", pasar: "gallery.autoplay"
+  };
+  var MOM_ALIAS = {
+    "gallery.layout": { pase: "pase", pasar: "pase", carrusel: "pase", mosaico: "mosaico", cuadricula: "mosaico", tira: "tira", fila: "tira" },
+    "gallery.ratio":  { cuadrado: "1:1", vertical: "9:16", horizontal: "16:9", clasico: "4:3", foto: "3:2" },
+    "gallery.size":   { chico: "sm", pequeno: "sm", mediano: "md", medio: "md", grande: "lg", enorme: "xl" }
+  };
+
+  T.register({
+    name: "momentos", alias: ["galeria", "fotos", "club"],
+    desc: "Fotografías de la sección «Momentos en el club»",
+    usage: "momentos <add|list|rm|orden|pie|vaciar|formato…>",
+    complete: function (prev) {
+      if (prev.length === 0) {
+        return [
+          { name: "add", desc: "añadir una foto" },
+          { name: "list", desc: "ver las fotos cargadas" },
+          { name: "rm", desc: "quitar una" },
+          { name: "orden", desc: "reordenar" },
+          { name: "pie", desc: "poner o cambiar el pie de foto" },
+          { name: "lote", desc: "añadir varias pegando una lista" },
+          { name: "vaciar", desc: "quitar todas" }
+        ].concat(Object.keys(MOM_PROP).map(function (k) { return { name: k, desc: LSD.SCHEMA[MOM_PROP[k]].desc }; }));
+      }
+      var path = MOM_PROP[da(prev[0])];
+      if (path) {
+        var sc = LSD.SCHEMA[path];
+        if (sc.type === "enum") return sc.values.concat(Object.keys(MOM_ALIAS[path] || {}));
+        if (sc.type === "bool") return ["on", "off"];
+      }
+      return [];
+    },
+    help: function () {
+      T.space();
+      T.dim("AÑADIR   momentos add assets/img/foto.jpg");
+      T.dim('         momentos add assets/img/foto.jpg --pie "Ascenso 2024"');
+      T.dim("VARIAS   momentos lote          abre un cuadro para pegar una lista");
+      T.dim("VER      momentos list");
+      T.dim("QUITAR   momentos rm 3          ·   momentos vaciar --si");
+      T.dim("ORDENAR  momentos orden 5 1     (mueve la 5 a la posición 1)");
+      T.dim('PIE      momentos pie 2 "Entrada en calor en Colón"');
+      T.space();
+      T.dim("ASPECTO  momentos formato pase|mosaico|tira");
+      T.dim("         momentos intervalo 6        segundos que dura cada foto");
+      T.dim("         momentos proporcion 3:2     ·   momentos tamano grande");
+      T.dim("         momentos pies off           ·   momentos automatico off");
+    },
+    run: function (args, flags) {
+      var sub = da(args[0] || "list");
+      var rest = args.slice(1);
+      var fotos = S.config.media.gallery || [];
+
+      /* ---- ajustes de aspecto ---- */
+      var path = MOM_PROP[sub];
+      if (path) {
+        if (!rest.length) {
+          var sc = LSD.SCHEMA[path];
+          T.html('<div class="t-line"><span class="t-key">' + esc(path) + '</span> = <span class="t-ok">' + esc(String(S.get(path))) + "</span></div>");
+          if (sc.type === "enum") T.chips(sc.values, "momentos " + args[0] + " ");
+          if (sc.type === "bool") T.chips(["on", "off"], "momentos " + args[0] + " ");
+          return;
+        }
+        var bruto = rest.join(" ");
+        var mapa = MOM_ALIAS[path];
+        if (mapa && mapa[da(bruto)]) bruto = mapa[da(bruto)];
+        var res = S.set(path, bruto);
+        if (!res.ok) { T.err(res.err); return; }
+        applied(path);
+        return;
+      }
+
+      /* ---- listar ---- */
+      if (sub === "list" || sub === "listar" || sub === "ls") {
+        if (!fotos.length) {
+          T.warn("No hay fotos en «Momentos en el club».");
+          T.dim("Añadí la primera:  momentos add assets/img/foto.jpg");
+          return;
+        }
+        T.head("MOMENTOS EN EL CLUB (" + fotos.length + ")");
+        fotos.forEach(function (f, i) {
+          T.html('<div class="t-line"><span class="t-dim">#' + (i + 1) + "</span>  " +
+            '<span class="t-ok">' + esc(f.src) + "</span>" +
+            (f.pie ? '<div class="t-dim" style="padding-left:2.2rem">' + esc(f.pie) + "</div>" : ""));
+        });
+        T.space();
+        T.dim("Pasan solas cada " + S.get("gallery.interval") + " s  ·  formato " + S.get("gallery.layout"));
+        return;
+      }
+
+      /* ---- añadir ---- */
+      if (sub === "add" || sub === "anadir" || sub === "agregar" || sub === "sumar") {
+        if (!rest[0]) { T.err('Uso: momentos add <ruta o url> [--pie "texto"]'); return; }
+        var ruta = rest[0];
+        var pie = flags.pie || flags.texto || flags.caption || "";
+        if (fotos.some(function (f) { return f.src === ruta; })) {
+          T.warn("Esa foto ya está en la sección.");
+          return;
+        }
+        S.write(function (st) {
+          if (!Array.isArray(st.media.gallery)) st.media.gallery = [];
+          st.media.gallery.push({ src: ruta, pie: pie === true ? "" : String(pie) });
+        });
+        T.ok("Foto añadida (#" + S.config.media.gallery.length + ").");
+        T.dim("  " + ruta + (pie && pie !== true ? "   —   " + pie : ""));
+        return;
+      }
+
+      /* ---- lote ---- */
+      if (sub === "lote" || sub === "varias" || sub === "pegar") {
+        openPasteBox("Fotos para «Momentos en el club» — una por línea",
+          function (txt) { momentosLote(txt); },
+          "assets/img/foto-1.jpg | Ascenso 2024\nassets/img/foto-2.jpg | Entrada en calor en Colón\nassets/img/foto-3.jpg");
+        return;
+      }
+
+      /* ---- quitar ---- */
+      if (sub === "rm" || sub === "quitar" || sub === "borrar" || sub === "eliminar") {
+        if (!rest[0]) { T.err("Uso: momentos rm <nº>"); return; }
+        var n = parseInt(String(rest[0]).replace("#", ""), 10) - 1;
+        if (isNaN(n) || !fotos[n]) { T.err("No existe la foto #" + rest[0] + ". Listá con:  momentos list"); return; }
+        var quitada = fotos[n].src;
+        S.write(function (st) { st.media.gallery.splice(n, 1); });
+        T.ok("Quitada: " + quitada);
+        return;
+      }
+
+      if (sub === "vaciar" || sub === "limpiar") {
+        if (!fotos.length) { T.warn("Ya está vacía."); return; }
+        if (!flags.si && !flags.confirmar && !flags.f) {
+          T.warn("Esto quita las " + fotos.length + " fotos de la sección.");
+          T.dim("Confirmá con:  momentos vaciar --si");
+          return;
+        }
+        var total = fotos.length;
+        S.write(function (st) { st.media.gallery = []; });
+        T.ok("Sección vaciada (" + total + " fotos).");
+        return;
+      }
+
+      /* ---- reordenar ---- */
+      if (sub === "orden" || sub === "order" || sub === "mover") {
+        if (rest.length < 2) { T.err("Uso: momentos orden <nº> <posición>"); return; }
+        var de = parseInt(String(rest[0]).replace("#", ""), 10) - 1;
+        var a = parseInt(String(rest[1]).replace("#", ""), 10) - 1;
+        if (isNaN(de) || !fotos[de]) { T.err("No existe la foto #" + rest[0] + "."); return; }
+        if (isNaN(a)) { T.err("La posición debe ser un número."); return; }
+        S.write(function (st) {
+          var arr = st.media.gallery;
+          a = Math.max(0, Math.min(arr.length - 1, a));
+          arr.splice(a, 0, arr.splice(de, 1)[0]);
+        });
+        T.ok("Foto movida a la posición " + (a + 1) + ".");
+        return;
+      }
+
+      /* ---- pie de foto ---- */
+      if (sub === "pie" || sub === "texto" || sub === "caption") {
+        if (rest.length < 1) { T.err('Uso: momentos pie <nº> "texto"    (sin texto lo borra)'); return; }
+        var k = parseInt(String(rest[0]).replace("#", ""), 10) - 1;
+        if (isNaN(k) || !fotos[k]) { T.err("No existe la foto #" + rest[0] + "."); return; }
+        var texto = rest.slice(1).join(" ");
+        S.write(function (st) { st.media.gallery[k].pie = texto; });
+        T.ok(texto ? "#" + (k + 1) + " → «" + texto + "»" : "Pie de foto borrado en #" + (k + 1) + ".");
+        return;
+      }
+
+      T.err("Subcomando desconocido: «" + args[0] + "»");
+      T.chips(["add", "list", "rm", "orden", "pie", "lote", "vaciar", "formato", "intervalo"], "momentos ");
+    }
+  });
+
+  function momentosLote(texto) {
+    var lineas = String(texto).split(/\r?\n/);
+    var altas = [], n = 0;
+    var yaEstan = (S.config.media.gallery || []).map(function (f) { return f.src; });
+    lineas.forEach(function (linea) {
+      var cruda = linea.trim();
+      if (!cruda || cruda.charAt(0) === "#") return;
+      n++;
+      var partes = cruda.split(/\s*[|;\t]\s*/);
+      var src = partes[0].trim();
+      if (!src) return;
+      if (yaEstan.indexOf(src) >= 0 || altas.some(function (a) { return a.src === src; })) return;
+      altas.push({ src: src, pie: (partes[1] || "").trim() });
+    });
+    if (!n) { T.warn("No había ninguna línea con contenido."); return; }
+    if (!altas.length) { T.warn("Ninguna foto nueva: ya estaban todas cargadas."); return; }
+    S.write(function (st) {
+      if (!Array.isArray(st.media.gallery)) st.media.gallery = [];
+      altas.forEach(function (f) { st.media.gallery.push(f); });
+    });
+    T.ok(altas.length + (altas.length === 1 ? " foto añadida." : " fotos añadidas."));
+    if (n > altas.length) T.dim("  (" + (n - altas.length) + " ya estaban y se saltaron)");
+    T.space();
+    T.dim("Para publicarlo en el sitio:  publicar");
+  }
 
   /* =========================================================
      MOVER Y RENOMBRAR

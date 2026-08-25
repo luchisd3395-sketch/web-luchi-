@@ -251,6 +251,37 @@ Podés usar una URL de internet o una ruta del propio repositorio. Para fotos pr
 `assets/img/` y referencialas como `assets/img/nombre.jpg`. Sin fotos, el sitio mantiene su aspecto
 tipográfico: las imágenes son opcionales en todos lados.
 
+### Momentos en el club
+
+Una tira de fotografías del día a día que va pasando sola. Es donde van las fotos que no ilustran
+un bloque concreto.
+
+```
+momentos add assets/img/foto.jpg --pie "Ascenso 2024"
+momentos lote                    Abre un cuadro para pegar varias de una vez
+momentos list                    Ver las cargadas, numeradas
+momentos rm 3                    Quitar una
+momentos orden 5 1               Mover la 5 a la posición 1
+momentos pie 2 "Texto"           Poner o cambiar el pie (sin texto, lo borra)
+momentos vaciar --si             Quitar todas
+```
+
+Y su aspecto:
+
+```
+momentos formato pase       pase (va pasando) · mosaico (todas a la vista) · tira
+momentos intervalo 6        Segundos que dura cada foto
+momentos proporcion 4:3     16:9 · 3:2 · 4:3 · 1:1 · 9:16
+momentos tamano grande      chico · mediano · grande · enorme
+momentos pies off           Ocultar los pies de foto
+momentos automatico off     Que no pasen solas
+```
+
+Detalles de cómo está hecha: usa desplazamiento con anclaje nativo, así que el gesto táctil y las
+flechas del teclado funcionan sin código propio. Se detiene sola al pasar el cursor por encima, al
+tocarla, y mientras la sección no está a la vista. Las fotos se recortan con el foco en el tercio
+superior, porque centrando el recorte se les corta la cabeza a las personas.
+
 ### Secciones y contenido
 ```
 bloques                     Lista los bloques y sus identificadores

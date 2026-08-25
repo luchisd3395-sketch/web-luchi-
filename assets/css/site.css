@@ -745,3 +745,102 @@
   background: rgba(0, 0, 0, .72); color: #fff; padding: .18rem .42rem;
   border-left: 2px solid var(--accent);
 }
+
+/* =============================================================
+   MOMENTOS EN EL CLUB
+   Tira de fotografías que va pasando sola. Se usa desplazamiento
+   nativo con anclaje: así el gesto táctil y el teclado funcionan
+   sin código propio.
+   ============================================================= */
+.momentos { --mom-ratio: 4 / 3; --mom-w: min(62vw, 780px); }
+.momentos[data-ratio="16:9"] { --mom-ratio: 16 / 9; }
+.momentos[data-ratio="3:2"]  { --mom-ratio: 3 / 2; }
+.momentos[data-ratio="4:3"]  { --mom-ratio: 4 / 3; }
+.momentos[data-ratio="1:1"]  { --mom-ratio: 1 / 1; }
+.momentos[data-ratio="9:16"] { --mom-ratio: 9 / 16; }
+.momentos[data-size="sm"] { --mom-w: min(44vw, 520px); }
+.momentos[data-size="md"] { --mom-w: min(62vw, 780px); }
+.momentos[data-size="lg"] { --mom-w: min(78vw, 1040px); }
+.momentos[data-size="xl"] { --mom-w: min(92vw, 1320px); }
+
+.mom-strip {
+  display: flex; gap: var(--grid-gap);
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 0 var(--gutter) .5rem;
+  scrollbar-width: none; -ms-overflow-style: none;
+  scroll-behavior: smooth;
+}
+.mom-strip::-webkit-scrollbar { display: none; }
+[data-motion="off"] .mom-strip { scroll-behavior: auto; }
+.mom-strip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.mom-slide {
+  flex: 0 0 var(--mom-w); scroll-snap-align: center;
+  position: relative; overflow: hidden; border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.mom-slide figure { margin: 0; }
+.mom-slide img {
+  width: 100%; aspect-ratio: var(--mom-ratio); object-fit: cover;
+  /* Las fotos de personas suelen tener la cara en el tercio superior:
+     recortando desde el centro se les corta la cabeza. */
+  object-position: center 30%;
+  display: block; transition: transform .9s var(--ease);
+}
+.mom-slide:hover img { transform: scale(1.03); }
+.mom-slide figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 2.6rem 1.2rem 1rem;
+  font-family: var(--font-mono); font-size: var(--fs-micro);
+  letter-spacing: .12em; text-transform: uppercase; color: #fff;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .78));
+}
+[data-momcaptions="off"] .mom-slide figcaption { display: none; }
+
+/* Barra de control */
+.mom-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem; margin-top: 1.4rem; flex-wrap: wrap;
+}
+@media (min-width: 1081px) { .mom-bar { padding-right: 170px; } }
+.mom-nav { display: flex; align-items: center; gap: .5rem; }
+.mom-btn {
+  width: 44px; height: 44px; border: 1px solid var(--border);
+  display: grid; place-items: center; font-size: 1rem; color: var(--text);
+  border-radius: var(--radius); transition: all .25s var(--ease);
+}
+.mom-btn:hover { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.mom-counter {
+  font-family: var(--font-mono); font-size: var(--fs-micro);
+  letter-spacing: .16em; color: var(--muted); margin-left: .6rem;
+}
+.mom-dots { display: flex; gap: .45rem; flex-wrap: wrap; }
+.mom-dots button {
+  width: 26px; height: 3px; background: var(--border); display: block;
+  transition: background-color .3s var(--ease), width .3s var(--ease);
+}
+.mom-dots button.is-active { background: var(--accent); width: 44px; }
+
+/* Mosaico: todas a la vista, sin pasar */
+.momentos[data-layout="mosaico"] .mom-strip {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  overflow: visible; padding-bottom: 0;
+}
+.momentos[data-layout="mosaico"] .mom-slide { flex: none; }
+.momentos[data-layout="mosaico"] .mom-bar { display: none; }
+
+/* Tira: fotos chicas en fila continua */
+.momentos[data-layout="tira"] { --mom-w: min(38vw, 420px); }
+.momentos[data-layout="tira"] .mom-dots { display: none; }
+
+@media (max-width: 720px) {
+  .momentos { --mom-w: 86vw; }
+  .momentos[data-size="sm"] { --mom-w: 70vw; }
+  .momentos[data-size="lg"], .momentos[data-size="xl"] { --mom-w: 92vw; }
+}
+
+/* Sobre banda negra */
+.section.is-inverted .mom-btn { border-color: rgba(255, 255, 255, .24); color: #fff; }
+.section.is-inverted .mom-dots button { background: rgba(255, 255, 255, .28); }
+.section.is-inverted .mom-dots button.is-active { background: var(--accent); }
+.section.is-inverted .mom-slide { background: #161616; }

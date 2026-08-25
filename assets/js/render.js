@@ -509,6 +509,140 @@
   }
   LSD.renderVideos = renderVideos;
 
+
+  /* ================================================================
+     MOMENTOS EN EL CLUB
+     ================================================================ */
+  var momTimer = null;
+  var momSig = null;
+
+  function renderMomentos() {
+    var c = LSD.store.config;
+    var g = c.gallery || {};
+    var fotos = (c.media.gallery || []).filter(function (f) { return f && f.src; });
+    var host = $("#momentos-galeria");
+    var strip = $("#momStrip");
+    if (!host || !strip) return;
+
+    host.setAttribute("data-layout", g.layout || "pase");
+    host.setAttribute("data-ratio", g.ratio || "3:2");
+    host.setAttribute("data-size", g.size || "md");
+    d.documentElement.setAttribute("data-momcaptions", g.captions ? "on" : "off");
+
+    $("#momCount").textContent = fotos.length + (fotos.length === 1 ? " foto" : " fotos");
+
+    var sig = JSON.stringify(fotos) + "|" + g.layout + "|" + g.ratio + "|" + g.size;
+    if (sig === momSig) return;          // no reiniciar el pase por cualquier cambio
+    momSig = sig;
+    detenerPase();
+
+    if (!fotos.length) {
+      strip.innerHTML = "";
+      $("#momDots").innerHTML = "";
+      $("#momCounter").textContent = "";
+      $("#momVacio").classList.remove("hidden");
+      $(".mom-bar").classList.add("hidden");
+      return;
+    }
+    $("#momVacio").classList.add("hidden");
+    $(".mom-bar").classList.toggle("hidden", fotos.length < 2);
+
+    strip.innerHTML = fotos.map(function (f, i) {
+      var url = safeUrl(f.src);
+      return '<div class="mom-slide reveal" role="group" aria-label="Foto ' + (i + 1) + " de " + fotos.length + '">' +
+        "<figure><img src=\"" + esc(url) + '" alt="' + esc(f.pie || "") + '" loading="' + (i < 2 ? "eager" : "lazy") + '">' +
+        (f.pie ? "<figcaption>" + esc(f.pie) + "</figcaption>" : "") +
+        "</figure></div>";
+    }).join("");
+
+    $("#momDots").innerHTML = fotos.map(function (_, i) {
+      return '<button data-i="' + i + '" aria-label="Ir a la foto ' + (i + 1) + '"></button>';
+    }).join("");
+
+    $$("#momDots button").forEach(function (b) {
+      b.addEventListener("click", function () { irAFoto(parseInt(b.getAttribute("data-i"), 10)); });
+    });
+    $("#momPrev").onclick = function () { mover(-1); };
+    $("#momNext").onclick = function () { mover(1); };
+
+    strip.addEventListener("scroll", marcarActiva, { passive: true });
+    ["mouseenter", "focusin", "touchstart", "pointerdown"].forEach(function (ev) {
+      strip.addEventListener(ev, detenerPase, { passive: true });
+    });
+    ["mouseleave", "focusout"].forEach(function (ev) {
+      strip.addEventListener(ev, arrancarPase);
+    });
+    strip.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); mover(1); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); mover(-1); }
+    });
+
+    marcarActiva();
+    arrancarPase();
+  }
+
+  function slides() { return $$("#momStrip .mom-slide"); }
+
+  function indiceActual() {
+    var strip = $("#momStrip");
+    if (!strip) return 0;
+    var els = slides();
+    if (!els.length) return 0;
+    var centro = strip.scrollLeft + strip.clientWidth / 2;
+    var mejor = 0, dist = Infinity;
+    els.forEach(function (el, i) {
+      var c = el.offsetLeft + el.offsetWidth / 2;
+      var dd = Math.abs(c - centro);
+      if (dd < dist) { dist = dd; mejor = i; }
+    });
+    return mejor;
+  }
+
+  function irAFoto(i) {
+    var strip = $("#momStrip");
+    var els = slides();
+    if (!strip || !els.length) return;
+    i = (i + els.length) % els.length;
+    var el = els[i];
+    strip.scrollTo({
+      left: el.offsetLeft - (strip.clientWidth - el.offsetWidth) / 2,
+      behavior: LSD.store.get("theme.motion") ? "smooth" : "auto"
+    });
+  }
+
+  function mover(paso) {
+    detenerPase();
+    irAFoto(indiceActual() + paso);
+    arrancarPase();
+  }
+
+  function marcarActiva() {
+    var i = indiceActual();
+    var total = slides().length;
+    $$("#momDots button").forEach(function (b, j) { b.classList.toggle("is-active", j === i); });
+    var cont = $("#momCounter");
+    if (cont) cont.textContent = total ? String(i + 1).padStart(2, "0") + " / " + String(total).padStart(2, "0") : "";
+  }
+
+  function arrancarPase() {
+    detenerPase();
+    var g = LSD.store.config.gallery || {};
+    if (!g.autoplay || !LSD.store.get("theme.motion")) return;
+    if (slides().length < 2) return;
+    if (d.documentElement.classList.contains("is-locked")) return;
+    momTimer = setInterval(function () {
+      // Sólo avanza si la sección está a la vista: sin esto la tira
+      // se desplaza sola mientras se lee otra parte de la página.
+      var sec = d.getElementById("momentos");
+      if (!sec) return;
+      var r = sec.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > w.innerHeight) return;
+      irAFoto(indiceActual() + 1);
+    }, Math.max(2, g.interval || 5) * 1000);
+  }
+  function detenerPase() { if (momTimer) { clearInterval(momTimer); momTimer = null; } }
+  LSD.detenerPase = detenerPase;
+
   /* ================================================================
      MICROCICLO
      ================================================================ */
@@ -581,7 +715,7 @@
   /* ================================================================
      NAVEGACIÓN + ORDEN DE SECCIONES
      ================================================================ */
-  var SECTION_LABEL = { bloques: "Bloques", trabajos: "Trabajos", videos: "Vídeos", microciclo: "Microciclo" };
+  var SECTION_LABEL = { bloques: "Bloques", trabajos: "Trabajos", videos: "Vídeos", momentos: "Momentos", microciclo: "Microciclo" };
 
   function applySections() {
     var c = LSD.store.config.layout;
@@ -590,7 +724,7 @@
       var el = d.getElementById(id);
       if (el) main.appendChild(el);
     });
-    ["bloques", "trabajos", "videos", "microciclo"].forEach(function (id) {
+    ["bloques", "trabajos", "videos", "momentos", "microciclo"].forEach(function (id) {
       var el = d.getElementById(id);
       if (!el) return;
       var off = c.hidden.indexOf(id) >= 0 || c.sections.indexOf(id) < 0;
@@ -733,6 +867,7 @@
     renderWorks();
     renderVideoFilters();
     renderVideos();
+    renderMomentos();
     renderMicro();
     renderFooter();
     LSD.observeReveal();

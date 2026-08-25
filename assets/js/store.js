@@ -70,7 +70,7 @@
       nav: "top",
       card: "sharp",
       blockImg: "bn",
-      sections: ["bloques", "trabajos", "videos", "microciclo"],
+      sections: ["bloques", "trabajos", "videos", "momentos", "microciclo"],
       hidden: [],
       inverted: ["videos"]
     },
@@ -92,6 +92,14 @@
       loop: false,
       hoverPlay: true
     },
+    gallery: {
+      layout: "pase",
+      interval: 5,
+      ratio: "4:3",
+      size: "md",
+      captions: true,
+      autoplay: true
+    },
     terminal: {
       dock: "bottom",
       height: 52,
@@ -100,7 +108,8 @@
     media: {
       videos: [],
       images: {},
-      heroVideos: []
+      heroVideos: [],
+      gallery: []
     }
   };
   LSD.DEFAULTS = DEFAULTS;
@@ -164,6 +173,13 @@
     "video.muted":    C("bool", "Iniciar sin sonido"),
     "video.loop":     C("bool", "Repetir en bucle"),
     "video.hoverPlay": C("bool", "Previsualizar el vídeo al pasar el cursor (archivos propios)"),
+
+    "gallery.layout":   C("enum", "Cómo se ven los momentos", { values: ["pase", "mosaico", "tira"] }),
+    "gallery.interval": C("num", "Segundos que dura cada foto", { min: 2, max: 30 }),
+    "gallery.ratio":    C("enum", "Proporción de las fotos", { values: ["16:9", "3:2", "4:3", "1:1", "9:16"] }),
+    "gallery.size":     C("enum", "Tamaño de las fotos", { values: ["sm", "md", "lg", "xl"] }),
+    "gallery.captions": C("bool", "Mostrar el pie de foto"),
+    "gallery.autoplay": C("bool", "Que las fotos pasen solas"),
 
     "terminal.dock":   C("enum", "Posición de la terminal", { values: ["bottom", "float", "right", "full"] }),
     "terminal.height": C("num", "Altura de la terminal (% de pantalla)", { min: 25, max: 95 }),
@@ -295,6 +311,7 @@
     if (!Array.isArray(state.media.videos)) state.media.videos = [];
     if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
     if (!Array.isArray(state.media.heroVideos)) state.media.heroVideos = [];
+    if (!Array.isArray(state.media.gallery)) state.media.gallery = [];
     if (!Array.isArray(state.layout.sections)) state.layout.sections = clone(DEFAULTS.layout.sections);
     if (!Array.isArray(state.layout.hidden)) state.layout.hidden = [];
     if (!Array.isArray(state.layout.inverted)) state.layout.inverted = [];
@@ -367,6 +384,7 @@
       if (!Array.isArray(state.media.videos)) state.media.videos = [];
     if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
     if (!Array.isArray(state.media.heroVideos)) state.media.heroVideos = [];
+    if (!Array.isArray(state.media.gallery)) state.media.gallery = [];
       persist();
       store.emit("*");
     },
