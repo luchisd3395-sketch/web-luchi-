@@ -13,7 +13,10 @@ window.LSD_CONFIG = {
   /* Foto de fondo de la portada.
      Para poner un vídeo en su lugar:  portada video <url> */
   site: {
-    heroImage: "assets/img/portada-entrada-en-calor.jpg"
+    heroImage: "assets/img/portada-cuerpo-tecnico.jpg",
+    /* La foto es vertical y la portada apaisada: el foco decide qué franja
+       se ve. Con 12 quedan las cuatro caras completas.  portada foco <n> */
+    heroFocus: 12
   },
 
   media: {
@@ -21,20 +24,31 @@ window.LSD_CONFIG = {
          imagen bloque <id> assets/img/<archivo>.jpg
        Sin foto todavía: posesion · finalizacion · abp */
     images: {
-      marco:      "assets/img/cuerpo-tecnico.jpg",
-      fuerza:     "assets/img/coordinacion.jpg",
+      marco:      "assets/img/cuerpo-tecnico-trabajo.jpg",
+      fuerza:     "assets/img/fuerza-barra.jpg",
       ssg:        "assets/img/grupo-entrenamiento.jpg",
-      tactico:    "assets/img/direccion-de-sesion.jpg",
+      tactico:    "assets/img/direccion-tactica.jpg",
       carga:      "assets/img/control-de-carga.jpg",
       microciclo: "assets/img/plantel.jpg"
     },
 
-    /* Sección «Momentos en el club»: las fotos que no ilustran un
-       bloque. Para sumar más:  momentos add assets/img/<archivo>.jpg */
+    /* Sección «Momentos en el club». Para sumar más:
+         momentos add assets/img/<archivo>.jpg --pie "Texto" */
     gallery: [
-      { src: "assets/img/cuerpo-tecnico-cancha.jpg", pie: "Cuerpo técnico en el campo de entrenamiento" },
-      { src: "assets/img/estadio-del-club.jpg",      pie: "Estadio del club" },
-      { src: "assets/img/cancha-visitante.jpg",      pie: "De visitante" }
+      { src: "assets/img/portada-entrada-en-calor.jpg", pie: "Entrada en calor antes del partido" },
+      { src: "assets/img/arena-bolsas.jpg",            pie: "Fuerza específica en arena" },
+      { src: "assets/img/arena-sprints.jpg",           pie: "Sprints en arena" },
+      { src: "assets/img/gps-en-vivo.jpg",             pie: "Datos de GPS en vivo durante la sesión" },
+      { src: "assets/img/atardecer-movilidad.jpg",     pie: "Movilidad al atardecer" },
+      { src: "assets/img/cuerpo-tecnico.jpg",          pie: "Cuerpo técnico" },
+      { src: "assets/img/planilla-entrenamiento.jpg",  pie: "Planilla de sesión" },
+      { src: "assets/img/coordinacion.jpg",            pie: "Coordinación en la activación" },
+      { src: "assets/img/direccion-de-sesion.jpg",     pie: "Dirigiendo la sesión" },
+      { src: "assets/img/carrera-continua.jpg",        pie: "Trabajo en el predio" },
+      { src: "assets/img/retrato-profe.jpg",           pie: "En el predio" },
+      { src: "assets/img/cuerpo-tecnico-cancha.jpg",   pie: "Cuerpo técnico en el campo de entrenamiento" },
+      { src: "assets/img/estadio-del-club.jpg",        pie: "Estadio del club" },
+      { src: "assets/img/cancha-visitante.jpg",        pie: "De visitante" }
     ]
   }
 };

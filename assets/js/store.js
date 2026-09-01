@@ -43,7 +43,8 @@
       email: "",
       instagram: "",
       footerNote: "Documento vivo. Se actualiza con cada temporada.",
-      heroImage: ""
+      heroImage: "",
+      heroFocus: 50
     },
     theme: {
       preset: "agro",
@@ -133,6 +134,7 @@
     "site.instagram":  C("text", "Usuario de Instagram (opcional)"),
     "site.footerNote": C("text", "Nota del pie de página"),
     "site.heroImage":  C("text", "Imagen de fondo de la portada (URL o ruta del repositorio)"),
+    "site.heroFocus":  C("num", "Punto de foco vertical de la portada (0 arriba · 100 abajo)", { min: 0, max: 100 }),
 
     "theme.preset":    C("enum", "Paleta completa", { values: Object.keys(PRESETS) }),
     "theme.mode":      C("enum", "Modo de color", { values: ["dark", "light"] }),

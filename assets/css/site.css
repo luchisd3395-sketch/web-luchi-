@@ -111,7 +111,10 @@
   background: linear-gradient(180deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.30) 38%, rgba(0,0,0,.32) 62%, rgba(0,0,0,.80) 100%);
 }
 .hero-media img, .hero-media video {
-  width: 100%; height: 100%; object-fit: cover; object-position: center;
+  width: 100%; height: 100%; object-fit: cover;
+  /* En una portada apaisada, una foto vertical se recorta mucho: el foco
+     decide qué franja se ve. 0% = arriba del todo, 100% = abajo. */
+  object-position: center var(--hero-focus, 50%);
 }
 /* Los reproductores embebidos se recortan para cubrir toda la portada */
 .hero-media iframe {

@@ -28,7 +28,26 @@ adicional.
 
 ---
 
-## 2. El estilo
+## 2. Vista previa en un solo archivo
+
+Para mirar el sitio sin clonar el repositorio ni levantar un servidor:
+
+```bash
+node tools/build-preview.mjs
+```
+
+Genera `dist/preview.html`: el sitio entero en un único archivo, con el CSS, el JavaScript y las
+fotografías incrustadas. Se abre con doble clic y funciona todo, terminal incluida. Lo único que
+sigue viniendo de internet es la tipografía.
+
+Dos avisos sobre ese archivo:
+
+- **Las descargas no funcionan** si se publica como página suelta (el navegador las bloquea en ese
+  contexto). `exportar` y `publicar` lo dicen en vez de fallar en silencio. Abierto como archivo
+  local o servido normalmente, sí funcionan.
+- Pesa unos 4,4 MB porque lleva las fotos dentro. Se regenera cada vez que cambia el sitio.
+
+## 3. El estilo
 
 Los cuatro colores del Club Agropecuario Argentino: **blanco, negro, rojo y verde**. Titulares en
 **condensada pesada y mayúsculas**, y el recurso que ordena toda la página: una **barra gruesa de
@@ -65,7 +84,7 @@ seccion normal videos       La devuelve al fondo de la página
 > (sin conexión, o una red que la bloquee), la página lo detecta midiendo el ancho del texto y
 > cambia sola a una alternativa que aguanta el peso, en vez de quedar con una fuente fina.
 
-## 3. La terminal de configuración
+## 4. La terminal de configuración
 
 Se abre de tres formas:
 
@@ -88,7 +107,7 @@ Se pueden encadenar comandos con `;` — por ejemplo: `tema cancha ; videos form
 
 ---
 
-## 4. Comandos
+## 5. Comandos
 
 ### Básicos
 ```
@@ -222,6 +241,7 @@ portada video assets/video/entrenamiento.mp4   Vídeo de fondo, en bucle y SIN S
 portada video add assets/video/gimnasio.mp4    Añade otro: se van alternando solos
 portada video list · portada video rm #2       Listar y quitar
 portada foto assets/img/portada.jpg            Foto de fondo (también sirve de poster del vídeo)
+portada foco 12                                Qué franja de la foto se ve (0 arriba · 100 abajo)
 portada completa                               Estilo: completa · dividida · minima · apagada
 portada quitar                                 Deja la portada sin media
 ```
@@ -233,6 +253,11 @@ archivos propios pasan al siguiente al terminar; los enlaces de plataforma rotan
 
 Cuando la portada tiene foto o vídeo detrás, su texto pasa a blanco para que se lea sobre la
 imagen. El resto de la página se mantiene en blanco con letras negras.
+
+**El foco de la portada.** La portada es apaisada y ocupa todo el ancho, así que una foto vertical
+se recorta mucho: sólo se ve alrededor de un tercio de su alto. `portada foco <n>` elige qué franja.
+Con la foto actual está en 12, que es lo que deja las cuatro caras completas. Valores bajos muestran
+la parte de arriba de la foto; altos, la de abajo.
 
 > **Lo mejor es un `.mp4` propio** (H.264, horizontal, 10–20 s, por debajo de 5 MB). Se ve a
 > pantalla completa y sin marcas de ninguna plataforma. YouTube, Vimeo y Drive también funcionan,
@@ -305,7 +330,7 @@ clave miClave     Protege la terminal con una clave (protección visual, no crip
 
 ---
 
-## 5. Cómo dejar los cambios fijos para todos
+## 6. Cómo dejar los cambios fijos para todos
 
 Los cambios que hacés desde la terminal se guardan **en tu navegador** (`localStorage`), así que sólo
 los ves vos. Para que los vea cualquier visitante:
@@ -320,7 +345,7 @@ mundo al entrar.
 
 ---
 
-## 6. Estructura del proyecto
+## 7. Estructura del proyecto
 
 ```
 index.html                  Estructura de la página
@@ -339,11 +364,12 @@ assets/
   js/terminal.js            Motor de la consola (historial, autocompletado, parser)
   js/commands.js            Todos los comandos
   js/app.js                 Arranque
+tools/build-preview.mjs     Empaqueta el sitio en un solo archivo (dist/preview.html)
 ```
 
 ---
 
-## 7. Editar la metodología
+## 8. Editar la metodología
 
 El contenido vive en **`data/methodology.js`**. Cada bloque tiene esta forma:
 
@@ -381,7 +407,7 @@ y el autocompletado de la terminal lo recogen solos.
 
 ---
 
-## 8. La escala de intensidad del microciclo
+## 9. La escala de intensidad del microciclo
 
 Cada día del microciclo lleva un nivel declarado, con su color:
 
@@ -408,7 +434,7 @@ Dos detalles de la implementación:
 - **La barra va sobre un carril gris** que representa el 100%, para que se vea la proporción y no
   sólo una barra suelta.
 
-## 9. Referencias metodológicas
+## 10. Referencias metodológicas
 
 La estructura de contenidos sigue el marco habitual de la planificación en fútbol profesional:
 periodización táctica y microciclo estructurado (alternancia tensión / duración / velocidad entre

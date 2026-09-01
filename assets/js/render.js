@@ -83,6 +83,9 @@
     s.setProperty("--radius", t.radius + "px");
     s.setProperty("--grid-gap", c.video.gap + "px");
     s.setProperty("--term-height", c.terminal.height + "vh");
+    // Punto de foco de la portada: va por variable para que valga igual
+    // en la foto y en el vídeo, y cambie sin repintar la media.
+    s.setProperty("--hero-focus", (c.site.heroFocus == null ? 50 : c.site.heroFocus) + "%");
 
     root.setAttribute("data-mode", t.mode);
     root.setAttribute("data-font", t.font);
