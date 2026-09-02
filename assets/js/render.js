@@ -153,6 +153,13 @@
   }
   LSD.safeUrl = safeUrl;
 
+  /** Ruta lista para el navegador: resuelve un archivo subido desde el
+     dispositivo ("local:clave") y después lo sanea como cualquier otra. */
+  function mediaUrl(u) {
+    return safeUrl(LSD.resolveUrl ? LSD.resolveUrl(u) : u);
+  }
+  LSD.mediaUrl = mediaUrl;
+
   function renderHero() {
     var c = LSD.store.config, s = c.site;
     var nWorks = allWorks().length;
@@ -196,7 +203,7 @@
     var hero = $(".hero");
 
     var vids = c.media.heroVideos || [];
-    var img = safeUrl(c.site.heroImage);
+    var img = mediaUrl(c.site.heroImage);
     var hasMedia = vids.length > 0 || !!img;
 
     if (hero) hero.classList.toggle("has-media", hasMedia);
@@ -229,10 +236,10 @@
     heroIndex = heroIndex % vids.length;
     var v = vids[heroIndex];
     var solo = vids.length === 1;
-    var poster = safeUrl(LSD.store.config.site.heroImage);
+    var poster = mediaUrl(LSD.store.config.site.heroImage);
 
     if (v.provider === "file") {
-      host.innerHTML = '<video src="' + esc(safeUrl(v.url)) + '" autoplay muted playsinline ' +
+      host.innerHTML = '<video src="' + esc(mediaUrl(v.url)) + '" autoplay muted playsinline ' +
         (solo ? "loop " : "") + (poster ? 'poster="' + esc(poster) + '" ' : "") +
         'preload="auto"></video>' + mutedTag(true);
       var el = host.querySelector("video");
@@ -277,7 +284,7 @@
     var imgs = LSD.store.config.media.images || {};
     $("#blocksGrid").innerHTML = M.blocks.map(function (b) {
       var nv = videosOf(b.id).length;
-      var img = safeUrl(imgs[b.id]);
+      var img = mediaUrl(imgs[b.id]);
       return '<button class="block-card reveal' + (img ? " has-img" : "") + '" data-block="' + b.id + '">' +
         (img ? '<span class="bc-img" style="background-image:url(&quot;' + esc(img) + '&quot;)"></span>' +
                '<span class="bar-bottom"></span>' : "") +
@@ -390,7 +397,7 @@
         (v.start != null ? '<span class="video-frag" title="Fragmento de una grabación más larga">' +
           esc(LSD.formatTime(v.start)) + (v.end != null ? '–' + esc(LSD.formatTime(v.end)) : '') + '</span>' : '') +
         (c.video.hoverPlay && LSD.canHoverPreview(v)
-          ? '<video class="hover-preview" src="' + esc(LSD.safeUrl(v.url)) + '" muted loop playsinline preload="none"></video>'
+          ? '<video class="hover-preview" src="' + esc(mediaUrl(v.url)) + '" muted loop playsinline preload="none"></video>'
           : '') +
         '</div>';
     }
@@ -420,7 +427,7 @@
     }
     var opts = { autoplay: inline ? false : c.autoplay, muted: c.muted, loop: c.loop };
     if (v.provider === "file") {
-      return '<video src="' + esc(v.url) + '" controls playsinline ' +
+      return '<video src="' + esc(mediaUrl(v.url)) + '" controls playsinline ' +
         (opts.autoplay ? "autoplay " : "") + (c.muted ? "muted " : "") + (c.loop ? "loop " : "") +
         (v.poster ? 'poster="' + esc(v.poster) + '" ' : "") + 'style="width:100%;height:100%;object-fit:contain;background:#000"></video>';
     }
@@ -551,7 +558,7 @@
     $(".mom-bar").classList.toggle("hidden", fotos.length < 2);
 
     strip.innerHTML = fotos.map(function (f, i) {
-      var url = safeUrl(f.src);
+      var url = mediaUrl(f.src);
       return '<div class="mom-slide reveal" role="group" aria-label="Foto ' + (i + 1) + " de " + fotos.length + '">' +
         "<figure><img src=\"" + esc(url) + '" alt="' + esc(f.pie || "") + '" loading="' + (i < 2 ? "eager" : "lazy") + '">' +
         (f.pie ? "<figcaption>" + esc(f.pie) + "</figcaption>" : "") +

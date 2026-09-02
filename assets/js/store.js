@@ -400,7 +400,10 @@
     export: function () { return JSON.stringify(state, null, 2); },
 
     on: function (fn) { listeners.push(fn); return fn; },
-    emit: function (what) { listeners.forEach(function (fn) { try { fn(what, state); } catch (e) { console.error(e); } }); }
+    emit: function (what) {
+      listeners.forEach(function (fn) { try { fn(what, state); } catch (e) { console.error(e); } });
+      if (LSD.panel && LSD.panel.refrescar) { try { LSD.panel.refrescar(); } catch (e) {} }
+    }
   };
 
   load();

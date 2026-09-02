@@ -81,6 +81,7 @@
     },
 
     scroll: function () { el.out.scrollTop = el.out.scrollHeight; },
+    irA: function (tab) { if (LSD.panelIrA) LSD.panelIrA(tab); },
     clear: function () { el.out.innerHTML = ""; },
 
     /* ---------- control ---------- */
@@ -88,7 +89,12 @@
       el.root.classList.add("is-open");
       el.fab.classList.add("is-hidden");
       checkLock();
-      if (unlocked) setTimeout(function () { el.input.focus(); }, 120);
+      // Sólo se enfoca la línea de comandos si la consola es la pestaña activa:
+      // en «Vídeos» o «Fotos» robaría el foco al primer campo del formulario.
+      var consola = d.getElementById("paneConsola");
+      if (unlocked && consola && !consola.classList.contains("hidden")) {
+        setTimeout(function () { el.input.focus(); }, 120);
+      }
     },
     close: function () {
       el.root.classList.remove("is-open");

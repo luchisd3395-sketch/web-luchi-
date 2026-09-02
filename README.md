@@ -84,7 +84,49 @@ seccion normal videos       La devuelve al fondo de la página
 > (sin conexión, o una red que la bloquee), la página lo detecta midiendo el ancho del texto y
 > cambia sola a una alternativa que aguanta el peso, en vez de quedar con una fuente fina.
 
-## 4. La terminal de configuración
+## 4. El panel de administración
+
+Se abre con la tecla **`` ` ``**, el botón **TERMINAL** de la cabecera o el botón flotante.
+Tiene tres pestañas:
+
+### Vídeos
+
+Formulario para cargar un vídeo, que es lo que más se repite. Dos orígenes:
+
+- **Enlace** — se pega la URL de YouTube, Vimeo o Drive, o una ruta del repositorio. Al pegar
+  muestra la miniatura detectada.
+- **Subir archivo** — se arrastra o se elige un `.mp4`/`.webm` del dispositivo (hasta 25 MB).
+
+Después: **desde** y **hasta** (admiten `0:30`, `30` y `0:00:30`, con la duración calculada en
+vivo), título, bloque, unidad de trabajo y etiquetas. **Probar el corte** incrusta el reproductor
+con esos tiempos para confirmarlo antes de guardar. **Añadir y seguir** mantiene el vídeo y limpia
+los tiempos, para cortar varios tramos de la misma grabación.
+
+Abajo, la lista de lo cargado, con editar, borrar y reordenar.
+
+### Fotos
+
+Lo mismo para las fotos: subirlas del dispositivo o pegar una ruta, y elegir dónde van —
+portada, un bloque concreto o «Momentos en el club» (con su pie de foto).
+
+### Consola
+
+La línea de comandos de siempre, intacta. Sigue siendo lo más rápido para cargar muchos vídeos de
+una vez (`lote`, `fragmentos`) y para todo lo que no sea media.
+
+### Lo subido desde el dispositivo
+
+Un archivo elegido en el navegador **no puede subirse solo al repositorio**: el sitio es estático,
+no hay servidor detrás. Lo que sí hace el panel es guardarlo en el navegador (IndexedDB) para que
+se vea funcionando al instante, y marcar la tarjeta como **«sin publicar»** hasta que entre al
+repositorio. Sobrevive a recargar la página.
+
+Un enlace de YouTube, en cambio, lo ven los visitantes apenas se publique la configuración.
+
+El botón **«Copiar para enviar»** copia el listado al portapapeles, para pegarlo en el chat y
+dejarlo fijo en el repositorio. Es la vía cuando las descargas están bloqueadas.
+
+## 5. La consola: atajos
 
 Se abre de tres formas:
 
@@ -107,7 +149,7 @@ Se pueden encadenar comandos con `;` — por ejemplo: `tema cancha ; videos form
 
 ---
 
-## 5. Comandos
+## 6. Comandos
 
 ### Básicos
 ```
@@ -330,7 +372,7 @@ clave miClave     Protege la terminal con una clave (protección visual, no crip
 
 ---
 
-## 6. Cómo dejar los cambios fijos para todos
+## 7. Cómo dejar los cambios fijos para todos
 
 Los cambios que hacés desde la terminal se guardan **en tu navegador** (`localStorage`), así que sólo
 los ves vos. Para que los vea cualquier visitante:
@@ -345,7 +387,7 @@ mundo al entrar.
 
 ---
 
-## 7. Estructura del proyecto
+## 8. Estructura del proyecto
 
 ```
 index.html                  Estructura de la página
@@ -363,13 +405,15 @@ assets/
   js/render.js              Aplicación del tema y pintado de la página
   js/terminal.js            Motor de la consola (historial, autocompletado, parser)
   js/commands.js            Todos los comandos
+  js/filestore.js           Archivos subidos desde el dispositivo (IndexedDB)
+  js/mediapanel.js          Pestañas «Vídeos» y «Fotos» del panel
   js/app.js                 Arranque
 tools/build-preview.mjs     Empaqueta el sitio en un solo archivo (dist/preview.html)
 ```
 
 ---
 
-## 8. Editar la metodología
+## 9. Editar la metodología
 
 El contenido vive en **`data/methodology.js`**. Cada bloque tiene esta forma:
 
@@ -407,7 +451,7 @@ y el autocompletado de la terminal lo recogen solos.
 
 ---
 
-## 9. La escala de intensidad del microciclo
+## 10. La escala de intensidad del microciclo
 
 Cada día del microciclo lleva un nivel declarado, con su color:
 
@@ -434,7 +478,7 @@ Dos detalles de la implementación:
 - **La barra va sobre un carril gris** que representa el 100%, para que se vea la proporción y no
   sólo una barra suelta.
 
-## 10. Referencias metodológicas
+## 11. Referencias metodológicas
 
 La estructura de contenidos sigue el marco habitual de la planificación en fútbol profesional:
 periodización táctica y microciclo estructurado (alternancia tensión / duración / velocidad entre

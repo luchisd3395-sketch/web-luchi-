@@ -20,6 +20,26 @@ window.LSD_CONFIG = {
   },
 
   media: {
+    /* Primer fragmento cargado desde el panel. No pude ver el vídeo, así que
+       el bloque es una suposición: se corrige en dos clics desde «Vídeos». */
+    videos: [
+      {
+        id: "actividad-1",
+        title: "Actividad 1",
+        url: "https://youtube.com/watch?v=tH5lOo9OFPE",
+        provider: "youtube",
+        vid: "tH5lOo9OFPE",
+        start: 0,
+        end: 30,
+        block: "ssg",
+        work: null,
+        tags: [],
+        duration: "0:30",
+        desc: "", poster: "", featured: false,
+        added: "2026-09-01"
+      }
+    ],
+
     /* Foto de cada bloque. Para cambiarlas:
          imagen bloque <id> assets/img/<archivo>.jpg
        Sin foto todavía: posesion · finalizacion · abp */
