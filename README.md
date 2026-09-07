@@ -87,7 +87,7 @@ seccion normal videos       La devuelve al fondo de la página
 ## 4. El panel de administración
 
 Se abre con la tecla **`` ` ``**, el botón **TERMINAL** de la cabecera o el botón flotante.
-Tiene tres pestañas:
+Tiene cuatro pestañas:
 
 ### Vídeos
 
@@ -95,7 +95,13 @@ Formulario para cargar un vídeo, que es lo que más se repite. Dos orígenes:
 
 - **Enlace** — se pega la URL de YouTube, Vimeo o Drive, o una ruta del repositorio. Al pegar
   muestra la miniatura detectada.
-- **Subir archivo** — se arrastra o se elige un `.mp4`/`.webm` del dispositivo (hasta 25 MB).
+- **Subir archivo** — dos botones, **«Elegir un vídeo»** (abre el selector del dispositivo) y
+  **«Grabar ahora»** (abre la cámara). En escritorio también se puede arrastrar. Entra cualquier
+  peso; por encima de 25 MB avisa de que para publicarlo conviene YouTube, pero lo guarda igual.
+
+Entre que se toca el vídeo en el selector y que la página lo recibe puede pasar un rato largo: iOS
+exporta el vídeo antes de entregarlo, y si está en iCloud primero lo baja. El botón se queda en
+**«Buscando el archivo…»** mientras tanto, para que no parezca colgado.
 
 Después: **desde** y **hasta** (admiten `0:30`, `30` y `0:00:30`, con la duración calculada en
 vivo), título, bloque, unidad de trabajo y etiquetas. **Probar el corte** incrusta el reproductor
@@ -106,8 +112,43 @@ Abajo, la lista de lo cargado, con editar, borrar y reordenar.
 
 ### Fotos
 
-Lo mismo para las fotos: subirlas del dispositivo o pegar una ruta, y elegir dónde van —
-portada, un bloque concreto o «Momentos en el club» (con su pie de foto).
+Lo mismo para las fotos: **«Elegir fotos»** —se pueden marcar varias de una vez— o **«Sacar una
+foto»**, o pegar una ruta. Después se elige dónde van: portada, un bloque concreto o «Momentos en
+el club» (con su pie de foto). La portada y los bloques admiten una sola foto y lo dicen si se
+eligen más; «Momentos» acepta todas las que haya.
+
+Lo elegido no se guarda de inmediato: aparece en una **cola de repaso** con su miniatura, su nombre
+y su peso, y cada una se puede sacar con la ✕ antes de confirmar.
+
+**Se comprimen acá, no hace falta prepararlas.** Cada foto pasa por el mismo tratamiento que usé
+con las del club: se respeta la orientación EXIF, se escala al lado largo de 2560 px y se guarda en
+JPEG con calidad 0,92, bajando a 0,86 · 0,80 · 0,74 sólo si sigue pesando de más. **Una foto que ya
+está bien no se toca**, porque reencodar sin necesidad sólo quita calidad. La cola muestra la
+cuenta real: `4,8 MB → 1,2 MB · 2560×1707`.
+
+### Qué ve esta página de tu dispositivo
+
+Únicamente los archivos que se tocan en el selector. No hay forma de que una página lea la galería
+entera: el navegador abre el selector del sistema, la persona elige, y lo elegido —y nada más— es
+lo que llega. De ahí los botones separados, para que se vea de antemano qué abre cada uno.
+
+Después, lo elegido se guarda **en ese navegador** (IndexedDB) y no se envía a ninguna parte: ni a
+un servidor, ni al repositorio, ni a mí. Para publicarlo hay que pasarlo aparte. El comando
+`archivos` de la consola muestra qué hay guardado y cuánto ocupa, y `archivos limpiar` borra lo que
+ya no usa ninguna foto ni ningún vídeo.
+
+### Archivos
+
+Todo lo que hay cargado en el sitio —fotos y vídeos juntos— en una sola lista, y al lado de cada
+uno **la carpeta en la que está**, en un desplegable. Cambiarlo mueve el archivo ahí mismo: un
+vídeo pasa de un bloque a otro (y se le limpia la unidad de trabajo, que ya no le corresponde), y
+una foto puede ir a la portada, a un bloque o a «Momentos en el club».
+
+La portada y cada bloque admiten una sola foto. Si el destino ya tiene una, **la que estaba no se
+pierde: pasa a «Momentos en el club»**, y el mensaje lo dice.
+
+Arriba hay dos filtros, por tipo y por carpeta, con el recuento y el peso de lo que está guardado
+en el navegador.
 
 ### Consola
 
@@ -366,6 +407,8 @@ texto tagline "…"           Edita los textos del sitio (portada, intro, contac
 exportar          Descarga toda la configuración como copia de seguridad
 importar          Abre un cuadro para pegar una configuración guardada
 publicar          Genera data/config.js para dejar los ajustes fijos en el sitio
+archivos          Lista lo subido desde el dispositivo, con su peso y el espacio disponible
+archivos limpiar  Borra los archivos que ya no usa ninguna foto ni ningún vídeo
 reset [ámbito]    Restablece: tema · layout · video · site · terminal · todo
 clave miClave     Protege la terminal con una clave (protección visual, no criptográfica)
 ```
@@ -447,7 +490,7 @@ Y cada unidad de trabajo se describe siempre con la misma ficha, para mantener u
 Añadir un bloque o una unidad es agregar un objeto más al array: la página, los filtros, el buscador
 y el autocompletado de la terminal lo recogen solos.
 
-**Estado actual del archivo:** 9 bloques · 61 unidades de trabajo · microciclo tipo de 7 días.
+**Estado actual del archivo:** 9 bloques · 62 unidades de trabajo · microciclo tipo de 7 días.
 
 ---
 
@@ -458,9 +501,15 @@ Cada día del microciclo lleva un nivel declarado, con su color:
 | Nivel | Color | Días |
 |---|---|---|
 | **Muy intenso** | Rojo | MD-4 · MD-3 · MD |
-| **Intenso** | Naranja | MD-2 |
-| **Moderado** | Amarillo | MD+1 |
-| **Bajo** | Verde | MD+2 · MD-1 |
+| **Intenso** | Naranja | MD+1 |
+| **Moderado-alto** | Ámbar | MD-1 |
+| **Moderado** | Amarillo | MD-2 |
+| **Bajo** | Verde | MD+2 |
+
+El **moderado-alto** existe porque el MD-1 no es ni una cosa ni la otra: 60' de balón parado y
+repaso táctico piden más que un día moderado y menos que uno intenso. Y el MD+1 va en naranja por
+los que no jugaron, que compensan con fútbol de 60': el nivel declara el día del grupo que más
+trabaja, no el del que se recupera.
 
 El nivel está declarado en `data/methodology.js` (campo `nivel`), no se deduce del porcentaje: la
 exigencia de un día es una valoración metodológica, no una cuenta. La barra muestra la magnitud
@@ -473,17 +522,23 @@ relativa; el nivel, lo que se le pide al jugador. Si un día no lleva `nivel`, s
 
 Dos detalles de la implementación:
 
-- **El amarillo no se usa como texto sobre blanco**: tiene 1,6:1 de contraste, es ilegible. El
-  relleno de la barra va en amarillo vivo y la palabra en un ámbar oscuro que sí se lee.
+- **Ni el amarillo ni el ámbar se usan como texto sobre blanco**: tienen 1,6:1 y 2,2:1 de
+  contraste, son ilegibles. El relleno de la barra va en el tono vivo y la palabra en una versión
+  oscura del mismo color — `#96700a` y `#a86206`, que dan 4,55:1 y 4,76:1. Sobre las bandas negras se
+  invierte: ahí el tono vivo es el que se lee.
 - **La barra va sobre un carril gris** que representa el 100%, para que se vea la proporción y no
   sólo una barra suelta.
 
 ## 11. Referencias metodológicas
 
 La estructura de contenidos sigue el marco habitual de la planificación en fútbol profesional:
-periodización táctica y microciclo estructurado (alternancia tensión / duración / velocidad entre
-MD-4 y MD-2), clasificación de juegos reducidos por número de jugadores y área relativa, y control
-de carga combinando carga interna (sRPE) y externa (GPS).
+periodización táctica y microciclo estructurado, clasificación de juegos reducidos por número de
+jugadores y área relativa, y control de carga combinando carga interna (sRPE) y externa (GPS).
+
+La distribución semanal concreta es la que trabaja Luciano en el club, y en un punto se aparta del
+patrón de manual: la velocidad va en el **MD-3** junto con la duración, el **MD-2** queda táctico
+sin oposición con volumen bajo, y los driles de aceleración se reparten hacia el **MD-1** dentro de
+la activación.
 
 - [Microciclos en fútbol: estructura semanal del MD-5 al MD+1 — Barça Innovation Hub](https://barcainnovationhub.fcbarcelona.com/es/blog/microciclos-futbol-estructura-semanal-md5-md1/)
 - [Periodización táctica: cómo diseñar un morfociclo patrón — Efficient Football](https://efficientfootball.com/periodizacion-tactica-morfociclo-patron/)

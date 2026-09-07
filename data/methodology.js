@@ -54,7 +54,7 @@ window.LSD_METHODOLOGY = {
           espacio: "Campo completo y espacios fraccionados",
           duracion: "Ciclo de 6 a 7 días",
           claves: [
-            "Principio de alternancia horizontal: tensión (MD-4), duración (MD-3) y velocidad (MD-2).",
+            "Principio de alternancia horizontal: tensión (MD-4), velocidad y duración (MD-3), táctico (MD-2).",
             "Principio de progresión compleja: la carga táctica sube a mitad de semana y baja hacia el partido.",
             "Principio de las propensiones: repetir el patrón hasta que aparezca sin ser nombrado.",
             "El balón es el medio, no un adorno: casi todo se entrena jugando."
@@ -229,14 +229,15 @@ window.LSD_METHODOLOGY = {
             "Al menos una exposición semanal por encima del 90-95% de la velocidad máxima individual.",
             "Técnica de aceleración: proyección, ángulos de empuje, brazos.",
             "Velocidad máxima: mecánica de ciclo, contacto breve, cadera alta.",
-            "Ubicación semanal preferente: MD-3 o MD-2, con el jugador fresco."
+            "Ubicación semanal: MD-3, al inicio de la sesión y con el jugador fresco."
           ],
           variantes: [
+            "Driles de aceleración en el MD-1: dos o tres salidas cortas dentro de la activación",
             "Salidas desde distintas posiciones y estímulos (visual, auditivo, con balón)",
             "Sprints curvos (más frecuentes en el juego real que los rectos)",
             "Persecuciones y duelos de velocidad"
           ],
-          tags: ["campo", "velocidad", "prevención"]
+          tags: ["campo", "velocidad", "prevención", "MD-3"]
         },
         {
           id: "cod",
@@ -555,14 +556,15 @@ window.LSD_METHODOLOGY = {
             "El pase que rompe la línea de los dos defensores vale doble: buscar el pase interior.",
             "Perfil abierto antes de recibir: el cuerpo decide el pase, no el pie.",
             "Los defensores entran a presionar en pareja, nunca sueltos.",
-            "Es activación, no relleno: se compite y se cuenta."
+            "Es activación, no relleno: se compite y se cuenta.",
+            "Como posesión de activación entra en el MD-2, antes del táctico sin oposición."
           ],
           variantes: [
             "Con toques limitados (2 y 1 toque)",
             "Con comodín central que obliga al apoyo interior",
             "Rondo de castigo: el que pierde pasa al medio"
           ],
-          tags: ["rondo", "técnico", "activación"]
+          tags: ["rondo", "técnico", "activación", "MD-2"]
         },
         {
           id: "rondo-dinamico",
@@ -891,7 +893,7 @@ window.LSD_METHODOLOGY = {
             "Se eligen dos o tres ajustes como máximo: más ajustes que eso no se retienen.",
             "El sparring reproduce la estructura y los hábitos del rival, no improvisa.",
             "Se ensaya lo que va a pasar seguro, no lo excepcional.",
-            "Ubicación: MD-2 y MD-1, con volumen bajo y alta claridad."
+            "Ubicación: MD-2 en versión sin oposición; MD-1 con sparring. Siempre con volumen bajo."
           ],
           variantes: [
             "Ensayo sólo de fase ofensiva o sólo defensiva",
@@ -899,6 +901,26 @@ window.LSD_METHODOLOGY = {
             "Simulación de escenarios de resultado (ganando, perdiendo, con uno menos)"
           ],
           tags: ["11v11", "competencia", "MD-2"]
+        },
+        {
+          id: "circulacion-sin-oposicion",
+          name: "Circulación sin Oposición",
+          objetivo: "Recorrer los movimientos del modelo a velocidad de partido y sin rival, para fijar los recorridos sin coste físico ni riesgo.",
+          formato: "11v0 o 11v11 con rival pasivo",
+          espacio: "Campo completo",
+          duracion: "15-20 min",
+          claves: [
+            "La velocidad del balón es la del partido, aunque no haya presión: si se hace lento no sirve.",
+            "Se corrigen posiciones y recorridos, no decisiones: para decidir hace falta un rival.",
+            "Dos o tres circuitos como máximo, repetidos hasta que salgan sin indicación.",
+            "Es memoria motriz, no táctica nueva: nada que no se haya entrenado antes con oposición."
+          ],
+          variantes: [
+            "Con rival pasivo que sólo ocupa espacios, sin disputar",
+            "Sólo la salida desde el arquero, o sólo el último tercio",
+            "Con señales del entrenador para cambiar de circuito en marcha"
+          ],
+          tags: ["táctico", "MD-2", "sin oposición"]
         }
       ]
     },
@@ -1020,7 +1042,7 @@ window.LSD_METHODOLOGY = {
       code: "07",
       title: "Balón Parado · ABP",
       short: "ABP",
-      desc: "Acciones a balón parado: una porción decisiva de los goles de cada temporada, entrenada con el mismo rigor que el juego dinámico.",
+      desc: "Acciones a balón parado: una porción decisiva de los goles de cada temporada, entrenada con el mismo rigor que el juego dinámico. Se trabaja el MD-2 y se repasa el MD-1, con el plan del rival ya cerrado.",
       items: [
         {
           id: "corner-of",
@@ -1274,11 +1296,11 @@ window.LSD_METHODOLOGY = {
           espacio: "—",
           duracion: "Semana completa",
           claves: [
-            "MD+1: recuperación para titulares, carga compensatoria para suplentes.",
+            "MD+1: regenerativo para los titulares; los que no jugaron compensan con fútbol de 60' y fuerza.",
             "MD-4: tensión — fuerza, espacios reducidos, alta densidad de acciones.",
-            "MD-3: duración — espacios amplios, mayor volumen, formatos grandes.",
-            "MD-2: velocidad — espacios medios, alta intensidad y volumen bajo.",
-            "MD-1: activación, plan de partido y balón parado. Sin carga.",
+            "MD-3: velocidad y duración — sprints con el jugador fresco y después espacios amplios.",
+            "MD-2: táctico sin oposición, definiciones, posesiones de activación y balón parado. 60'.",
+            "MD-1: driles de aceleración, activación, balón parado y repaso táctico. 60'.",
             "La curva sube a mitad de semana y baja hacia el partido, siempre."
           ],
           variantes: [
@@ -1359,12 +1381,12 @@ window.LSD_METHODOLOGY = {
      Es una valoración metodológica, no un umbral automático sobre la
      carga: la barra muestra la magnitud y el nivel, la exigencia real. */
   microcycle: [
-    { day: "MD+1", tipo: "Recuperación", foco: "Regeneración",    contenidos: "Titulares: regenerativo y movilidad. No titulares: carga compensatoria (fuerza + juego reducido).", carga: 40,  nivel: "moderado",    dur: "45-60'" },
+    { day: "MD+1", tipo: "Recuperación", foco: "Regeneración",    contenidos: "Titulares: regenerativo y movilidad. Los que compensan: fútbol de 60' más trabajo de fuerza.", carga: 60,  nivel: "intenso",     dur: "60'" },
     { day: "MD+2", tipo: "Descanso",     foco: "Libre",           contenidos: "Descanso total o activación voluntaria opcional. Trabajo individual de readaptación.",              carga: 5,   nivel: "bajo",        dur: "—" },
     { day: "MD-4", tipo: "Tensión",      foco: "Fuerza",          contenidos: "Fuerza en gimnasio, pliometría, COD. Espacios reducidos, alta densidad de acciones (1v1 a 4v4).",   carga: 90,  nivel: "muy-intenso", dur: "80-95'" },
-    { day: "MD-3", tipo: "Duración",     foco: "Resistencia",     contenidos: "Espacios amplios, formatos grandes (8v8 a 11v11). Mayor volumen y distancia recorrida.",            carga: 100, nivel: "muy-intenso", dur: "85-95'" },
-    { day: "MD-2", tipo: "Velocidad",    foco: "Alta intensidad", contenidos: "Sprints, transiciones, finalización. Espacios medios, series cortas y pausas largas.",              carga: 65,  nivel: "intenso",     dur: "70-80'" },
-    { day: "MD-1", tipo: "Activación",   foco: "Plan de partido", contenidos: "Activación, balón parado, ensayo del plan de partido. Volumen bajo, claridad alta.",                carga: 30,  nivel: "bajo",        dur: "55-65'" },
+    { day: "MD-3", tipo: "Velocidad y duración", foco: "Alta intensidad", contenidos: "Sprints y aceleraciones con el jugador fresco. Después, espacios amplios y formatos grandes (8v8 a 11v11).", carga: 100, nivel: "muy-intenso", dur: "85-95'" },
+    { day: "MD-2", tipo: "Táctico y ABP", foco: "Plan de partido", contenidos: "Táctico sin oposición, definiciones, posesiones de activación y balón parado. Volumen bajo: el partido ya está cerca.", carga: 45, nivel: "moderado", dur: "60'" },
+    { day: "MD-1", tipo: "Activación",   foco: "ABP y repaso",    contenidos: "Driles de aceleración, activación, balón parado y repaso táctico del plan de partido.",              carga: 55,  nivel: "moderado-alto", dur: "60'" },
     { day: "MD",   tipo: "Competencia",  foco: "Partido",         contenidos: "Partido oficial. Referencia máxima de carga del ciclo.",                                           carga: 100, nivel: "muy-intenso", dur: "90'+" }
   ],
 

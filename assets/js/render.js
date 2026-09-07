@@ -657,10 +657,11 @@
      MICROCICLO
      ================================================================ */
   var NIVELES = [
-    { id: "bajo",        label: "Bajo" },
-    { id: "moderado",    label: "Moderado" },
-    { id: "intenso",     label: "Intenso" },
-    { id: "muy-intenso", label: "Muy intenso" }
+    { id: "bajo",           label: "Bajo" },
+    { id: "moderado",       label: "Moderado" },
+    { id: "moderado-alto",  label: "Moderado-alto" },
+    { id: "intenso",        label: "Intenso" },
+    { id: "muy-intenso",    label: "Muy intenso" }
   ];
 
   /** Nivel de un día: el declarado en los datos, o deducido de la carga. */

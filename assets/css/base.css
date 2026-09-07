@@ -22,10 +22,11 @@
   /* Escala de intensidad del microciclo.
      El relleno de la barra va vivo; la palabra va en un tono más
      oscuro porque sobre blanco el amarillo vivo no se lee (1,6:1). */
-  --nivel-muy-intenso: #d81222;  --nivel-muy-intenso-ink: #c00f1e;
-  --nivel-intenso:     #f97316;  --nivel-intenso-ink:     #c2560a;
-  --nivel-moderado:    #f5c518;  --nivel-moderado-ink:    #96700a;
-  --nivel-bajo:        #0a7d3f;  --nivel-bajo-ink:        #0a7d3f;
+  --nivel-muy-intenso:   #d81222;  --nivel-muy-intenso-ink:   #c00f1e;
+  --nivel-intenso:       #f97316;  --nivel-intenso-ink:       #c2560a;
+  --nivel-moderado-alto: #f59e0b;  --nivel-moderado-alto-ink: #a86206;
+  --nivel-moderado:      #f5c518;  --nivel-moderado-ink:      #96700a;
+  --nivel-bajo:          #0a7d3f;  --nivel-bajo-ink:          #0a7d3f;
   --hero-ink:   var(--text);
 
   /* --- Tipografía --- */

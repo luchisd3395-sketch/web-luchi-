@@ -507,6 +507,7 @@
 .load-bar { display: block; height: 100%; min-width: 3px; background: var(--nivel-bajo); }
 .load-bar[data-nivel="bajo"]        { background: var(--nivel-bajo); }
 .load-bar[data-nivel="moderado"]    { background: var(--nivel-moderado); }
+.load-bar[data-nivel="moderado-alto"] { background: var(--nivel-moderado-alto); }
 .load-bar[data-nivel="intenso"]     { background: var(--nivel-intenso); }
 .load-bar[data-nivel="muy-intenso"] { background: var(--nivel-muy-intenso); }
 
@@ -516,6 +517,7 @@
 }
 .load-tag[data-nivel="bajo"]        { color: var(--nivel-bajo-ink); }
 .load-tag[data-nivel="moderado"]    { color: var(--nivel-moderado-ink); }
+.load-tag[data-nivel="moderado-alto"] { color: var(--nivel-moderado-alto-ink); }
 .load-tag[data-nivel="intenso"]     { color: var(--nivel-intenso-ink); }
 .load-tag[data-nivel="muy-intenso"] { color: var(--nivel-muy-intenso-ink); }
 .load-pct { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); margin-left: .4rem; }
@@ -530,12 +532,14 @@
 .load-legend i { width: 22px; height: 8px; display: block; border: 1px solid var(--border); }
 .load-legend i[data-nivel="bajo"]        { background: var(--nivel-bajo); }
 .load-legend i[data-nivel="moderado"]    { background: var(--nivel-moderado); }
+.load-legend i[data-nivel="moderado-alto"] { background: var(--nivel-moderado-alto); }
 .load-legend i[data-nivel="intenso"]     { background: var(--nivel-intenso); }
 .load-legend i[data-nivel="muy-intenso"] { background: var(--nivel-muy-intenso); }
 
 /* Sobre banda negra la palabra usa el tono vivo, que ahí sí se lee */
 .section.is-inverted .load-tag[data-nivel="bajo"]        { color: #23c46f; }
 .section.is-inverted .load-tag[data-nivel="moderado"]    { color: var(--nivel-moderado); }
+.section.is-inverted .load-tag[data-nivel="moderado-alto"] { color: #f0a92a; }
 .section.is-inverted .load-tag[data-nivel="intenso"]     { color: var(--nivel-intenso); }
 .section.is-inverted .load-tag[data-nivel="muy-intenso"] { color: #f0303d; }
 .section.is-inverted .load-track { background: #1c1c1c; border-color: rgba(255,255,255,.18); }

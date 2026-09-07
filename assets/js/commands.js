@@ -146,7 +146,7 @@
     { g: "Vídeos",        cmds: ["video", "videos", "lote", "fragmentos", "mover", "renombrar"] },
     { g: "Imágenes",      cmds: ["imagen", "momentos"] },
     { g: "Contenido",     cmds: ["bloques", "trabajos", "buscar", "seccion"] },
-    { g: "Datos",         cmds: ["exportar", "importar", "publicar", "demo", "clave"] }
+    { g: "Datos",         cmds: ["exportar", "importar", "publicar", "archivos", "demo", "clave"] }
   ];
 
   T.register({
@@ -186,6 +186,54 @@
     name: "limpiar", alias: ["clear", "cls"],
     desc: "Limpia la pantalla de la terminal",
     run: function () { T.clear(); T.banner(); }
+  });
+
+  T.register({
+    name: "archivos", alias: ["files"],
+    desc: "Lo subido desde el dispositivo: qué ocupa y liberar lo que ya no se usa",
+    usage: "archivos [limpiar]",
+    complete: function (prev, partial) {
+      return prev.length ? [] : [{ name: "limpiar", desc: "Borra lo que ya no referencia ninguna foto ni vídeo" }];
+    },
+    run: function (args) {
+      var F = w.LSD.files;
+      if (!F || !F.disponible()) { T.err("Este navegador no guarda archivos."); return; }
+
+      var sub = (args[0] || "").toLowerCase();
+      if (sub && sub !== "limpiar") {
+        T.err("Subcomando desconocido: «" + args[0] + "». Sólo hay:  archivos  ·  archivos limpiar");
+        return;
+      }
+
+      if (sub === "limpiar") {
+        F.limpiar(function (n) {
+          if (!n) T.ok("No había nada que sobrara.");
+          else T.ok(n + (n === 1 ? " archivo borrado" : " archivos borrados") + ": ya no los usaba nadie.");
+        });
+        return;
+      }
+
+      var claves = F.claves();
+      T.head("ARCHIVOS EN ESTE NAVEGADOR");
+      if (!claves.length) {
+        T.dim("Todavía no subiste ninguno desde el dispositivo.");
+      } else {
+        T.table(claves.map(function (k) {
+          var i = F.info(k);
+          return [i.nombre, w.LSD.pesoLegible(i.peso), i.fecha];
+        }));
+        T.space();
+        T.print("Total: " + w.LSD.pesoLegible(F.peso()) + " en " + claves.length +
+          (claves.length === 1 ? " archivo" : " archivos") + ".");
+      }
+      F.espacio(function (e) {
+        /* El navegador tarda en actualizar su propia cuenta de lo usado, así que
+           se muestra sólo el techo: el total de arriba ya sale de los archivos. */
+        if (e && e.total) T.dim("Este navegador le da a la página hasta " + w.LSD.pesoLegible(e.total) + ".");
+        T.dim("Nada de esto sale de este navegador: para publicarlo hay que pasarlo al repositorio.");
+        T.dim("Liberar lo que ya no usa ninguna foto ni vídeo:  archivos limpiar");
+      });
+    }
   });
 
   T.register({

@@ -268,6 +268,7 @@
 .f-msg.is-err { display: block; background: rgba(255,107,92,.12); color: #ff9d92; border-left: 2px solid #ff6b5c; }
 .f-msg.is-ok  { display: block; background: rgba(78,224,138,.1); color: #7fe3a8; border-left: 2px solid #4ee08a; }
 .f-msg.is-warn{ display: block; background: rgba(255,207,92,.1); color: #ffd98a; border-left: 2px solid #ffcf5c; }
+.f-msg.is-info{ display: block; background: rgba(255,255,255,.05); color: #9fb3a8; border-left: 2px solid rgba(255,255,255,.25); }
 
 /* --- Botones --- */
 .f-actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .3rem; }
@@ -320,6 +321,29 @@
 }
 .f-vacio { font-size: .72rem; color: #5f6f66; line-height: 1.8; padding: 1rem 0; }
 
+/* =============================================================
+   Pestaña «Archivos»: todo lo cargado, con su carpeta a la vista
+   ============================================================= */
+.a-filtros { display: flex; gap: .7rem; flex-wrap: wrap; align-items: flex-end; }
+.f-field-sm { flex: 1 1 160px; }
+.a-resumen {
+  font-size: .66rem; letter-spacing: .1em; text-transform: uppercase;
+  color: #7d8c84; margin-bottom: .7rem;
+}
+/* La carpeta va en la fila, no escondida detrás de «Editar» */
+.a-carpeta { display: flex; flex-direction: column; gap: .25rem; flex: 0 0 190px; }
+.a-carpeta > span {
+  font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: #5f6f66;
+}
+.a-carpeta select {
+  width: 100%; padding: .45rem .5rem; border-radius: 4px; cursor: pointer;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14);
+  color: #eaf7f0; font-family: var(--font-mono); font-size: .72rem;
+}
+.a-carpeta select:hover { border-color: var(--accent); }
+.a-carpeta select:focus { outline: none; border-color: var(--accent); }
+.a-carpeta select option { background: #10161a; color: #eaf7f0; }
+
 @media (max-width: 720px) {
   .term-name-sub { display: none; }
   .term-tabs { margin-left: .3rem; }
@@ -328,4 +352,67 @@
   .f-field.f-sm { flex: 1 1 90px; }
   .f-item { flex-wrap: wrap; }
   .f-item .f-acts { width: 100%; justify-content: flex-end; }
+  /* En el móvil la carpeta baja debajo del nombre, con todo el ancho */
+  .a-carpeta { flex: 1 1 100%; order: 3; }
+  .a-item .f-acts { width: auto; order: 4; }
 }
+
+/* =============================================================
+   ELEGIR ARCHIVOS
+   Botones explícitos en vez de una zona ambigua: hay que ver de
+   antemano qué va a abrir cada uno.
+   ============================================================= */
+.picker { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .7rem; }
+.pick-btn {
+  flex: 1 1 180px; display: flex; flex-direction: column; gap: .2rem;
+  padding: .85rem 1rem; text-align: left; border-radius: 5px;
+  border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.03);
+  transition: all .2s var(--ease);
+}
+.pick-btn:hover, .pick-btn:focus-visible { border-color: var(--accent); background: rgba(216,255,62,.06); }
+.pick-btn b { font-size: .8rem; color: #eaf7f0; font-weight: 600; }
+.pick-btn span { font-size: .66rem; color: #7d8c84; line-height: 1.5; }
+/* Mientras el dispositivo prepara el archivo, que se vea que está trabajando */
+.pick-btn.is-esperando { border-color: var(--accent); opacity: .75; cursor: progress; }
+.pick-btn.is-esperando b { color: var(--accent); }
+
+.dropzone-sm {
+  padding: .7rem 1rem; font-size: .66rem; color: #5f6f66;
+  border-style: dashed; border-width: 1px; text-align: center;
+  flex-direction: row; justify-content: center;
+}
+
+/* Nota de privacidad: por qué esto no ve el resto de la galería */
+.f-privacidad {
+  font-size: .68rem; line-height: 1.7; color: #9fb3a8; margin-top: .9rem;
+  padding: .7rem .85rem; border-radius: 5px;
+  background: rgba(78,224,138,.07); border-left: 2px solid #4ee08a;
+}
+.f-privacidad b { color: #eaf7f0; font-weight: 600; }
+
+/* Cola de revisión antes de guardar */
+.f-queue { display: flex; flex-direction: column; gap: .4rem; margin-top: .9rem; }
+.f-queue:empty { display: none; }
+.f-queue-head {
+  font-size: .66rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: .1rem;
+}
+.q-item {
+  display: flex; align-items: center; gap: .7rem; padding: .45rem .55rem;
+  border: 1px solid rgba(255,255,255,.12); border-radius: 4px;
+  background: rgba(255,255,255,.02);
+}
+.q-item img {
+  width: 54px; height: 40px; object-fit: cover; border-radius: 3px; flex: 0 0 auto;
+  background: #10161a; border: 1px solid rgba(255,255,255,.1);
+}
+.q-item .q-txt { flex: 1 1 auto; min-width: 0; }
+.q-item .q-n { font-size: .72rem; color: #eaf7f0; word-break: break-all; }
+.q-item .q-p { font-size: .62rem; color: #6d7d75; }
+.q-item .q-x {
+  flex: 0 0 auto; width: 28px; height: 28px; border-radius: 3px;
+  border: 1px solid rgba(255,255,255,.14); color: #7d8c84; font-size: .8rem;
+}
+.q-item .q-x:hover { color: #ff6b5c; border-color: #ff6b5c; }
+.q-item.is-pendiente { opacity: .6; }
+.q-item.is-pendiente .q-p { color: var(--accent); }

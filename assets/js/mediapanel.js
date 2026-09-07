@@ -13,8 +13,10 @@
   var M = w.LSD_METHODOLOGY;
   var S, T;
 
-  var MAX_VIDEO = 25 * 1024 * 1024;
-  var MAX_FOTO = 8 * 1024 * 1024;
+  /* No hay tope de entrada: entra lo que haya y las fotos se comprimen acá
+     (comprimir.js). Este número sólo decide cuándo un vídeo se avisa como
+     pesado para el repositorio; guardarlo se guarda igual. */
+  var VIDEO_PESADO = 25 * 1024 * 1024;
 
   function $(s) { return d.getElementById(s); }
   function esc(x) { return LSD.esc(x); }
@@ -62,14 +64,43 @@
     } catch (e) { cb(false); }
   }
 
-  function zonaArrastre(zona, input, acepta, alElegir) {
-    zona.addEventListener("click", function () { input.click(); });
-    zona.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); }
+  /** Conecta un botón con su selector de archivos. Cada botón abre un
+     selector distinto (galería o cámara), y la página sólo recibe lo que
+     la persona elija: no puede leer el resto del dispositivo. */
+  function conectarSelector(boton, input, alElegir, aviso) {
+    var etiqueta = boton.innerHTML;
+
+    function esperar(on) {
+      boton.disabled = on;
+      boton.classList.toggle("is-esperando", on);
+      if (on) boton.innerHTML = "<b>Buscando el archivo…</b><span>El dispositivo lo está preparando</span>";
+      else boton.innerHTML = etiqueta;
+    }
+
+    boton.addEventListener("click", function () {
+      input.value = "";
+      esperar(true);
+      if (aviso) mensaje(aviso, "Elegí el archivo en tu dispositivo. Si es un vídeo largo, " +
+        "el iPad tarda un rato en prepararlo antes de entregarlo: es normal.", "info");
+      input.click();
+      /* Si cancela el selector no llega ningún «change», así que el botón se
+         desbloquea al volver el foco a la página. */
+      w.addEventListener("focus", function reponer() {
+        w.removeEventListener("focus", reponer);
+        w.setTimeout(function () { if (!input.files || !input.files.length) { esperar(false); if (aviso) mensaje(aviso, ""); } }, 400);
+      });
     });
+
     input.addEventListener("change", function () {
-      if (input.files && input.files[0]) alElegir(input.files[0]);
+      esperar(false);
+      var fs = input.files;
+      if (!fs || !fs.length) { if (aviso) mensaje(aviso, ""); return; }
+      alElegir(Array.prototype.slice.call(fs));
     });
+  }
+
+  /** Arrastrar y soltar, para escritorio. */
+  function zonaArrastre(zona, acepta, alElegir) {
     ["dragenter", "dragover"].forEach(function (ev) {
       zona.addEventListener(ev, function (e) { e.preventDefault(); zona.classList.add("is-over"); });
     });
@@ -77,10 +108,12 @@
       zona.addEventListener(ev, function (e) { e.preventDefault(); zona.classList.remove("is-over"); });
     });
     zona.addEventListener("drop", function (e) {
-      var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-      if (!f) return;
-      if (acepta && f.type.indexOf(acepta) !== 0) return;
-      alElegir(f);
+      var fs = e.dataTransfer && e.dataTransfer.files;
+      if (!fs || !fs.length) return;
+      var lista = Array.prototype.slice.call(fs).filter(function (f) {
+        return !acepta || f.type.indexOf(acepta) === 0;
+      });
+      if (lista.length) alElegir(lista);
     });
   }
 
@@ -313,6 +346,66 @@
      ========================================================= */
   var fOrigen = "archivo";
   var fArchivo = null;
+  var fCola = [];            // fotos elegidas, a la espera de confirmación
+
+  /** Muestra lo elegido para repasarlo y poder sacar lo que no vaya. */
+  function fPintarCola() {
+    var caja = $("fQueue");
+    if (!fCola.length) { caja.innerHTML = ""; return; }
+    caja.innerHTML = '<div class="f-queue-head">' + (fCola.length === 1
+        ? "Vas a añadir 1 foto — repasala antes de guardar"
+        : "Vas a añadir " + fCola.length + " fotos — repasalas antes de guardar") + "</div>" +
+      fCola.map(function (f, i) {
+        var detalle = f.listo
+          ? esc(LSD.resumenCompresion(f))
+          : "preparando la foto…";
+        return '<div class="q-item' + (f.listo ? "" : " is-pendiente") + '">' +
+          '<img src="' + esc(f.url) + '" alt="">' +
+          '<div class="q-txt"><div class="q-n">' + esc(f.nombre) + "</div>" +
+          '<div class="q-p">' + detalle + "</div></div>" +
+          '<button class="q-x" data-i="' + i + '" title="Sacar de la lista">✕</button></div>';
+      }).join("");
+    Array.prototype.forEach.call(caja.querySelectorAll(".q-x"), function (b) {
+      b.addEventListener("click", function () {
+        var i = parseInt(b.getAttribute("data-i"), 10);
+        try { URL.revokeObjectURL(fCola[i].url); } catch (e) {}
+        fCola.splice(i, 1);
+        fPintarCola();
+      });
+    });
+  }
+
+  /** Encola lo elegido y lo va dejando en tamaño publicable. Entra cualquier
+     peso: comprimir es tarea de la página, no de quien sube la foto. */
+  function fEncolar(archivos) {
+    archivos.forEach(function (file) {
+      if (file.type.indexOf("image") !== 0) return;
+      var entrada = {
+        file: file, url: URL.createObjectURL(file), nombre: file.name || "foto",
+        listo: false, pesoOriginal: file.size, pesoFinal: file.size,
+        ancho: 0, alto: 0, recomprimido: false, motivo: ""
+      };
+      fCola.push(entrada);
+
+      LSD.comprimirImagen(file, function (err, r) {
+        if (!err && r) {
+          entrada.file = r.file;
+          entrada.pesoOriginal = r.pesoOriginal;
+          entrada.pesoFinal = r.pesoFinal;
+          entrada.ancho = r.ancho; entrada.alto = r.alto;
+          entrada.recomprimido = r.recomprimido;
+          entrada.motivo = r.motivo;
+        }
+        entrada.listo = true;
+        fPintarCola();
+      });
+    });
+    fArchivo = null;
+    $("fFileInfo").className = "f-detected";
+    $("fFileInfo").innerHTML = "";
+    mensaje($("fMsg"), "");
+    fPintarCola();
+  }
 
   function fMostrarOrigen(origen) {
     fOrigen = origen;
@@ -336,26 +429,16 @@
   function fLimpiar() {
     $("fLink").value = ""; $("fPie").value = "";
     fArchivo = null;
+    fCola.forEach(function (f) { try { URL.revokeObjectURL(f.url); } catch (e) {} });
+    fCola = [];
+    fPintarCola();
     $("fFileInfo").className = "f-detected"; $("fFileInfo").innerHTML = "";
     $("fDetect").className = "f-detected"; $("fDetect").innerHTML = "";
     mensaje($("fMsg"), "");
   }
 
-  function fGuardar() {
-    var msg = $("fMsg");
-    var ruta = "";
-    if (fOrigen === "archivo") {
-      if (!fArchivo) { mensaje(msg, "Elegí una foto.", "err"); return; }
-      ruta = "local:" + fArchivo.clave;
-    } else {
-      ruta = $("fLink").value.trim();
-      if (!ruta) { mensaje(msg, "Pegá el enlace o la ruta de la foto.", "err"); return; }
-    }
-
-    var destino = $("fDest").value;
-    var pie = $("fPie").value.trim();
-    var local = LSD.esLocal(ruta);
-
+  /** Coloca una ruta ya resuelta en el destino elegido. */
+  function fColocar(ruta, destino, pie) {
     if (destino === "portada") {
       S.set("site.heroImage", ruta);
     } else if (destino.indexOf("bloque:") === 0) {
@@ -367,15 +450,67 @@
     } else {
       S.write(function (st) {
         if (!Array.isArray(st.media.gallery)) st.media.gallery = [];
-        st.media.gallery.push({ src: ruta, pie: pie });
+        st.media.gallery.push({ src: ruta, pie: pie || "" });
       });
     }
+  }
 
-    fLimpiar();
-    mensaje(msg, local
-      ? "Foto añadida. Está guardada en este navegador: para que la vean los visitantes hay que publicarla."
-      : "Foto añadida.", local ? "warn" : "ok");
-    fLista();
+  function fGuardar() {
+    var msg = $("fMsg");
+    var destino = $("fDest").value;
+    var pie = $("fPie").value.trim();
+
+    /* --- por enlace --- */
+    if (fOrigen === "enlace") {
+      var ruta = $("fLink").value.trim();
+      if (!ruta) { mensaje(msg, "Pegá el enlace o la ruta de la foto.", "err"); return; }
+      fColocar(ruta, destino, pie);
+      fLimpiar();
+      mensaje(msg, "Foto añadida.", "ok");
+      fLista();
+      return;
+    }
+
+    /* --- por archivo --- */
+    if (!fCola.length) { mensaje(msg, "Elegí al menos una foto.", "err"); return; }
+
+    // La portada y los bloques admiten una sola foto: mejor decirlo que
+    // guardar la primera y descartar el resto en silencio.
+    if (destino !== "momentos" && fCola.length > 1) {
+      mensaje(msg, "Ahí va una sola foto y elegiste " + fCola.length +
+        ". Sacá las que sobren, o mandalas a «Momentos en el club».", "err");
+      return;
+    }
+
+    if (fCola.some(function (f) { return !f.listo; })) {
+      mensaje(msg, "Esperá un segundo: todavía se están preparando las fotos.", "warn");
+      return;
+    }
+
+    var lista = fCola.slice();
+    var pendientes = lista.length, fallos = 0, error = "";
+    mensaje(msg, "Guardando…", "warn");
+
+    lista.forEach(function (f) {
+      LSD.files.guardar(f.file, function (err, clave) {
+        if (err) { fallos++; error = err.message || ""; }
+        else fColocar("local:" + clave, destino, pie);
+        if (--pendientes) return;
+
+        var puestas = lista.length - fallos;
+        fLimpiar();
+        if (!puestas) {
+          mensaje(msg, "No se pudo guardar ninguna. " + esc(error), "err");
+          return;
+        }
+        var partes = [puestas + (puestas === 1 ? " foto añadida" : " fotos añadidas")];
+        if (fallos) partes.push(fallos + " no se pudieron guardar: " + esc(error));
+        mensaje(msg, partes.join(" · ") +
+          ". Quedan en este navegador: para que las vean los visitantes hay que publicarlas.",
+          fallos ? "warn" : "ok");
+        fLista();
+      });
+    });
   }
 
   function fLista() {
@@ -422,10 +557,239 @@
   }
 
   /* =========================================================
+     PESTAÑA ARCHIVOS
+     ---------------------------------------------------------
+     Todo lo cargado en una sola lista, con la carpeta donde
+     está cada cosa y un desplegable para cambiarla. Es lo que
+     antes obligaba a abrir «Editar» o a usar el comando mover.
+     ========================================================= */
+
+  /** Junta vídeos y fotos en filas con la misma forma. */
+  function aFilas() {
+    var c = S.config;
+    var filas = [];
+
+    (c.media.videos || []).forEach(function (v, i) {
+      filas.push({
+        clase: "video", i: i, id: v.id,
+        nombre: v.title || v.id,
+        origen: LSD.esLocal(v.url) ? "archivo de este navegador" : LSD.providerLabel(v.provider),
+        thumb: LSD.thumbUrl(v), src: v.url,
+        carpeta: v.block || "", etiqueta: "vídeo"
+      });
+    });
+
+    if (c.site.heroImage) {
+      filas.push({
+        clase: "foto", tipo: "portada", nombre: aNombre(c.site.heroImage),
+        origen: "", thumb: LSD.mediaUrl(c.site.heroImage), src: c.site.heroImage,
+        carpeta: "portada", etiqueta: "foto"
+      });
+    }
+    Object.keys(c.media.images || {}).forEach(function (id) {
+      filas.push({
+        clase: "foto", tipo: "bloque", id: id, nombre: aNombre(c.media.images[id]),
+        origen: "", thumb: LSD.mediaUrl(c.media.images[id]), src: c.media.images[id],
+        carpeta: "bloque:" + id, etiqueta: "foto"
+      });
+    });
+    (c.media.gallery || []).forEach(function (f, i) {
+      filas.push({
+        clase: "foto", tipo: "galeria", i: i, nombre: f.pie || aNombre(f.src),
+        origen: "", thumb: LSD.mediaUrl(f.src), src: f.src,
+        carpeta: "momentos", etiqueta: "foto"
+      });
+    });
+
+    return filas;
+  }
+
+  /** De una ruta o clave local, algo legible para llamar al archivo. */
+  function aNombre(ruta) {
+    if (LSD.esLocal(ruta)) {
+      var info = LSD.files.info(ruta.slice(6));
+      return info ? info.nombre : "archivo";
+    }
+    return String(ruta).split("/").pop().split("?")[0] || ruta;
+  }
+
+  /** Nombre de la carpeta tal y como se lee en la lista. */
+  function aCarpetaLabel(carpeta) {
+    if (carpeta === "portada") return "Portada del sitio";
+    if (carpeta === "momentos") return "Momentos en el club";
+    var id = carpeta.indexOf("bloque:") === 0 ? carpeta.slice(7) : carpeta;
+    var b = LSD.blockById(id);
+    return b ? b.code + " · " + b.title : (id ? id : "Sin carpeta");
+  }
+
+  /** Opciones del desplegable: los vídeos van a bloques; las fotos, también a portada y momentos. */
+  function aOpciones(fila) {
+    var html = "";
+    if (fila.clase === "foto") {
+      html += '<option value="momentos">Momentos en el club</option>' +
+              '<option value="portada">Portada del sitio</option>';
+      M.blocks.forEach(function (b) {
+        html += '<option value="bloque:' + b.id + '">' + esc(b.code + " · " + b.title) + "</option>";
+      });
+    } else {
+      html += '<option value="">— sin carpeta —</option>';
+      M.blocks.forEach(function (b) {
+        html += '<option value="' + b.id + '">' + esc(b.code + " · " + b.title) + "</option>";
+      });
+    }
+    return html;
+  }
+
+  function aRellenarFiltro() {
+    var sel = $("aCarpeta");
+    var html = '<option value="">Todas</option>' +
+      '<option value="portada">Portada del sitio</option>' +
+      '<option value="momentos">Momentos en el club</option>';
+    M.blocks.forEach(function (b) {
+      html += '<option value="bloque:' + b.id + '">' + esc(b.code + " · " + b.title) + "</option>";
+    });
+    html += '<option value="sin">Sin carpeta</option>';
+    sel.innerHTML = html;
+  }
+
+  function aLista() {
+    var caja = $("aList");
+    var tipo = $("aTipo").value;
+    var carp = $("aCarpeta").value;
+    var todas = aFilas();
+
+    var filas = todas.filter(function (r) {
+      if (tipo && r.clase !== tipo) return false;
+      if (!carp) return true;
+      if (carp === "sin") return !r.carpeta;
+      // un vídeo guarda el bloque pelado; una foto, con el prefijo
+      return r.carpeta === carp || (r.clase === "video" && carp === "bloque:" + r.carpeta);
+    });
+
+    var pesoLocal = todas.reduce(function (t, r) {
+      if (!LSD.esLocal(r.src)) return t;
+      var info = LSD.files.info(r.src.slice(6));
+      return t + (info ? info.peso : 0);
+    }, 0);
+
+    $("aResumen").innerHTML = esc(todas.length + (todas.length === 1 ? " archivo" : " archivos") +
+      (filas.length !== todas.length ? " · " + filas.length + " en pantalla" : "") +
+      (pesoLocal ? " · " + LSD.pesoLegible(pesoLocal) + " guardados en este navegador" : ""));
+
+    if (!filas.length) {
+      caja.innerHTML = '<p class="f-vacio">' + (todas.length
+        ? "Ningún archivo en esa carpeta."
+        : "Todavía no hay nada cargado. Subilo desde las pestañas de Vídeos y Fotos.") + "</p>";
+      return;
+    }
+
+    caja.innerHTML = filas.map(function (r, k) {
+      var pendiente = LSD.esLocal(r.src);
+      var valor = r.clase === "video"
+        ? r.carpeta
+        : (r.carpeta.indexOf("bloque:") === 0 || r.carpeta === "portada" || r.carpeta === "momentos"
+            ? r.carpeta : "momentos");
+      return '<div class="f-item a-item' + (pendiente ? " is-pendiente" : "") + '">' +
+        (r.thumb ? '<img src="' + esc(r.thumb) + '" alt="">'
+                 : '<span class="f-ph">' + esc(r.etiqueta) + "</span>") +
+        '<div class="f-body"><div class="f-t">' + esc(r.nombre) +
+          (pendiente ? '<span class="f-pend">sin publicar</span>' : "") + "</div>" +
+        '<div class="f-d">' + esc(r.etiqueta + (r.origen ? " · " + r.origen : "") +
+          (pendiente ? "" : " · " + r.src)) + "</div></div>" +
+        '<label class="a-carpeta"><span>Carpeta</span>' +
+          '<select data-k="' + k + '">' + aOpciones(r) + "</select></label>" +
+        '<div class="f-acts"><button class="f-del" data-quita="' + k + '">Quitar</button></div>' +
+        "</div>";
+    }).join("");
+
+    // El valor se pone después: así una carpeta que ya no existe no rompe el desplegable
+    Array.prototype.forEach.call(caja.querySelectorAll("select[data-k]"), function (sel) {
+      var r = filas[parseInt(sel.getAttribute("data-k"), 10)];
+      sel.value = r.clase === "video" ? (r.carpeta || "") : r.carpeta;
+      sel.addEventListener("change", function () { aMover(r, sel.value); });
+    });
+
+    Array.prototype.forEach.call(caja.querySelectorAll("button[data-quita]"), function (btn) {
+      btn.addEventListener("click", function () {
+        var r = filas[parseInt(btn.getAttribute("data-quita"), 10)];
+        aQuitar(r);
+        mensaje($("aMsg"), "«" + esc(r.nombre) + "» quitado del sitio.", "ok");
+        aLista(); vLista(); fLista();
+      });
+    });
+  }
+
+  /** Saca la fila de donde está, sin borrar el archivo del navegador. */
+  function aQuitar(r) {
+    if (r.clase === "video") {
+      if (LSD.esLocal(r.src)) LSD.files.borrar(r.src.slice(6));
+      S.write(function (st) {
+        var i = st.media.videos.findIndex(function (v) { return v.id === r.id; });
+        if (i >= 0) st.media.videos.splice(i, 1);
+      });
+      return;
+    }
+    if (r.tipo === "portada") S.set("site.heroImage", "");
+    else if (r.tipo === "bloque") S.write(function (st) { delete st.media.images[r.id]; });
+    else S.write(function (st) { st.media.gallery.splice(r.i, 1); });
+    if (LSD.esLocal(r.src)) LSD.files.borrar(r.src.slice(6));
+  }
+
+  /** Cambia de carpeta. La portada y los bloques admiten una sola foto:
+     si el destino está ocupado, la que estaba pasa a «Momentos» en vez
+     de perderse, y el mensaje lo dice. */
+  function aMover(r, destino) {
+    var msg = $("aMsg");
+
+    if (r.clase === "video") {
+      S.write(function (st) {
+        var v = st.media.videos.filter(function (x) { return x.id === r.id; })[0];
+        if (!v) return;
+        v.block = destino;
+        v.work = null;   // una unidad de otro bloque no existe acá
+      });
+      mensaje(msg, "«" + esc(r.nombre) + "» → " + esc(destino ? aCarpetaLabel(destino) : "sin carpeta") + ".", "ok");
+      aLista(); vLista();
+      return;
+    }
+
+    if (destino === r.carpeta) return;
+
+    var c = S.config;
+    var desplazada = "";
+    if (destino === "portada" && c.site.heroImage) desplazada = c.site.heroImage;
+    if (destino.indexOf("bloque:") === 0) {
+      var id = destino.slice(7);
+      if (c.media.images && c.media.images[id]) desplazada = c.media.images[id];
+    }
+
+    var ruta = r.src;
+    aQuitarSinBorrar(r);
+    if (desplazada) {
+      S.write(function (st) {
+        if (!Array.isArray(st.media.gallery)) st.media.gallery = [];
+        st.media.gallery.push({ src: desplazada, pie: "" });
+      });
+    }
+    fColocar(ruta, destino, r.clase === "foto" && destino === "momentos" ? r.nombre : "");
+
+    mensaje(msg, "Movida a " + esc(aCarpetaLabel(destino)) + "." +
+      (desplazada ? " La que estaba ahí pasó a «Momentos en el club»." : ""), "ok");
+    aLista(); fLista();
+  }
+
+  /** Como aQuitar, pero conservando el archivo: se está moviendo, no borrando. */
+  function aQuitarSinBorrar(r) {
+    if (r.tipo === "portada") S.set("site.heroImage", "");
+    else if (r.tipo === "bloque") S.write(function (st) { delete st.media.images[r.id]; });
+    else S.write(function (st) { st.media.gallery.splice(r.i, 1); });
+  }
+
+  /* =========================================================
      PESTAÑAS
      ========================================================= */
   function irA(tab) {
-    ["videos", "fotos", "consola"].forEach(function (t) {
+    ["videos", "fotos", "archivos", "consola"].forEach(function (t) {
       var pane = $("pane" + t.charAt(0).toUpperCase() + t.slice(1));
       if (pane) pane.classList.toggle("hidden", t !== tab);
     });
@@ -435,6 +799,7 @@
     if (tab === "consola" && LSD.term) setTimeout(function () { LSD.term.focus(); }, 60);
     if (tab === "videos") vLista();
     if (tab === "fotos") fLista();
+    if (tab === "archivos") { mensaje($("aMsg"), ""); aLista(); }
   }
   LSD.panelIrA = irA;
 
@@ -465,23 +830,29 @@
       $("vTest").addEventListener("click", vProbar);
       $("vReset").addEventListener("click", function () { vLimpiar(true); });
 
-      zonaArrastre($("vDrop"), $("vFile"), "video", function (file) {
-        if (file.size > MAX_VIDEO) {
-          mensaje($("vMsg"), "El archivo pesa " + LSD.pesoLegible(file.size) +
-            ". Por encima de 25 MB conviene subirlo a YouTube y pegar el enlace.", "err");
-          return;
-        }
+      var vTomar = function (archivos) {
+        var file = archivos[0];
+        if (!file) return;
+        var pesado = file.size > VIDEO_PESADO;
+        mensaje($("vMsg"), "Guardando el vídeo…", "warn");
         LSD.files.guardar(file, function (err, clave) {
-          if (err) { mensaje($("vMsg"), "No se pudo guardar el archivo: " + err.message, "err"); return; }
+          if (err) { mensaje($("vMsg"), "No se pudo guardar el vídeo: " + esc(err.message), "err"); return; }
           vArchivo = { clave: clave, nombre: file.name, peso: file.size };
           $("vFileInfo").className = "f-detected is-on";
           $("vFileInfo").innerHTML =
             '<video src="' + esc(LSD.files.url(clave)) + '" muted></video>' +
             '<span class="d-txt"><b>' + esc(LSD.pesoLegible(file.size)) + "</b><br><em>" +
             esc(file.name) + "</em></span>";
-          mensaje($("vMsg"), "");
+          /* Entra igual: el peso sólo cambia lo que conviene hacer después. */
+          mensaje($("vMsg"), pesado
+            ? "Guardado, y se ve acá al instante. Pesa " + esc(LSD.pesoLegible(file.size)) +
+              ": para publicarlo conviene subirlo a YouTube y pegar el enlace, o pasármelo y lo preparo yo."
+            : "", pesado ? "warn" : "ok");
         });
-      });
+      };
+      conectarSelector($("vPickLib"), $("vFile"), vTomar, $("vMsg"));
+      conectarSelector($("vPickCam"), $("vFileCam"), vTomar, $("vMsg"));
+      zonaArrastre($("vDrop"), "video", vTomar);
 
       $("vCopy").addEventListener("click", function () {
         var json = JSON.stringify(S.config.media.videos, null, 2);
@@ -510,23 +881,9 @@
           '<span class="d-txt"><em>' + esc(r) + "</em></span>";
       });
 
-      zonaArrastre($("fDrop"), $("fFile"), "image", function (file) {
-        if (file.size > MAX_FOTO) {
-          mensaje($("fMsg"), "La foto pesa " + LSD.pesoLegible(file.size) +
-            ". Comprimila por debajo de 8 MB antes de subirla.", "err");
-          return;
-        }
-        LSD.files.guardar(file, function (err, clave) {
-          if (err) { mensaje($("fMsg"), "No se pudo guardar la foto: " + err.message, "err"); return; }
-          fArchivo = { clave: clave, nombre: file.name, peso: file.size };
-          $("fFileInfo").className = "f-detected is-on";
-          $("fFileInfo").innerHTML =
-            '<img src="' + esc(LSD.files.url(clave)) + '" alt="">' +
-            '<span class="d-txt"><b>' + esc(LSD.pesoLegible(file.size)) + "</b><br><em>" +
-            esc(file.name) + "</em></span>";
-          mensaje($("fMsg"), "");
-        });
-      });
+      conectarSelector($("fPickLib"), $("fFile"), fEncolar, $("fMsg"));
+      conectarSelector($("fPickCam"), $("fFileCam"), fEncolar, $("fMsg"));
+      zonaArrastre($("fDrop"), "image", fEncolar);
 
       $("fCopy").addEventListener("click", function () {
         var c = S.config;
@@ -541,6 +898,11 @@
         });
       });
 
+      /* --- archivos --- */
+      aRellenarFiltro();
+      $("aTipo").addEventListener("change", aLista);
+      $("aCarpeta").addEventListener("change", aLista);
+
       $("fPieCampo").style.display = "";
       vLista();
       fLista();
@@ -550,6 +912,7 @@
       if (!$("paneVideos")) return;
       if (!$("paneVideos").classList.contains("hidden")) vLista();
       if (!$("paneFotos").classList.contains("hidden")) fLista();
+      if (!$("paneArchivos").classList.contains("hidden")) aLista();
     }
   };
 })(window, document);

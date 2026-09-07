@@ -33,6 +33,16 @@
     req.onerror = function () { cb(req.error || new Error("No se pudo abrir el almacén.")); };
   }
 
+  /** Un QuotaExceededError dice poco: se cambia por lo que hay que hacer. */
+  function traducir(err) {
+    var nombre = err && err.name ? err.name : "";
+    if (nombre === "QuotaExceededError" || /quota/i.test(nombre)) {
+      return new Error("Se llenó el espacio que el navegador le da a esta página. " +
+        "Publicá lo que ya subiste y después escribí «archivos limpiar» en la consola para liberar sitio.");
+    }
+    return err || new Error("No se pudo guardar el archivo.");
+  }
+
   function nuevaClave() {
     return "f" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   }
@@ -73,13 +83,22 @@
       };
       var tx;
       try { tx = db.transaction(ALMACEN, "readwrite").objectStore(ALMACEN).put(reg); }
-      catch (e) { cb(e); return; }
+      catch (e) { cb(traducir(e)); return; }
       tx.onsuccess = function () {
         try { urls[clave] = URL.createObjectURL(file); } catch (e) {}
         meta[clave] = { nombre: reg.nombre, tipo: reg.tipo, peso: reg.peso, fecha: reg.fecha };
         cb(null, clave);
       };
-      tx.onerror = function () { cb(tx.error || new Error("No se pudo guardar el archivo.")); };
+      tx.onerror = function () { cb(traducir(tx.error)); };
+    },
+
+    /** Cuánto espacio hay usado y disponible, si el navegador lo dice. */
+    espacio: function (cb) {
+      var nav = w.navigator;
+      if (!nav || !nav.storage || !nav.storage.estimate) { cb(null); return; }
+      nav.storage.estimate().then(function (e) {
+        cb({ usado: e.usage || 0, total: e.quota || 0 });
+      }, function () { cb(null); });
     },
 
     borrar: function (clave, cb) {
