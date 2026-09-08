@@ -56,6 +56,25 @@ window.LSD_CONFIG = {
         duration: "0:09",
         desc: "", poster: "", featured: false,
         added: "2026-09-08"
+      },
+      {
+        id: "smg-youtube",
+        title: "SMG · Side Medium Game",
+        /* Subido por Luciano a YouTube. No pude abrirlo desde acá para
+           comprobar qué tarea es: queda en Juegos Reducidos y se mueve
+           desde el panel si corresponde a otro bloque. */
+        url: "https://youtu.be/8qhsf9m6MZw",
+        provider: "youtube",
+        vid: "8qhsf9m6MZw",
+        start: null,
+        end: null,
+        block: "ssg",
+        work: null,
+        dia: "",
+        tags: ["SMG", "reducido"],
+        duration: "",
+        desc: "", poster: "", featured: true,
+        added: "2026-09-08"
       }
     ],
 
