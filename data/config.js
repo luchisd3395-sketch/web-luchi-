@@ -99,7 +99,7 @@ window.LSD_CONFIG = {
         end: null,
         block: "warmup",
         work: null,
-        dia: "",
+        dia: "MD-4",
         tags: ["activación", "pase", "warm up"],
         duration: "",
         desc: "", poster: "", featured: false,
