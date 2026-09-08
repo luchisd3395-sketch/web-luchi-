@@ -332,6 +332,7 @@
 }
 /* La carpeta va en la fila, no escondida detrás de «Editar» */
 .a-carpeta { display: flex; flex-direction: column; gap: .25rem; flex: 0 0 190px; }
+.a-carpeta-sm { flex: 0 0 108px; }
 .a-carpeta > span {
   font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: #5f6f66;
 }

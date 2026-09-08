@@ -192,17 +192,32 @@
             con qué carga relativa y con qué intención.</p>
         </div>
       </div>
-      <div class="micro-table-wrap reveal">
-        <table class="micro-table">
-          <thead>
-            <tr>
-              <th>Día</th><th>Tipo</th><th>Foco</th><th>Contenidos</th><th>Duración</th><th>Carga</th>
-            </tr>
-          </thead>
-          <tbody id="microBody"></tbody>
-        </table>
+      <!-- Gráfico tocable: cada barra abre su día -->
+      <div class="morfo reveal">
+        <div class="morfo-tabs" id="morfoTabs" role="tablist" aria-label="Morfociclos"></div>
+        <div class="morfo-plot">
+          <div class="morfo-fases" id="morfoFases" aria-hidden="true"></div>
+          <div class="morfo-barras" id="morfoBarras"></div>
+        </div>
+        <div class="morfo-dia" id="morfoDia" hidden></div>
+        <p class="morfo-pista" id="morfoPista">Tocá una barra para entrar en el día. Con el teclado: ← → para moverte, Esc para cerrar.</p>
       </div>
+
       <div class="load-legend reveal" id="microLegend"></div>
+
+      <details class="morfo-tabla reveal">
+        <summary>Ver la semana en tabla</summary>
+        <div class="micro-table-wrap">
+          <table class="micro-table">
+            <thead>
+              <tr>
+                <th>Día</th><th>Tipo</th><th>Foco</th><th>Contenidos</th><th>Duración</th><th>Carga</th>
+              </tr>
+            </thead>
+            <tbody id="microBody"></tbody>
+          </table>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -324,6 +339,7 @@
     <div class="f-row">
       <label class="f-field"><span>Bloque</span><select id="vBlock"></select></label>
       <label class="f-field"><span>Unidad de trabajo · opcional</span><select id="vWork"></select></label>
+      <label class="f-field"><span>Día del microciclo · opcional</span><select id="vDia"></select></label>
     </div>
 
     <label class="f-field"><span>Etiquetas · opcional</span>

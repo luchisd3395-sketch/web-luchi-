@@ -110,7 +110,8 @@
       videos: [],
       images: {},
       heroVideos: [],
-      gallery: []
+      gallery: [],
+      dias: {}          /* fotos de cada día del microciclo: "MD-3": [rutas] */
     }
   };
   LSD.DEFAULTS = DEFAULTS;
@@ -314,6 +315,7 @@
     if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
     if (!Array.isArray(state.media.heroVideos)) state.media.heroVideos = [];
     if (!Array.isArray(state.media.gallery)) state.media.gallery = [];
+    if (!state.media.dias || typeof state.media.dias !== "object") state.media.dias = {};
     if (!Array.isArray(state.layout.sections)) state.layout.sections = clone(DEFAULTS.layout.sections);
     if (!Array.isArray(state.layout.hidden)) state.layout.hidden = [];
     if (!Array.isArray(state.layout.inverted)) state.layout.inverted = [];
@@ -387,6 +389,7 @@
     if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
     if (!Array.isArray(state.media.heroVideos)) state.media.heroVideos = [];
     if (!Array.isArray(state.media.gallery)) state.media.gallery = [];
+    if (!state.media.dias || typeof state.media.dias !== "object") state.media.dias = {};
       persist();
       store.emit("*");
     },

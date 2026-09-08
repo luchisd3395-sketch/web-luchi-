@@ -40,31 +40,31 @@ window.LSD_CONFIG = {
       }
     ],
 
-    /* Foto de cada bloque. Para cambiarlas:
-         imagen bloque <id> assets/img/<archivo>.jpg
-       Sin foto todavía: posesion · finalizacion · abp */
+    /* Foto de cada bloque: las diez carpetas tienen la suya. Para cambiarlas,
+       desde el panel (pestaña «Archivos») o con el comando:
+         imagen bloque <id> assets/img/<archivo>.jpg */
     images: {
-      marco:      "assets/img/cuerpo-tecnico-trabajo.jpg",
-      fuerza:     "assets/img/fuerza-barra.jpg",
-      ssg:        "assets/img/grupo-entrenamiento.jpg",
-      tactico:    "assets/img/direccion-tactica.jpg",
-      carga:      "assets/img/control-de-carga.jpg",
-      microciclo: "assets/img/plantel.jpg"
+      modelo:            "assets/img/cuerpo-tecnico-trabajo.jpg",
+      sesion:            "assets/img/planilla-entrenamiento.jpg",
+      warmup:            "assets/img/portada-entrada-en-calor.jpg",
+      fuerza:            "assets/img/fuerza-barra.jpg",
+      ssg:               "assets/img/grupo-entrenamiento.jpg",
+      posesion:          "assets/img/coordinacion.jpg",
+      circuitos:         "assets/img/carrera-continua.jpg",
+      "tactico-analitico": "assets/img/direccion-de-sesion.jpg",
+      "tactico-global":  "assets/img/direccion-tactica.jpg",
+      carga:             "assets/img/control-de-carga.jpg"
     },
 
     /* Sección «Momentos en el club». Para sumar más:
          momentos add assets/img/<archivo>.jpg --pie "Texto" */
     gallery: [
-      { src: "assets/img/portada-entrada-en-calor.jpg", pie: "Entrada en calor antes del partido" },
       { src: "assets/img/arena-bolsas.jpg",            pie: "Fuerza específica en arena" },
       { src: "assets/img/arena-sprints.jpg",           pie: "Sprints en arena" },
       { src: "assets/img/gps-en-vivo.jpg",             pie: "Datos de GPS en vivo durante la sesión" },
       { src: "assets/img/atardecer-movilidad.jpg",     pie: "Movilidad al atardecer" },
       { src: "assets/img/cuerpo-tecnico.jpg",          pie: "Cuerpo técnico" },
-      { src: "assets/img/planilla-entrenamiento.jpg",  pie: "Planilla de sesión" },
-      { src: "assets/img/coordinacion.jpg",            pie: "Coordinación en la activación" },
-      { src: "assets/img/direccion-de-sesion.jpg",     pie: "Dirigiendo la sesión" },
-      { src: "assets/img/carrera-continua.jpg",        pie: "Trabajo en el predio" },
+      { src: "assets/img/plantel.jpg",                 pie: "El plantel" },
       { src: "assets/img/retrato-profe.jpg",           pie: "En el predio" },
       { src: "assets/img/cuerpo-tecnico-cancha.jpg",   pie: "Cuerpo técnico en el campo de entrenamiento" },
       { src: "assets/img/estadio-del-club.jpg",        pie: "Estadio del club" },

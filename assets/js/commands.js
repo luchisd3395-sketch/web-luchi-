@@ -2145,10 +2145,10 @@
         ["SSG 3v3 alta densidad", "ssg", "ssg-1v1", "SSG,duelo"],
         ["Nordic curl · progresión", "fuerza", "prevencion", "prevención,isquiosurales"],
         ["Trineo pesado · aceleración", "fuerza", "fuerza-especifica", "fuerza,campo"],
-        ["Salida de balón 6v4 + arqueros", "tactico", "salida-balon", "ofensivo,construcción"],
-        ["Presión alta con activación por señal", "tactico", "presion-alta", "defensivo,presión"],
-        ["Córner ofensivo · rutina de bloqueo", "abp", "corner-of", "ABP,gol"],
-        ["Circuito de finalización con arquero", "finalizacion", "circuitos-finalizacion", "finalización,técnico"]
+        ["Salida de balón 6v4 + arqueros", "tactico-analitico", "salida-balon", "ofensivo,construcción"],
+        ["Presión alta con activación por señal", "tactico-global", "presion-alta", "defensivo,presión"],
+        ["Córner ofensivo · rutina de bloqueo", "tactico-global", "abp-ofensivo", "ABP,gol"],
+        ["Circuito de finalización con arquero", "circuitos", "circuitos-finalizacion", "finalización,técnico"]
       ];
       S.write(function (st) {
         samples.forEach(function (s, i) {

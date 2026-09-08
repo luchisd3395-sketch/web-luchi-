@@ -114,8 +114,8 @@ Abajo, la lista de lo cargado, con editar, borrar y reordenar.
 
 Lo mismo para las fotos: **«Elegir fotos»** —se pueden marcar varias de una vez— o **«Sacar una
 foto»**, o pegar una ruta. Después se elige dónde van: portada, un bloque concreto o «Momentos en
-el club» (con su pie de foto). La portada y los bloques admiten una sola foto y lo dicen si se
-eligen más; «Momentos» acepta todas las que haya.
+el club» (con su pie de foto) o un día del microciclo. La portada y los bloques admiten una sola
+foto y lo dicen si se eligen más; «Momentos» y los días aceptan todas las que haya.
 
 Lo elegido no se guarda de inmediato: aparece en una **cola de repaso** con su miniatura, su nombre
 y su peso, y cada una se puede sacar con la ✕ antes de confirmar.
@@ -142,13 +142,15 @@ ya no usa ninguna foto ni ningún vídeo.
 Todo lo que hay cargado en el sitio —fotos y vídeos juntos— en una sola lista, y al lado de cada
 uno **la carpeta en la que está**, en un desplegable. Cambiarlo mueve el archivo ahí mismo: un
 vídeo pasa de un bloque a otro (y se le limpia la unidad de trabajo, que ya no le corresponde), y
-una foto puede ir a la portada, a un bloque o a «Momentos en el club».
+una foto puede ir a la portada, a un bloque, a «Momentos en el club» o a un **día del microciclo**.
+Los vídeos llevan además un segundo desplegable, el **día**, para que aparezcan al abrir ese día en
+el gráfico del microciclo.
 
 La portada y cada bloque admiten una sola foto. Si el destino ya tiene una, **la que estaba no se
 pierde: pasa a «Momentos en el club»**, y el mensaje lo dice.
 
-Arriba hay dos filtros, por tipo y por carpeta, con el recuento y el peso de lo que está guardado
-en el navegador.
+Arriba hay dos filtros, por tipo y por carpeta —los diez bloques, la portada, momentos y cada día
+del microciclo—, con el recuento y el peso de lo que está guardado en el navegador.
 
 ### Consola
 
@@ -435,7 +437,7 @@ mundo al entrar.
 ```
 index.html                  Estructura de la página
 data/
-  methodology.js            TODO el contenido metodológico (bloques, unidades, microciclo)
+  methodology.js            TODO el contenido metodológico (bloques, unidades, morfociclos)
   config.js                 Configuración publicada del sitio (la genera `publicar`)
 assets/
   css/base.css              Tokens de diseño, reset y tipografía
@@ -490,35 +492,62 @@ Y cada unidad de trabajo se describe siempre con la misma ficha, para mantener u
 Añadir un bloque o una unidad es agregar un objeto más al array: la página, los filtros, el buscador
 y el autocompletado de la terminal lo recogen solos.
 
-**Estado actual del archivo:** 9 bloques · 62 unidades de trabajo · microciclo tipo de 7 días.
+**Estado actual del archivo:** 10 bloques · 49 unidades de trabajo · dos morfociclos, de 6 y de 5 días.
 
 ---
 
-## 10. La escala de intensidad del microciclo
+## 10. El microciclo: gráfico, escala y días
 
-Cada día del microciclo lleva un nivel declarado, con su color:
+La sección abre con el **gráfico de la semana**, dibujado a partir de las láminas del club: una
+barra por día, con altura por carga, color por nivel y los arcos de fase encima —compensación,
+incorporación, descarga + ajuste táctico—. **Cada barra es un botón**: al tocarla se abre el día
+con su acentuación, sus claves, las tareas del archivo etiquetadas con ese día y sus fotos y
+vídeos. Se mueve con ← →, se cierra con Esc, y debajo queda la misma semana en tabla, plegada.
 
-| Nivel | Color | Días |
+Arriba hay dos solapas, que son los dos morfociclos que usa el club:
+
+| | 6 días · domingo → domingo | 5 días · domingo → sábado |
 |---|---|---|
-| **Muy intenso** | Rojo | MD-4 · MD-3 · MD |
-| **Intenso** | Naranja | MD+1 |
+| MD+1 | Compensación (fútbol de 60') | Descanso |
+| MD+2 | Descanso | Compensación + G2 recovery |
+| MD-4 | Tensión · acentuación **ofensiva** | Tensión · acentuación **ofensiva** |
+| MD-3 | Velocidad y duración · acentuación **defensiva** | Duración · acentuación **defensiva** |
+| MD-2 | Táctico y ABP | *(no existe)* |
+| MD-1 | Activación · plan de juego | Plan de juego + ABP |
+
+En la semana de 5 días se dan vuelta el descanso y la compensación, y sin MD-2 el ajuste táctico y
+el balón parado se juntan en el MD-1.
+
+Cada día lleva un nivel declarado, con su color:
+
+| Nivel | Color | Días (semana de 6) |
+|---|---|---|
+| **Muy intenso** | Rojo | MD |
+| **Intenso** | Naranja | MD+1 · MD-4 · MD-3 |
 | **Moderado-alto** | Ámbar | MD-1 |
 | **Moderado** | Amarillo | MD-2 |
 | **Bajo** | Verde | MD+2 |
 
-El **moderado-alto** existe porque el MD-1 no es ni una cosa ni la otra: 60' de balón parado y
-repaso táctico piden más que un día moderado y menos que uno intenso. Y el MD+1 va en naranja por
-los que no jugaron, que compensan con fútbol de 60': el nivel declara el día del grupo que más
-trabaja, no el del que se recupera.
+Es la escala de sus propias láminas —B, M, A, MA—, con un escalón más: el **moderado-alto** existe
+porque el MD-1 no es ni una cosa ni la otra. El partido es el único día en rojo; los de acentuación
+van en naranja. Y el MD+1 está en naranja por los que no jugaron, que compensan con fútbol de 60':
+el nivel declara el día del grupo que más trabaja, no el del que se recupera.
 
-El nivel está declarado en `data/methodology.js` (campo `nivel`), no se deduce del porcentaje: la
+El gráfico y la tabla salen del **mismo array** `morfociclos` de `data/methodology.js`, así que no
+pueden contradecirse. El nivel está declarado ahí (campo `nivel`) y no se deduce del porcentaje: la
 exigencia de un día es una valoración metodológica, no una cuenta. La barra muestra la magnitud
 relativa; el nivel, lo que se le pide al jugador. Si un día no lleva `nivel`, se deduce de la carga
 (≥85 muy intenso · ≥60 intenso · ≥35 moderado · resto bajo).
 
 ```js
-{ day: "MD-4", tipo: "Tensión", carga: 90, nivel: "muy-intenso", … }
+{ day: "MD-4", tipo: "Tensión", acentuacion: "Acentuación ofensiva",
+  fase: "Incorporación", carga: 90, nivel: "intenso", dur: "80-95'", claves: [ … ] }
 ```
+
+**Las fotos y los vídeos de cada día** se asignan desde el panel: en Vídeos hay un desplegable
+«Día del microciclo», en Fotos los destinos incluyen cada día, y en la pestaña Archivos cada vídeo
+lleva su día al lado de la carpeta. Se guardan en `media.dias` de la configuración y en el campo
+`dia` de cada vídeo.
 
 Dos detalles de la implementación:
 

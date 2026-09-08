@@ -38,6 +38,26 @@
     sel.innerHTML = html;
   }
 
+  /** Los días que existen en los morfociclos, sin repetir. Sirve para
+     etiquetar un vídeo o una foto con el día al que pertenece. */
+  function diasDelCiclo() {
+    var vistos = {}, out = [];
+    (M.morfociclos || []).forEach(function (c) {
+      c.dias.forEach(function (d) {
+        if (vistos[d.day]) return;
+        vistos[d.day] = 1;
+        out.push(d.day);
+      });
+    });
+    return out;
+  }
+
+  function opcionesDia(sel, vacio) {
+    var html = '<option value="">' + esc(vacio || "— ninguno —") + "</option>";
+    diasDelCiclo().forEach(function (d) { html += '<option value="' + esc(d) + '">' + esc(d) + "</option>"; });
+    sel.innerHTML = html;
+  }
+
   function opcionesUnidad(sel, bloqueId) {
     var b = LSD.blockById(bloqueId);
     var html = '<option value="">— ninguna —</option>';
@@ -177,6 +197,7 @@
       $("vDetect").innerHTML = "";
     }
     $("vFrom").value = ""; $("vTo").value = ""; $("vTitle").value = ""; $("vTags").value = "";
+    $("vDia").value = "";
     $("vDur").textContent = "—";
     $("vPreview").classList.add("hidden");
     $("vPreview").innerHTML = "";
@@ -221,6 +242,7 @@
       title: titulo, url: url, provider: provider, vid: vid,
       start: desde, end: hasta,
       block: bloque, work: unidad,
+      dia: $("vDia").value || "",
       tags: $("vTags").value.split(/\s*,\s*/).filter(Boolean),
       duration: (desde != null && hasta != null) ? LSD.formatTime(hasta - desde) : "",
       desc: "", poster: "", featured: false,
@@ -335,6 +357,7 @@
     opcionesUnidad($("vWork"), v.block);
     $("vWork").value = v.work || "";
     $("vTags").value = (v.tags || []).join(", ");
+    $("vDia").value = v.dia || "";
     vDuracion();
     $("vSave").textContent = "Guardar cambios";
     mensaje($("vMsg"), "Editando «" + esc(v.title) + "».", "warn");
@@ -423,6 +446,9 @@
     M.blocks.forEach(function (b) {
       html += '<option value="bloque:' + b.id + '">Bloque ' + esc(b.code + " · " + b.title) + "</option>";
     });
+    diasDelCiclo().forEach(function (d) {
+      html += '<option value="dia:' + esc(d) + '">Día ' + esc(d) + " del microciclo</option>";
+    });
     sel.innerHTML = html;
   }
 
@@ -441,6 +467,13 @@
   function fColocar(ruta, destino, pie) {
     if (destino === "portada") {
       S.set("site.heroImage", ruta);
+    } else if (destino.indexOf("dia:") === 0) {
+      var dia = destino.slice(4);
+      S.write(function (st) {
+        if (!st.media.dias || typeof st.media.dias !== "object") st.media.dias = {};
+        if (!Array.isArray(st.media.dias[dia])) st.media.dias[dia] = [];
+        st.media.dias[dia].push(ruta);
+      });
     } else if (destino.indexOf("bloque:") === 0) {
       var id = destino.slice(7);
       S.write(function (st) {
@@ -476,7 +509,8 @@
 
     // La portada y los bloques admiten una sola foto: mejor decirlo que
     // guardar la primera y descartar el resto en silencio.
-    if (destino !== "momentos" && fCola.length > 1) {
+    var variasOk = destino === "momentos" || destino.indexOf("dia:") === 0;
+    if (!variasOk && fCola.length > 1) {
       mensaje(msg, "Ahí va una sola foto y elegiste " + fCola.length +
         ". Sacá las que sobren, o mandalas a «Momentos en el club».", "err");
       return;
@@ -575,7 +609,7 @@
         nombre: v.title || v.id,
         origen: LSD.esLocal(v.url) ? "archivo de este navegador" : LSD.providerLabel(v.provider),
         thumb: LSD.thumbUrl(v), src: v.url,
-        carpeta: v.block || "", etiqueta: "vídeo"
+        carpeta: v.block || "", dia: v.dia || "", etiqueta: "vídeo"
       });
     });
 
@@ -600,6 +634,15 @@
         carpeta: "momentos", etiqueta: "foto"
       });
     });
+    Object.keys(c.media.dias || {}).forEach(function (dia) {
+      (c.media.dias[dia] || []).forEach(function (src, i) {
+        filas.push({
+          clase: "foto", tipo: "dia", dia: dia, i: i, nombre: aNombre(src),
+          origen: "", thumb: LSD.mediaUrl(src), src: src,
+          carpeta: "dia:" + dia, etiqueta: "foto"
+        });
+      });
+    });
 
     return filas;
   }
@@ -617,6 +660,7 @@
   function aCarpetaLabel(carpeta) {
     if (carpeta === "portada") return "Portada del sitio";
     if (carpeta === "momentos") return "Momentos en el club";
+    if (carpeta.indexOf("dia:") === 0) return "Día " + carpeta.slice(4);
     var id = carpeta.indexOf("bloque:") === 0 ? carpeta.slice(7) : carpeta;
     var b = LSD.blockById(id);
     return b ? b.code + " · " + b.title : (id ? id : "Sin carpeta");
@@ -630,6 +674,9 @@
               '<option value="portada">Portada del sitio</option>';
       M.blocks.forEach(function (b) {
         html += '<option value="bloque:' + b.id + '">' + esc(b.code + " · " + b.title) + "</option>";
+      });
+      diasDelCiclo().forEach(function (d) {
+        html += '<option value="dia:' + esc(d) + '">Día ' + esc(d) + "</option>";
       });
     } else {
       html += '<option value="">— sin carpeta —</option>';
@@ -647,6 +694,9 @@
       '<option value="momentos">Momentos en el club</option>';
     M.blocks.forEach(function (b) {
       html += '<option value="bloque:' + b.id + '">' + esc(b.code + " · " + b.title) + "</option>";
+    });
+    diasDelCiclo().forEach(function (d) {
+      html += '<option value="dia:' + esc(d) + '">Día ' + esc(d) + "</option>";
     });
     html += '<option value="sin">Sin carpeta</option>';
     sel.innerHTML = html;
@@ -698,6 +748,12 @@
           (pendiente ? "" : " · " + r.src)) + "</div></div>" +
         '<label class="a-carpeta"><span>Carpeta</span>' +
           '<select data-k="' + k + '">' + aOpciones(r) + "</select></label>" +
+        (r.clase === "video"
+          ? '<label class="a-carpeta a-carpeta-sm"><span>Día</span><select data-dia="' + k + '">' +
+              '<option value="">— sin día —</option>' +
+              diasDelCiclo().map(function (d) { return '<option value="' + esc(d) + '">' + esc(d) + "</option>"; }).join("") +
+            "</select></label>"
+          : "") +
         '<div class="f-acts"><button class="f-del" data-quita="' + k + '">Quitar</button></div>' +
         "</div>";
     }).join("");
@@ -707,6 +763,20 @@
       var r = filas[parseInt(sel.getAttribute("data-k"), 10)];
       sel.value = r.clase === "video" ? (r.carpeta || "") : r.carpeta;
       sel.addEventListener("change", function () { aMover(r, sel.value); });
+    });
+
+    Array.prototype.forEach.call(caja.querySelectorAll("select[data-dia]"), function (sel) {
+      var r = filas[parseInt(sel.getAttribute("data-dia"), 10)];
+      sel.value = r.dia || "";
+      sel.addEventListener("change", function () {
+        S.write(function (st) {
+          var v = st.media.videos.filter(function (x) { return x.id === r.id; })[0];
+          if (v) v.dia = sel.value;
+        });
+        mensaje($("aMsg"), "«" + esc(r.nombre) + "» " +
+          (sel.value ? "queda en el día " + esc(sel.value) + " del microciclo." : "ya no está asignado a ningún día."), "ok");
+        aLista();
+      });
     });
 
     Array.prototype.forEach.call(caja.querySelectorAll("button[data-quita]"), function (btn) {
@@ -729,10 +799,16 @@
       });
       return;
     }
+    aSacar(r);
+    if (LSD.esLocal(r.src)) LSD.files.borrar(r.src.slice(6));
+  }
+
+  /** Saca la foto de donde esté, sin tocar el archivo. */
+  function aSacar(r) {
     if (r.tipo === "portada") S.set("site.heroImage", "");
     else if (r.tipo === "bloque") S.write(function (st) { delete st.media.images[r.id]; });
+    else if (r.tipo === "dia") S.write(function (st) { (st.media.dias[r.dia] || []).splice(r.i, 1); });
     else S.write(function (st) { st.media.gallery.splice(r.i, 1); });
-    if (LSD.esLocal(r.src)) LSD.files.borrar(r.src.slice(6));
   }
 
   /** Cambia de carpeta. La portada y los bloques admiten una sola foto:
@@ -764,7 +840,7 @@
     }
 
     var ruta = r.src;
-    aQuitarSinBorrar(r);
+    aSacar(r);
     if (desplazada) {
       S.write(function (st) {
         if (!Array.isArray(st.media.gallery)) st.media.gallery = [];
@@ -778,12 +854,7 @@
     aLista(); fLista();
   }
 
-  /** Como aQuitar, pero conservando el archivo: se está moviendo, no borrando. */
-  function aQuitarSinBorrar(r) {
-    if (r.tipo === "portada") S.set("site.heroImage", "");
-    else if (r.tipo === "bloque") S.write(function (st) { delete st.media.images[r.id]; });
-    else S.write(function (st) { st.media.gallery.splice(r.i, 1); });
-  }
+
 
   /* =========================================================
      PESTAÑAS
@@ -818,6 +889,7 @@
       /* --- vídeos --- */
       opcionesBloque($("vBlock"), "— elegí un bloque —");
       opcionesUnidad($("vWork"), "");
+      opcionesDia($("vDia"), "— sin día —");
       $("vBlock").addEventListener("change", function () { opcionesUnidad($("vWork"), $("vBlock").value); });
       Array.prototype.forEach.call($("vSrcTabs").children, function (b) {
         b.addEventListener("click", function () { vMostrarOrigen(b.getAttribute("data-src")); });

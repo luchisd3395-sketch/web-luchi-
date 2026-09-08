@@ -20,11 +20,11 @@ window.LSD_METHODOLOGY = {
   blocks: [
     /* ================================================== 01 */
     {
-      id: "marco",
+      id: "modelo",
       code: "01",
-      title: "Marco Metodológico",
-      short: "Marco",
-      desc: "El punto de partida: idea de juego, principios que ordenan la conducta del equipo y el criterio con el que se diseña cada tarea. Sin marco no hay metodología, hay ejercicios sueltos.",
+      title: "Modelo de Juego",
+      short: "Modelo",
+      desc: "La idea de juego escrita y la lógica con la que se reparte la semana: de qué manera el club quiere jugar y cómo se ordena el trabajo para llegar así al partido.",
       items: [
         {
           id: "modelo-juego",
@@ -44,7 +44,11 @@ window.LSD_METHODOLOGY = {
             "Adaptación al perfil del plantel disponible",
             "Plan de partido: ajustes puntuales sobre el modelo sin romperlo"
           ],
-          tags: ["conceptual", "planificación", "modelo"]
+          tags: [
+            "conceptual",
+            "planificación",
+            "modelo"
+          ]
         },
         {
           id: "periodizacion-tactica",
@@ -64,48 +68,75 @@ window.LSD_METHODOLOGY = {
             "Semana de doble competencia: se sacrifica MD-3",
             "Semana larga (8-10 días) con doble pico de carga"
           ],
-          tags: ["planificación", "carga", "conceptual"]
+          tags: [
+            "planificación",
+            "carga",
+            "conceptual"
+          ]
         },
         {
-          id: "entrenamiento-estructurado",
-          name: "Entrenamiento Estructurado",
-          objetivo: "Trabajar al jugador como sistema de estructuras (condicional, coordinativa, cognitiva, socio-afectiva, emotivo-volitiva, creativo-expresiva, mental) en situaciones simuladoras preferenciales.",
-          formato: "Situaciones simuladoras preferenciales y competitivas",
-          espacio: "Variable según estructura dominante",
-          duracion: "Bloques de 15 a 30 min",
-          claves: [
-            "Nunca se entrena una sola estructura: se elige cuál domina la tarea.",
-            "La especificidad la define el contexto competitivo, no el gesto aislado.",
-            "Se individualiza dentro de la tarea colectiva mediante roles y condicionantes.",
-            "Complementario a la periodización táctica, no opuesto."
-          ],
-          variantes: [
-            "Situación simuladora preferencial (SSP): estructura condicional dominante",
-            "Situación simuladora competitiva (SSC): reglamento y marcador",
-            "Trabajo optimizador individual previo a la sesión colectiva"
-          ],
-          tags: ["conceptual", "individualización"]
-        },
-        {
-          id: "diseno-tarea",
-          name: "Diseño y Codificación de Tareas",
-          objetivo: "Estandarizar cómo se escribe, se nombra y se archiva cada tarea para que cualquier miembro del cuerpo técnico la ejecute igual.",
-          formato: "Ficha de tarea + código alfanumérico",
+          id: "morfociclo",
+          name: "Morfociclo Patrón",
+          objetivo: "Distribuir la semana entre partido y partido alternando patrones de esfuerzo y complejidad táctica.",
+          formato: "MD+1 → MD-1 (6-7 días)",
           espacio: "—",
-          duracion: "—",
+          duracion: "Semana completa",
           claves: [
-            "Toda tarea lleva: objetivo, espacio, número de jugadores, tiempo, reglas y criterio de éxito.",
-            "Código: BLOQUE-SUBTIPO-Nº (ej. SSG-COMOD-04).",
-            "Las reglas provocadoras se declaran antes de la tarea, no se improvisan.",
-            "Se registra siempre la carga estimada para poder comparar sesiones."
+            "MD+1: regenerativo para los titulares; los que no jugaron compensan con fútbol de 60' y fuerza.",
+            "MD-4: tensión — fuerza, espacios reducidos, alta densidad de acciones.",
+            "MD-3: velocidad y duración — sprints con el jugador fresco y después espacios amplios.",
+            "MD-2: táctico sin oposición, definiciones, posesiones de activación y balón parado. 60'.",
+            "MD-1: driles de aceleración, activación, balón parado y repaso táctico. 60'.",
+            "La curva sube a mitad de semana y baja hacia el partido, siempre."
           ],
           variantes: [
-            "Ficha corta para pizarra de vestuario",
-            "Ficha extendida para el archivo metodológico",
-            "Versión con vídeo asociado para el jugador"
+            "Microciclo de 5 días",
+            "Semana con partido entre semana (doble competencia)",
+            "Semana sin competencia: doble pico de carga",
+            "Pretemporada por fases: acumulación, transformación y puesta a punto antes del primer partido"
           ],
-          tags: ["organización", "documentación"]
+          tags: [
+            "planificación",
+            "microciclo",
+            "carga"
+          ]
         },
+        {
+          id: "doble-competencia",
+          name: "Semana de Doble Competencia",
+          objetivo: "Sostener el rendimiento con dos partidos en menos de cinco días sin acumular fatiga peligrosa.",
+          formato: "Partido → +1 → -1 → Partido",
+          espacio: "—",
+          duracion: "3-4 días",
+          claves: [
+            "Se elimina el día de duración: no hay espacio para volumen.",
+            "Prioridad absoluta a la recuperación de los que jugaron.",
+            "Sesión táctica breve y clara: información antes que carga.",
+            "Rotación planificada, decidida antes del primer partido y no después.",
+            "Los que no jugaron entrenan la carga que el partido no les dio."
+          ],
+          variantes: [
+            "Con viaje de por medio",
+            "Con tres partidos en ocho días",
+            "Semana de eliminación directa"
+          ],
+          tags: [
+            "planificación",
+            "competencia",
+            "rotación"
+          ]
+        }
+      ]
+    },
+
+    /* ================================================== 02 */
+    {
+      id: "sesion",
+      code: "02",
+      title: "Estructura de la Sesión",
+      short: "Sesión",
+      desc: "Cómo se arma cada entrenamiento por dentro: el orden de los bloques, la ficha con la que se escribe cada tarea y la gestión del día a día.",
+      items: [
         {
           id: "sesion-tipo",
           name: "Estructura de la Sesión",
@@ -125,18 +156,199 @@ window.LSD_METHODOLOGY = {
             "Sesión de recuperación regenerativa",
             "Sesión pre-competitiva de activación"
           ],
-          tags: ["organización", "sesión"]
+          tags: [
+            "organización",
+            "sesión"
+          ]
+        },
+        {
+          id: "diseno-tarea",
+          name: "Diseño y Codificación de Tareas",
+          objetivo: "Estandarizar cómo se escribe, se nombra y se archiva cada tarea para que cualquier miembro del cuerpo técnico la ejecute igual.",
+          formato: "Ficha de tarea + código alfanumérico",
+          espacio: "—",
+          duracion: "—",
+          claves: [
+            "Toda tarea lleva: objetivo, espacio, número de jugadores, tiempo, reglas y criterio de éxito.",
+            "Código: BLOQUE-SUBTIPO-Nº (ej. SSG-COMOD-04).",
+            "Las reglas provocadoras se declaran antes de la tarea, no se improvisan.",
+            "Se registra siempre la carga estimada para poder comparar sesiones."
+          ],
+          variantes: [
+            "Ficha corta para pizarra de vestuario",
+            "Ficha extendida para el archivo metodológico",
+            "Versión con vídeo asociado para el jugador"
+          ],
+          tags: [
+            "organización",
+            "documentación"
+          ]
+        },
+        {
+          id: "entrenamiento-estructurado",
+          name: "Entrenamiento Estructurado",
+          objetivo: "Trabajar al jugador como sistema de estructuras (condicional, coordinativa, cognitiva, socio-afectiva, emotivo-volitiva, creativo-expresiva, mental) en situaciones simuladoras preferenciales.",
+          formato: "Situaciones simuladoras preferenciales y competitivas",
+          espacio: "Variable según estructura dominante",
+          duracion: "Bloques de 15 a 30 min",
+          claves: [
+            "Nunca se entrena una sola estructura: se elige cuál domina la tarea.",
+            "La especificidad la define el contexto competitivo, no el gesto aislado.",
+            "Se individualiza dentro de la tarea colectiva mediante roles y condicionantes.",
+            "Complementario a la periodización táctica, no opuesto."
+          ],
+          variantes: [
+            "Situación simuladora preferencial (SSP): estructura condicional dominante",
+            "Situación simuladora competitiva (SSC): reglamento y marcador",
+            "Trabajo optimizador individual previo a la sesión colectiva"
+          ],
+          tags: [
+            "conceptual",
+            "individualización"
+          ]
+        },
+        {
+          id: "sesion-diaria",
+          name: "Gestión Diaria de la Sesión",
+          objetivo: "Ajustar en el día lo que la planificación no puede prever: estado real del plantel, clima, campo y contexto.",
+          formato: "Check-in previo + ajuste en vivo",
+          espacio: "—",
+          duracion: "Diario",
+          claves: [
+            "El plan es una hipótesis; el estado del plantel es el dato.",
+            "Ajustar espacio y densidad antes que eliminar tareas.",
+            "El jugador en riesgo entrena distinto, no entrena menos por defecto.",
+            "Todo ajuste se registra: sin registro no hay aprendizaje metodológico."
+          ],
+          variantes: [
+            "Sesión reducida por clima o estado del campo",
+            "Plan alternativo bajo techo",
+            "Sesión individualizada por grupos de carga"
+          ],
+          tags: [
+            "planificación",
+            "gestión",
+            "sesión"
+          ]
         }
       ]
     },
 
-    /* ================================================== 02 */
+    /* ================================================== 03 */
+    {
+      id: "warmup",
+      code: "03",
+      title: "Warm Up · Activaciones",
+      short: "Warm Up",
+      desc: "La entrada en calor como parte del entrenamiento y no como trámite: movilidad, balón, salidas cortas y la rutina fija del día de partido.",
+      items: [
+        {
+          id: "activacion-general",
+          name: "Activación General · Movilidad y Core",
+          objetivo: "Preparar el cuerpo para la sesión: movilidad de las articulaciones que van a trabajar y estabilidad del centro para transmitir fuerza.",
+          formato: "Circuito de 6-8 estaciones · 2 vueltas",
+          espacio: "Media cancha o gimnasio",
+          duracion: "12-18 min",
+          claves: [
+            "Movilidad activa, no estiramiento sostenido: se mueve la articulación, no se cuelga de ella.",
+            "Core en sus cuatro patrones: anti-extensión, anti-rotación, anti-flexión lateral y anti-flexión.",
+            "Se prioriza la estabilidad dinámica sobre el número de repeticiones.",
+            "Dosis baja y diaria antes que una sesión larga una vez por semana."
+          ],
+          variantes: [
+            "Pallof press, dead bug, plancha con desplazamiento, rueda abdominal",
+            "Versión corta de 8 minutos para los días de volumen alto",
+            "Progresión a patrones de fuerza rotacional (lanzamientos)"
+          ],
+          tags: [
+            "warm up",
+            "movilidad",
+            "core"
+          ]
+        },
+        {
+          id: "activacion-balon",
+          name: "Activación con Balón · Rondo de Entrada",
+          objetivo: "Entrar en la sesión compitiendo con el balón: subir pulsaciones, despertar la percepción y poner el pie fino desde el primer minuto.",
+          formato: "Rondo 4v2 o 5v2 · 3-4 series de 2-3'",
+          espacio: "Cuadrado de 8×8 a 12×12 m",
+          duracion: "10-14 min",
+          claves: [
+            "Es activación, no relleno: se compite, se cuenta y se corrige.",
+            "Perfil abierto antes de recibir: el cuerpo decide el pase, no el pie.",
+            "Los defensores entran en pareja, nunca sueltos.",
+            "En el MD-2 es la posesión de activación previa al táctico sin oposición."
+          ],
+          variantes: [
+            "Con toques limitados (2 y 1 toque)",
+            "Con comodín central que obliga al apoyo interior",
+            "Circulación en cuadrado con dos balones para subir el ritmo"
+          ],
+          tags: [
+            "warm up",
+            "rondo",
+            "activación",
+            "MD-2"
+          ]
+        },
+        {
+          id: "driles-aceleracion",
+          name: "Driles de Aceleración",
+          objetivo: "Despertar el sistema neuromuscular con salidas cortas y de calidad, sin dejar fatiga: es activación, no entrenamiento de velocidad.",
+          formato: "4-6 salidas de 10-20 m · pausa completa",
+          espacio: "Recta de 30 m",
+          duracion: "8-12 min",
+          claves: [
+            "Volumen mínimo y pausa completa: si aparece fatiga, dejó de ser activación.",
+            "Técnica de aceleración: proyección del cuerpo, ángulos de empuje y brazos.",
+            "Salidas desde distintas posiciones y con estímulo visual o auditivo.",
+            "Es el contenido del MD-1: el cuerpo llega despierto al partido."
+          ],
+          variantes: [
+            "Con balón en el último tramo de la salida",
+            "En parejas, con persecución corta",
+            "Integrados dentro de la activación pre-competitiva"
+          ],
+          tags: [
+            "warm up",
+            "velocidad",
+            "MD-1"
+          ]
+        },
+        {
+          id: "activacion-pre",
+          name: "Activación Pre-competitiva",
+          objetivo: "Llegar al pitazo inicial activado y con la cabeza en el plan, sin gastar nada de lo que hace falta para competir.",
+          formato: "Bloque de 15-20 min en el campo de juego",
+          espacio: "Media cancha",
+          duracion: "15-20 min",
+          claves: [
+            "Secuencia fija: movilidad, circulación con balón, salidas cortas y acciones del plan.",
+            "La rutina se repite igual todas las semanas: la previsibilidad calma.",
+            "Sin novedades técnicas ni correcciones nuevas: lo que no se entrenó no se improvisa.",
+            "Se cierra con el balón parado ya ensayado, no con una charla larga."
+          ],
+          variantes: [
+            "Versión de vestuario cuando el campo no está disponible",
+            "Rutina individual para el arquero y los suplentes",
+            "Reactivación en el entretiempo para quien va a entrar"
+          ],
+          tags: [
+            "warm up",
+            "competencia",
+            "rutina"
+          ]
+        }
+      ]
+    },
+
+    /* ================================================== 04 */
     {
       id: "fuerza",
-      code: "02",
+      code: "04",
       title: "Fuerza y Rendimiento Físico",
       short: "Fuerza",
-      desc: "Trabajo de gimnasio y de campo orientado a producir fuerza aplicable al juego: acelerar, frenar, cambiar de dirección, saltar, duelar y repetirlo durante noventa minutos.",
+      desc: "El trabajo de fuerza en todas sus manifestaciones, del gimnasio al campo: la estructura que sostiene todo lo demás.",
       items: [
         {
           id: "fuerza-maxima",
@@ -156,7 +368,11 @@ window.LSD_METHODOLOGY = {
             "Bloque de acumulación en pretemporada (6-10 rep)",
             "Mantenimiento en competencia: 2 series de calidad"
           ],
-          tags: ["gimnasio", "fuerza", "MD-4"]
+          tags: [
+            "gimnasio",
+            "fuerza",
+            "MD-4"
+          ]
         },
         {
           id: "potencia",
@@ -169,34 +385,22 @@ window.LSD_METHODOLOGY = {
             "Derivados de los olímpicos (cargada desde alto, arranque colgante) si la técnica lo permite.",
             "Saltos con carga, empujes balísticos, lanzamientos de balón medicinal.",
             "Pausas completas (2-3'): la fatiga arruina el estímulo.",
-            "Se corta la serie cuando cae la velocidad, no cuando se acaban las repeticiones."
+            "Se corta la serie cuando cae la velocidad, no cuando se acaban las repeticiones.",
+            "La pliometría entra acá: extensivo (multisaltos) antes que intensivo (drop jump), y calidad de aterrizaje antes que altura."
           ],
           variantes: [
             "Contrastes (complex training): fuerza pesada + gesto explosivo",
             "Clusters intra-serie",
-            "Trabajo balístico sin implemento para jugadores en carga alta"
+            "Trabajo balístico sin implemento para jugadores en carga alta",
+            "Pliometría horizontal (bounds, saltos de longitud) para transferir a la aceleración",
+            "Pliometría vertical (CMJ, drop jump) para el juego aéreo",
+            "Contactos totales controlados por semana: es muy sensible a la fatiga"
           ],
-          tags: ["gimnasio", "potencia", "RFD"]
-        },
-        {
-          id: "pliometria",
-          name: "Pliometría y Capacidad Reactiva",
-          objetivo: "Optimizar el ciclo estiramiento-acortamiento y la rigidez del complejo músculo-tendinoso para saltar, frenar y reaccionar.",
-          formato: "4-6 series × 4-8 contactos",
-          espacio: "Superficie firme / césped",
-          duracion: "15-25 min",
-          claves: [
-            "Progresión: extensivo (multisaltos) → intensivo (drop jump, saltos con caída).",
-            "Calidad de aterrizaje antes que altura: rodilla alineada, tronco estable.",
-            "Contactos totales controlados por semana según historial de carga.",
-            "Muy sensible a la fatiga: nunca al final de una sesión exigente."
-          ],
-          variantes: [
-            "Horizontal (bounds, saltos de longitud) para transferencia a la aceleración",
-            "Vertical (CMJ, drop jump) para el juego aéreo",
-            "Lateral y con rotación para el cambio de dirección"
-          ],
-          tags: ["campo", "neuromuscular", "prevención"]
+          tags: [
+            "gimnasio",
+            "potencia",
+            "RFD"
+          ]
         },
         {
           id: "fuerza-especifica",
@@ -216,7 +420,11 @@ window.LSD_METHODOLOGY = {
             "Arrastres con cambio de dirección",
             "Cuestas de 6-10% de pendiente"
           ],
-          tags: ["campo", "fuerza", "aceleración"]
+          tags: [
+            "campo",
+            "fuerza",
+            "aceleración"
+          ]
         },
         {
           id: "velocidad",
@@ -229,76 +437,23 @@ window.LSD_METHODOLOGY = {
             "Al menos una exposición semanal por encima del 90-95% de la velocidad máxima individual.",
             "Técnica de aceleración: proyección, ángulos de empuje, brazos.",
             "Velocidad máxima: mecánica de ciclo, contacto breve, cadera alta.",
-            "Ubicación semanal: MD-3, al inicio de la sesión y con el jugador fresco."
+            "Ubicación semanal: MD-3, al inicio de la sesión y con el jugador fresco.",
+            "El cambio de dirección va en el mismo día: primero se entrena frenar, que es la acción de mayor coste mecánico."
           ],
           variantes: [
             "Driles de aceleración en el MD-1: dos o tres salidas cortas dentro de la activación",
             "Salidas desde distintas posiciones y estímulos (visual, auditivo, con balón)",
             "Sprints curvos (más frecuentes en el juego real que los rectos)",
-            "Persecuciones y duelos de velocidad"
+            "Persecuciones y duelos de velocidad",
+            "COD por ángulos: 45°, 90° y 180°, cada uno con su técnica",
+            "Agilidad reactiva: espejo, 1v1 o señal, para sumar decisión al patrón"
           ],
-          tags: ["campo", "velocidad", "prevención", "MD-3"]
-        },
-        {
-          id: "cod",
-          name: "Cambio de Dirección y Agilidad",
-          objetivo: "Mejorar la capacidad de desacelerar, reorientar el cuerpo y reacelerar, con y sin estímulo externo.",
-          formato: "6-10 series × 15-25 s",
-          espacio: "Cuadrado de 20 × 20 m",
-          duracion: "15-25 min",
-          claves: [
-            "Primero se entrena frenar: la desaceleración es la acción de mayor coste mecánico.",
-            "Ángulos: 45°, 90°, 180° — cada uno pide una técnica distinta.",
-            "Agilidad = COD + toma de decisión: se añade estímulo (compañero, balón, señal).",
-            "El trabajo cerrado con conos prepara el patrón; el juego reducido lo valida."
-          ],
-          variantes: [
-            "Programado (circuito cerrado) vs. reactivo (espejo, 1v1)",
-            "Con balón conducido",
-            "Integrado dentro de la activación del MD-4"
-          ],
-          tags: ["campo", "neuromuscular", "COD"]
-        },
-        {
-          id: "core",
-          name: "Core y Control Lumbopélvico",
-          objetivo: "Sostener y transmitir fuerza entre tren inferior y superior, resistiendo la extensión, la flexión lateral y la rotación.",
-          formato: "3-4 series × 20-40 s por patrón",
-          espacio: "Gimnasio / campo",
-          duracion: "12-18 min",
-          claves: [
-            "Anti-extensión, anti-rotación, anti-flexión lateral y anti-flexión: los cuatro patrones siempre.",
-            "Se prioriza la estabilidad dinámica sobre el número de repeticiones.",
-            "Respiración controlada: sin apnea sostenida.",
-            "Trabajo diario de baja dosis mejor que una sesión larga semanal."
-          ],
-          variantes: [
-            "Pallof press, dead bug, plancha con desplazamiento, rueda abdominal",
-            "Integrado en pausas activas del gimnasio",
-            "Progresión a patrones de fuerza rotacional (lanzamientos)"
-          ],
-          tags: ["gimnasio", "core", "prevención"]
-        },
-        {
-          id: "prevencion",
-          name: "Prevención Lesional",
-          objetivo: "Reducir la incidencia y la gravedad de las lesiones más frecuentes: isquiosurales, aductores, tobillo y rodilla.",
-          formato: "2-3 sesiones semanales de 12-20 min",
-          espacio: "Gimnasio / campo",
-          duracion: "12-20 min",
-          claves: [
-            "Isquiosurales: Nordic curl y trabajo excéntrico en longitudes largas.",
-            "Aductores: Copenhagen adduction, progresión por palanca.",
-            "Tobillo y rodilla: propiocepción, control de aterrizaje y fortalecimiento de gemelo/sóleo.",
-            "El protocolo FIFA 11+ como base estandarizada del calentamiento.",
-            "La mejor prevención sigue siendo exponer al jugador a alta velocidad de forma progresiva."
-          ],
-          variantes: [
-            "Programa individual para jugadores con antecedentes",
-            "Versión de campo integrada en la activación",
-            "Bloque de refuerzo en día post-partido para no participantes"
-          ],
-          tags: ["prevención", "salud", "gimnasio"]
+          tags: [
+            "campo",
+            "velocidad",
+            "prevención",
+            "MD-3"
+          ]
         },
         {
           id: "resistencia",
@@ -319,38 +474,51 @@ window.LSD_METHODOLOGY = {
             "Compensatorio para jugadores con menos minutos",
             "Formato de carrera continua sólo en reintegración"
           ],
-          tags: ["campo", "resistencia", "carga"]
+          tags: [
+            "campo",
+            "resistencia",
+            "carga"
+          ]
         },
         {
-          id: "readaptacion",
-          name: "Readaptación y Retorno al Juego",
-          objetivo: "Conducir al jugador lesionado desde el alta médica hasta la disponibilidad competitiva real, sin saltos de carga.",
-          formato: "Progresión por fases con criterios de paso",
-          espacio: "Gimnasio y campo",
-          duracion: "Variable",
+          id: "prevencion",
+          name: "Prevención Lesional",
+          objetivo: "Reducir la incidencia y la gravedad de las lesiones más frecuentes: isquiosurales, aductores, tobillo y rodilla.",
+          formato: "2-3 sesiones semanales de 12-20 min",
+          espacio: "Gimnasio / campo",
+          duracion: "12-20 min",
           claves: [
-            "Criterios de progresión objetivos, no calendario: fuerza, simetría, tolerancia a velocidad.",
-            "Reexposición progresiva a sprint y a cambios de dirección antes de volver al grupo.",
-            "Reintegración parcial: primero tareas de baja densidad, después juego reducido.",
-            "El último escalón siempre es competir: minutos controlados antes de titularidad."
+            "Isquiosurales: Nordic curl y trabajo excéntrico en longitudes largas.",
+            "Aductores: Copenhagen adduction, progresión por palanca.",
+            "Tobillo y rodilla: propiocepción, control de aterrizaje y fortalecimiento de gemelo/sóleo.",
+            "El protocolo FIFA 11+ como base estandarizada del calentamiento.",
+            "La mejor prevención sigue siendo exponer al jugador a alta velocidad de forma progresiva.",
+            "La readaptación cuelga de acá: se progresa por criterios objetivos —fuerza, simetría, tolerancia a la velocidad—, no por calendario."
           ],
           variantes: [
-            "Protocolo específico por tipo de lesión",
-            "Trabajo compartido con área médica y kinesiología",
+            "Programa individual para jugadores con antecedentes",
+            "Versión de campo integrada en la activación",
+            "Bloque de refuerzo en día post-partido para no participantes",
+            "Reexposición progresiva al sprint y al cambio de dirección antes de volver al grupo",
+            "Reintegración parcial: primero tareas de baja densidad, después juego reducido",
             "Programa de mantenimiento post-alta durante 6-8 semanas"
           ],
-          tags: ["prevención", "individualización", "salud"]
+          tags: [
+            "prevención",
+            "salud",
+            "gimnasio"
+          ]
         }
       ]
     },
 
-    /* ================================================== 03 */
+    /* ================================================== 05 */
     {
       id: "ssg",
-      code: "03",
+      code: "05",
       title: "Juegos Reducidos · Small-Sided Games",
       short: "Reducidos",
-      desc: "Situaciones de juego con menos jugadores y menos espacio que el partido real. Permiten entrenar simultáneamente lo técnico-táctico y lo condicional, y son la herramienta central del microciclo.",
+      desc: "El formato madre del entrenamiento: jugar con menos jugadores y menos espacio para multiplicar las acciones y decidir el tipo de carga con las reglas.",
       items: [
         {
           id: "ssg-1v1",
@@ -370,7 +538,11 @@ window.LSD_METHODOLOGY = {
             "Con arquero para orientar la definición",
             "Con reposición inmediata de balón (juego continuo)"
           ],
-          tags: ["SSG", "duelo", "MD-4"]
+          tags: [
+            "SSG",
+            "duelo",
+            "MD-4"
+          ]
         },
         {
           id: "ssg-3v3",
@@ -390,11 +562,15 @@ window.LSD_METHODOLOGY = {
             "Con comodines exteriores: garantiza superioridad y circulación",
             "Con línea de pase en profundidad en vez de arco"
           ],
-          tags: ["SSG", "posesión", "MD-3"]
+          tags: [
+            "SSG",
+            "posesión",
+            "MD-3"
+          ]
         },
         {
           id: "ssg-5v5",
-          name: "SSG 5v5 a 7v7 · Estructura Intermedia",
+          name: "SSG 5v5 a 9v9 · Estructura Intermedia y Gran Formato",
           objetivo: "Introducir estructura posicional reconocible (líneas, alturas, amplitud) manteniendo alta participación.",
           formato: "5v5 / 6v6 / 7v7 · 3-5 series de 4-6'",
           espacio: "50×35 a 68×45 m",
@@ -403,34 +579,21 @@ window.LSD_METHODOLOGY = {
             "Se puede pedir ocupación racional de espacios sin caer en un 11v11.",
             "Formato ideal para trabajar principios de presión y de salida a escala.",
             "Con arqueros el juego se vuelve más real y aparecen las alturas de bloque.",
-            "Buen compromiso entre carga aeróbica y transferencia táctica."
+            "Buen compromiso entre carga aeróbica y transferencia táctica.",
+            "Del 8v8 en adelante sube la distancia recorrida y el volumen de alta velocidad, y baja la frecuencia de contactos: es el formato que más kilómetros acumula."
           ],
           variantes: [
             "Con zonas prohibidas o zonas de valor doble",
             "Con condicionante de toques por zona (libre atrás, 2 toques adelante)",
-            "Con arqueros y fuera de juego activo"
+            "Con arqueros y fuera de juego activo",
+            "8v8 o 9v9 en 70×50 para acercarse a la estructura real del partido",
+            "Con un equipo en inferioridad para entrenar el bloque bajo"
           ],
-          tags: ["SSG", "táctico", "MD-3"]
-        },
-        {
-          id: "ssg-8v8",
-          name: "SSG 8v8 a 9v9 · Gran Formato",
-          objetivo: "Máxima transferencia al modelo de juego con demanda de carrera cercana a la competitiva.",
-          formato: "8v8 / 9v9 · 2-4 series de 6-10'",
-          espacio: "70×50 a campo completo reducido",
-          duracion: "24-36 min efectivos",
-          claves: [
-            "Aumenta la distancia recorrida y el volumen de alta velocidad; baja la frecuencia de contactos.",
-            "Permite ensayar el plan de partido con estructura casi real.",
-            "Ubicación típica: MD-3 (duración) o MD-4 según objetivo.",
-            "Cuidado con el volumen total: es el formato que más distancia acumula."
-          ],
-          variantes: [
-            "Campo completo con reglas de provocación",
-            "Con equipo en inferioridad para entrenar bloque bajo",
-            "Con transición forzada tras pérdida (balón de reposición inmediato)"
-          ],
-          tags: ["SSG", "táctico", "carga"]
+          tags: [
+            "SSG",
+            "táctico",
+            "MD-3"
+          ]
         },
         {
           id: "ssg-comodines",
@@ -450,7 +613,11 @@ window.LSD_METHODOLOGY = {
             "Comodín flotante único de alta exigencia",
             "Superioridad temporal: se pierde tras 6 pases"
           ],
-          tags: ["SSG", "posesión", "superioridad"]
+          tags: [
+            "SSG",
+            "posesión",
+            "superioridad"
+          ]
         },
         {
           id: "ssg-reglas",
@@ -469,79 +636,24 @@ window.LSD_METHODOLOGY = {
           variantes: [
             "Restricción por zona (libre en propio campo, 2 toques en campo rival)",
             "Obligación de pase a un perfil o línea concreta",
-            "Bonificación por recuperación en menos de 5 segundos"
+            "Bonificación por recuperación en menos de 5 segundos",
+            "Con porterías múltiples o desplazadas para orientar la circulación",
+            "Orientado a una fase concreta: salida, progresión, presión o repliegue"
           ],
-          tags: ["SSG", "condicionantes", "táctico"]
-        },
-        {
-          id: "ssg-porterias",
-          name: "SSG con Porterías Múltiples",
-          objetivo: "Modificar la orientación del juego y la toma de decisión mediante el número y la posición de los objetivos.",
-          formato: "2, 3, 4 o 6 mini-arcos",
-          espacio: "30×25 a 60×40 m",
-          duracion: "12-24 min efectivos",
-          claves: [
-            "Dos arcos enfrentados: juego lineal, más profundidad.",
-            "Cuatro arcos (dos por línea de fondo): obliga al cambio de orientación.",
-            "Arcos laterales: entrena la finalización tras juego interior.",
-            "Seis arcos: máxima dispersión, útil para provocar amplitud."
-          ],
-          variantes: [
-            "Arcos con altura variable (con y sin arquero)",
-            "Líneas de conducción en vez de arcos",
-            "Arcos de valor diferenciado según zona de origen del ataque"
-          ],
-          tags: ["SSG", "orientación", "finalización"]
-        },
-        {
-          id: "ssg-fase",
-          name: "SSG Orientados a Fase de Juego",
-          objetivo: "Aislar una fase concreta del juego (salida, presión, transición) dentro de un formato reducido y competitivo.",
-          formato: "Formato desigual con objetivos asimétricos",
-          espacio: "Media cancha o tres cuartos",
-          duracion: "16-26 min efectivos",
-          claves: [
-            "Equipo A tiene un objetivo (salir jugando) y equipo B otro (recuperar y finalizar rápido).",
-            "El marcador y el reglamento premian el principio que se quiere entrenar.",
-            "Se rotan los roles para que ambos equipos entrenen ambas fases.",
-            "Es el puente natural entre el juego reducido y el trabajo táctico de 11v11."
-          ],
-          variantes: [
-            "Salida de balón 6v4 + arqueros",
-            "Presión alta 7v7 con zona de activación",
-            "Transición 4v3 con reposición continua"
-          ],
-          tags: ["SSG", "táctico", "fases"]
-        },
-        {
-          id: "ssg-carga",
-          name: "Control de la Carga en SSG",
-          objetivo: "Predecir y regular la exigencia del juego reducido para que encaje en el lugar del microciclo que le corresponde.",
-          formato: "Matriz de variables",
-          espacio: "—",
-          duracion: "—",
-          claves: [
-            "Área relativa por jugador: la variable que más determina la demanda.",
-            "Menos jugadores + menos espacio = más frecuencia cardíaca, más acciones, menos distancia.",
-            "Más espacio = más distancia total y más alta velocidad, menos contactos.",
-            "Presencia de arqueros baja la intensidad relativa; el aliento del entrenador la sube.",
-            "Series largas → carga aeróbica. Series cortas con pausa amplia → carga neuromuscular."
-          ],
-          variantes: [
-            "Registro por sRPE al cierre de la tarea",
-            "Control con GPS: distancia, HSR, aceleraciones",
-            "Ajuste en vivo del espacio para corregir la intensidad"
-          ],
-          tags: ["SSG", "carga", "monitoreo"]
+          tags: [
+            "SSG",
+            "condicionantes",
+            "táctico"
+          ]
         }
       ]
     },
 
-    /* ================================================== 04 */
+    /* ================================================== 06 */
     {
       id: "posesion",
-      code: "04",
-      title: "Posesión y Juegos de Posición",
+      code: "06",
+      title: "Juegos de Posesión",
       short: "Posesión",
       desc: "Del rondo al juego de posición: la familia de tareas que educa la circulación, la orientación corporal, el tercer hombre y la ocupación racional del espacio.",
       items: [
@@ -564,7 +676,12 @@ window.LSD_METHODOLOGY = {
             "Con comodín central que obliga al apoyo interior",
             "Rondo de castigo: el que pierde pasa al medio"
           ],
-          tags: ["rondo", "técnico", "activación", "MD-2"]
+          tags: [
+            "rondo",
+            "técnico",
+            "activación",
+            "MD-2"
+          ]
         },
         {
           id: "rondo-dinamico",
@@ -584,7 +701,11 @@ window.LSD_METHODOLOGY = {
             "Con oposición que puede robar y atacar arco",
             "Con límite de tiempo para salir"
           ],
-          tags: ["rondo", "progresión", "táctico"]
+          tags: [
+            "rondo",
+            "progresión",
+            "táctico"
+          ]
         },
         {
           id: "juego-posicion-443",
@@ -602,29 +723,15 @@ window.LSD_METHODOLOGY = {
           variantes: [
             "Comodines sólo exteriores (amplitud)",
             "Comodín central único (juego interior)",
-            "Con contraataque del equipo que recupera"
+            "Con contraataque del equipo que recupera",
+            "6v3 o 7v3 cuando se busca más circulación y menos densidad defensiva",
+            "Mantenimiento en espacio amplio, sin objetivo de progresión, para bajar la exigencia"
           ],
-          tags: ["posesión", "juego de posición", "estructura"]
-        },
-        {
-          id: "juego-posicion-6v3",
-          name: "Juego de Posición 6v3 / 7v3",
-          objetivo: "Circulación amplia con superioridad clara para entrenar el cambio de orientación y el ritmo de balón.",
-          formato: "6v3 o 7v3 · series de 3-5'",
-          espacio: "Rectángulo de 25×18 a 35×25 m",
-          duracion: "12-20 min",
-          claves: [
-            "Los tres defensores deben coordinar presión, cobertura y cierre de línea interior.",
-            "El equipo con balón cuenta pases; los defensores cuentan recuperaciones.",
-            "Se exige un toque en zona de presión y libre en zona segura.",
-            "El cambio de orientación cuenta como dos pases: se premia."
-          ],
-          variantes: [
-            "Con zonas divididas para forzar ocupación",
-            "Con obligación de circular por todas las zonas antes de puntuar",
-            "Con relevo continuo de defensores cada 45\""
-          ],
-          tags: ["posesión", "circulación", "orientación"]
+          tags: [
+            "posesión",
+            "juego de posición",
+            "estructura"
+          ]
         },
         {
           id: "posesion-orientada",
@@ -644,7 +751,11 @@ window.LSD_METHODOLOGY = {
             "Con zona intermedia prohibida (juego directo forzado)",
             "Con puntuación por entrada en zona interior"
           ],
-          tags: ["posesión", "progresión", "táctico"]
+          tags: [
+            "posesión",
+            "progresión",
+            "táctico"
+          ]
         },
         {
           id: "posesion-lineas",
@@ -664,38 +775,132 @@ window.LSD_METHODOLOGY = {
             "Con jugadores fijos por zona (roles posicionales reales)",
             "Con liberación progresiva de las restricciones"
           ],
-          tags: ["posesión", "orientación", "estructura"]
-        },
-        {
-          id: "mantenimiento",
-          name: "Mantenimiento en Espacio Amplio",
-          objetivo: "Sostener la posesión con distancias reales de partido, exigiendo lectura de espacio y calidad de pase largo.",
-          formato: "8v8 / 10v10 sin arcos",
-          espacio: "70×50 m o campo completo",
-          duracion: "12-20 min",
-          claves: [
-            "Alta demanda aeróbica: el espacio amplio multiplica la distancia recorrida.",
-            "Aparece el pase de más de 25 m y el control orientado a espacio libre.",
-            "Buen recurso para MD-3 cuando se busca duración.",
-            "Se puede combinar con condición de presión tras pérdida."
-          ],
-          variantes: [
-            "Con toque libre y sólo condición de no perder",
-            "Con equipos de tres colores (dos atacan, uno defiende)",
-            "Con rotación de equipo defensor cada recuperación"
-          ],
-          tags: ["posesión", "carga", "MD-3"]
+          tags: [
+            "posesión",
+            "orientación",
+            "estructura"
+          ]
         }
       ]
     },
 
-    /* ================================================== 05 */
+    /* ================================================== 07 */
     {
-      id: "tactico",
-      code: "05",
-      title: "Trabajos Tácticos",
-      short: "Táctico",
-      desc: "Organización colectiva por momentos del juego: construir, progresar, finalizar, defender en bloque, presionar y reaccionar en las transiciones.",
+      id: "circuitos",
+      code: "07",
+      title: "Circuitos de Pase",
+      short: "Circuitos",
+      desc: "Trabajo sin oposición o con oposición pasiva: recorridos, ruedas de pase y circuitos que fijan los patrones del modelo sin coste físico ni riesgo.",
+      items: [
+        {
+          id: "rueda-pases",
+          name: "Rueda de Pases y Control Orientado",
+          objetivo: "Automatizar la calidad del pase y la recepción orientada a velocidad de partido, con el circuito como medio y no como fin.",
+          formato: "Rueda de 8-12 jugadores · series de 3-4'",
+          espacio: "Cuadrado o rombo de 20×20 m",
+          duracion: "12-18 min",
+          claves: [
+            "La recepción se orienta hacia donde sigue el juego: el control ya es el primer pase.",
+            "Velocidad de balón de partido: si se hace lento, no transfiere.",
+            "Se cambia de sentido a mitad de la serie para trabajar los dos perfiles.",
+            "Dos o tres circuitos como máximo, repetidos hasta que salgan sin indicación."
+          ],
+          variantes: [
+            "Con pared y tercer hombre incorporados al recorrido",
+            "Con dos balones simultáneos para forzar la percepción",
+            "Terminando en centro o en definición"
+          ],
+          tags: [
+            "circuito",
+            "técnico",
+            "pase"
+          ]
+        },
+        {
+          id: "circulacion-sin-oposicion",
+          name: "Circulación sin Oposición",
+          objetivo: "Recorrer los movimientos del modelo a velocidad de partido y sin rival, para fijar los recorridos sin coste físico ni riesgo.",
+          formato: "11v0 o 11v11 con rival pasivo",
+          espacio: "Campo completo",
+          duracion: "15-20 min",
+          claves: [
+            "La velocidad del balón es la del partido, aunque no haya presión: si se hace lento no sirve.",
+            "Se corrigen posiciones y recorridos, no decisiones: para decidir hace falta un rival.",
+            "Dos o tres circuitos como máximo, repetidos hasta que salgan sin indicación.",
+            "Es memoria motriz, no táctica nueva: nada que no se haya entrenado antes con oposición."
+          ],
+          variantes: [
+            "Con rival pasivo que sólo ocupa espacios, sin disputar",
+            "Sólo la salida desde el arquero, o sólo el último tercio",
+            "Con señales del entrenador para cambiar de circuito en marcha"
+          ],
+          tags: [
+            "táctico",
+            "MD-2",
+            "sin oposición"
+          ]
+        },
+        {
+          id: "circuitos-finalizacion",
+          name: "Circuitos de Finalización",
+          objetivo: "Acumular volumen de remate con calidad técnica y sin fatiga acumulada.",
+          formato: "Estaciones con arquero · 8-12 remates por jugador",
+          espacio: "Último tercio, dos arcos",
+          duracion: "15-20 min",
+          claves: [
+            "Siempre con arquero: sin arquero no hay decisión.",
+            "Pausas suficientes: el remate se entrena fresco.",
+            "Variar el pie, la altura del balón y la distancia.",
+            "El pase previo debe ser de calidad de partido, no de conveniencia.",
+            "El circuito termina siempre en definición: el último gesto es el que se busca automatizar."
+          ],
+          variantes: [
+            "Con pase de espalda y giro",
+            "Con conducción previa y remate en carrera",
+            "Con dos toques máximo dentro del área",
+            "Terminación en 1v1 con arquero, trabajando la decisión y el perfil de salida",
+            "Llegada de segunda línea al remate desde fuera del área"
+          ],
+          tags: [
+            "finalización",
+            "técnico",
+            "MD-2"
+          ]
+        },
+        {
+          id: "centro-remate",
+          name: "Centro y Remate",
+          objetivo: "Coordinar el ataque del área: quién va al primer palo, quién al segundo, quién al punto de penal y quién a la frontal.",
+          formato: "Centros desde ambos costados · 3-5 atacantes",
+          espacio: "Área grande + carriles exteriores",
+          duracion: "15-25 min",
+          claves: [
+            "Cuatro zonas de ataque del área siempre cubiertas.",
+            "Los tiempos de la carrera importan más que la velocidad de la carrera.",
+            "El centro raso al primer palo y el centro atrás son las opciones de mayor rendimiento.",
+            "La segunda jugada (rechace) se ensaya igual que la primera."
+          ],
+          variantes: [
+            "Con oposición defensiva pasiva y luego real",
+            "Con centro tras conducción, tras pared o tras cambio de orientación",
+            "Con obligación de rematar de primera"
+          ],
+          tags: [
+            "finalización",
+            "ataque",
+            "área"
+          ]
+        }
+      ]
+    },
+
+    /* ================================================== 08 */
+    {
+      id: "tactico-analitico",
+      code: "08",
+      title: "Tareas Tácticas Analíticas",
+      short: "Analíticas",
+      desc: "Táctica por sectores y por fases, con oposición parcial: se aísla una parte del juego para corregirla antes de devolverla al todo.",
       items: [
         {
           id: "salida-balon",
@@ -716,7 +921,11 @@ window.LSD_METHODOLOGY = {
             "Contra presión hombre a hombre",
             "Con activación de la presión sólo tras el primer pase"
           ],
-          tags: ["ofensivo", "construcción", "11v11"]
+          tags: [
+            "ofensivo",
+            "construcción",
+            "11v11"
+          ]
         },
         {
           id: "progresion",
@@ -736,90 +945,11 @@ window.LSD_METHODOLOGY = {
             "Con obligación de recibir de frente en zona intermedia",
             "Con presión rival de bloque medio real"
           ],
-          tags: ["ofensivo", "progresión", "11v11"]
-        },
-        {
-          id: "ataque-posicional",
-          name: "Ataque Posicional 11v11",
-          objetivo: "Ordenar el ataque contra bloque medio-bajo con ocupación racional y ataque coordinado de espacios.",
-          formato: "11v11 o 11v10 zonificado",
-          espacio: "Campo completo",
-          duracion: "20-35 min",
-          claves: [
-            "Ocupación de los cinco pasillos y de las tres alturas.",
-            "Fijar en un costado, cambiar y atacar el lado débil.",
-            "Movimientos coordinados: uno al espacio, otro al pie, un tercero de rebote.",
-            "Equilibrio permanente: dos o tres jugadores preparando la transición defensiva."
-          ],
-          variantes: [
-            "Contra bloque bajo con 10 jugadores dentro del área grande",
-            "Con límite de tiempo para finalizar",
-            "Con contragolpe habilitado para el equipo defensor"
-          ],
-          tags: ["ofensivo", "11v11", "estructura"]
-        },
-        {
-          id: "presion-alta",
-          name: "Presión Alta y Trampas de Presión",
-          objetivo: "Recuperar el balón cerca del arco rival mediante activación coordinada y orientación de la presión.",
-          formato: "10v10 / 11v11 con activación por señal",
-          espacio: "Campo completo, foco en campo rival",
-          duracion: "20-30 min",
-          claves: [
-            "El disparador de la presión se define antes: pase a un perfil, control malo, pase al lateral.",
-            "El primer presionador orienta con su carrera; el resto cierra las líneas interiores.",
-            "Basculación conjunta: la línea defensiva sube y comprime el bloque a 30-35 m.",
-            "Si se rompe la primera presión, repliegue inmediato y ordenado, no persecución individual.",
-            "La trampa de presión es voluntaria: se deja libre una zona para robar allí."
-          ],
-          variantes: [
-            "Presión hombre a hombre en toda la cancha",
-            "Presión con arquero rival incluido",
-            "Activación sólo en saques de arco"
-          ],
-          tags: ["defensivo", "presión", "11v11"]
-        },
-        {
-          id: "bloque-medio",
-          name: "Bloque Medio y Basculación",
-          objetivo: "Sostener una estructura compacta en campo propio, orientar al rival y recuperar en zonas definidas.",
-          formato: "10v10 con zonas de recuperación",
-          espacio: "Dos tercios de campo",
-          duracion: "18-28 min",
-          claves: [
-            "Distancias: 8-12 m entre líneas, 6-10 m entre compañeros de línea.",
-            "Se defiende el centro; se concede el costado.",
-            "Basculación con referencia al balón, no al rival directo.",
-            "El delantero define el lado de la basculación con su posición.",
-            "Recuperar y salir: la recuperación sin primer pase útil no cuenta."
-          ],
-          variantes: [
-            "Con altura de bloque variable por señal",
-            "Con superioridad rival para exigir compactación",
-            "Con puntuación por recuperación en zona objetivo"
-          ],
-          tags: ["defensivo", "bloque", "11v11"]
-        },
-        {
-          id: "bloque-bajo",
-          name: "Bloque Bajo y Defensa del Área",
-          objetivo: "Proteger el arco con el bloque replegado: control de área, marca de rematadores y despeje orientado.",
-          formato: "11v11 con inferioridad defensiva",
-          espacio: "Último tercio y área",
-          duracion: "15-25 min",
-          claves: [
-            "Nadie entra al área sin referencia: hombre y espacio a la vez.",
-            "Segunda pelota: el volante de contención vive en la frontal.",
-            "Despeje orientado a banda y arriba: nunca al centro.",
-            "Tras el despeje, subir la línea de forma inmediata y coordinada.",
-            "Defender el centro del área es innegociable; el remate lejano se concede."
-          ],
-          variantes: [
-            "Con centros continuos desde ambos costados",
-            "Con superioridad rival 11v8",
-            "Con salida rápida obligatoria tras recuperar"
-          ],
-          tags: ["defensivo", "área", "11v11"]
+          tags: [
+            "ofensivo",
+            "progresión",
+            "11v11"
+          ]
         },
         {
           id: "linea-defensiva",
@@ -840,7 +970,122 @@ window.LSD_METHODOLOGY = {
             "Con estímulo visual del entrenador para subir/bajar",
             "Integrado en el trabajo de bloque completo"
           ],
-          tags: ["defensivo", "sectorial", "línea"]
+          tags: [
+            "defensivo",
+            "sectorial",
+            "línea"
+          ]
+        },
+        {
+          id: "bloque-medio",
+          name: "Bloque Medio y Basculación",
+          objetivo: "Sostener una estructura compacta en campo propio, orientar al rival y recuperar en zonas definidas.",
+          formato: "10v10 con zonas de recuperación",
+          espacio: "Dos tercios de campo",
+          duracion: "18-28 min",
+          claves: [
+            "Distancias: 8-12 m entre líneas, 6-10 m entre compañeros de línea.",
+            "Se defiende el centro; se concede el costado.",
+            "Basculación con referencia al balón, no al rival directo.",
+            "El delantero define el lado de la basculación con su posición.",
+            "Recuperar y salir: la recuperación sin primer pase útil no cuenta."
+          ],
+          variantes: [
+            "Con altura de bloque variable por señal",
+            "Con superioridad rival para exigir compactación",
+            "Con puntuación por recuperación en zona objetivo"
+          ],
+          tags: [
+            "defensivo",
+            "bloque",
+            "11v11"
+          ]
+        },
+        {
+          id: "bloque-bajo",
+          name: "Bloque Bajo y Defensa del Área",
+          objetivo: "Proteger el arco con el bloque replegado: control de área, marca de rematadores y despeje orientado.",
+          formato: "11v11 con inferioridad defensiva",
+          espacio: "Último tercio y área",
+          duracion: "15-25 min",
+          claves: [
+            "Nadie entra al área sin referencia: hombre y espacio a la vez.",
+            "Segunda pelota: el volante de contención vive en la frontal.",
+            "Despeje orientado a banda y arriba: nunca al centro.",
+            "Tras el despeje, subir la línea de forma inmediata y coordinada.",
+            "Defender el centro del área es innegociable; el remate lejano se concede."
+          ],
+          variantes: [
+            "Con centros continuos desde ambos costados",
+            "Con superioridad rival 11v8",
+            "Con salida rápida obligatoria tras recuperar"
+          ],
+          tags: [
+            "defensivo",
+            "área",
+            "11v11"
+          ]
+        }
+      ]
+    },
+
+    /* ================================================== 09 */
+    {
+      id: "tactico-global",
+      code: "09",
+      title: "Tareas Tácticas Globales",
+      short: "Globales",
+      desc: "El juego completo: gran formato, transiciones, plan de partido y balón parado, donde todo lo entrenado por partes vuelve a aparecer junto.",
+      items: [
+        {
+          id: "ataque-posicional",
+          name: "Ataque Posicional 11v11",
+          objetivo: "Ordenar el ataque contra bloque medio-bajo con ocupación racional y ataque coordinado de espacios.",
+          formato: "11v11 o 11v10 zonificado",
+          espacio: "Campo completo",
+          duracion: "20-35 min",
+          claves: [
+            "Ocupación de los cinco pasillos y de las tres alturas.",
+            "Fijar en un costado, cambiar y atacar el lado débil.",
+            "Movimientos coordinados: uno al espacio, otro al pie, un tercero de rebote.",
+            "Equilibrio permanente: dos o tres jugadores preparando la transición defensiva."
+          ],
+          variantes: [
+            "Contra bloque bajo con 10 jugadores dentro del área grande",
+            "Con límite de tiempo para finalizar",
+            "Con contragolpe habilitado para el equipo defensor",
+            "Con finalización obligada dentro de un tiempo, para que la posesión termine en remate"
+          ],
+          tags: [
+            "ofensivo",
+            "11v11",
+            "estructura"
+          ]
+        },
+        {
+          id: "presion-alta",
+          name: "Presión Alta y Trampas de Presión",
+          objetivo: "Recuperar el balón cerca del arco rival mediante activación coordinada y orientación de la presión.",
+          formato: "10v10 / 11v11 con activación por señal",
+          espacio: "Campo completo, foco en campo rival",
+          duracion: "20-30 min",
+          claves: [
+            "El disparador de la presión se define antes: pase a un perfil, control malo, pase al lateral.",
+            "El primer presionador orienta con su carrera; el resto cierra las líneas interiores.",
+            "Basculación conjunta: la línea defensiva sube y comprime el bloque a 30-35 m.",
+            "Si se rompe la primera presión, repliegue inmediato y ordenado, no persecución individual.",
+            "La trampa de presión es voluntaria: se deja libre una zona para robar allí."
+          ],
+          variantes: [
+            "Presión hombre a hombre en toda la cancha",
+            "Presión con arquero rival incluido",
+            "Activación sólo en saques de arco"
+          ],
+          tags: [
+            "defensivo",
+            "presión",
+            "11v11"
+          ]
         },
         {
           id: "transicion-ofensiva",
@@ -860,7 +1105,11 @@ window.LSD_METHODOLOGY = {
             "Con contraataque largo (más de 60 m)",
             "Con límite de toques o de tiempo para finalizar"
           ],
-          tags: ["transición", "contraataque", "velocidad"]
+          tags: [
+            "transición",
+            "contraataque",
+            "velocidad"
+          ]
         },
         {
           id: "transicion-defensiva",
@@ -880,7 +1129,11 @@ window.LSD_METHODOLOGY = {
             "Con puntuación por recuperación antes de 5\"",
             "Con repliegue obligatorio a línea marcada"
           ],
-          tags: ["transición", "presión", "reacción"]
+          tags: [
+            "transición",
+            "presión",
+            "reacción"
+          ]
         },
         {
           id: "plan-partido",
@@ -900,282 +1153,72 @@ window.LSD_METHODOLOGY = {
             "Trabajo por sectores con vídeo previo",
             "Simulación de escenarios de resultado (ganando, perdiendo, con uno menos)"
           ],
-          tags: ["11v11", "competencia", "MD-2"]
+          tags: [
+            "11v11",
+            "competencia",
+            "MD-2"
+          ]
         },
         {
-          id: "circulacion-sin-oposicion",
-          name: "Circulación sin Oposición",
-          objetivo: "Recorrer los movimientos del modelo a velocidad de partido y sin rival, para fijar los recorridos sin coste físico ni riesgo.",
-          formato: "11v0 o 11v11 con rival pasivo",
-          espacio: "Campo completo",
-          duracion: "15-20 min",
-          claves: [
-            "La velocidad del balón es la del partido, aunque no haya presión: si se hace lento no sirve.",
-            "Se corrigen posiciones y recorridos, no decisiones: para decidir hace falta un rival.",
-            "Dos o tres circuitos como máximo, repetidos hasta que salgan sin indicación.",
-            "Es memoria motriz, no táctica nueva: nada que no se haya entrenado antes con oposición."
-          ],
-          variantes: [
-            "Con rival pasivo que sólo ocupa espacios, sin disputar",
-            "Sólo la salida desde el arquero, o sólo el último tercio",
-            "Con señales del entrenador para cambiar de circuito en marcha"
-          ],
-          tags: ["táctico", "MD-2", "sin oposición"]
-        }
-      ]
-    },
-
-    /* ================================================== 06 */
-    {
-      id: "finalizacion",
-      code: "06",
-      title: "Finalización",
-      short: "Finalización",
-      desc: "El último tercio: llegar, decidir y definir. Volumen alto de remates en contextos que se parecen a los del partido.",
-      items: [
-        {
-          id: "circuitos-finalizacion",
-          name: "Circuitos de Finalización",
-          objetivo: "Acumular volumen de remate con calidad técnica y sin fatiga acumulada.",
-          formato: "Estaciones con arquero · 8-12 remates por jugador",
-          espacio: "Último tercio, dos arcos",
-          duracion: "15-20 min",
-          claves: [
-            "Siempre con arquero: sin arquero no hay decisión.",
-            "Pausas suficientes: el remate se entrena fresco.",
-            "Variar el pie, la altura del balón y la distancia.",
-            "El pase previo debe ser de calidad de partido, no de conveniencia."
-          ],
-          variantes: [
-            "Con pase de espalda y giro",
-            "Con conducción previa y remate en carrera",
-            "Con dos toques máximo dentro del área"
-          ],
-          tags: ["finalización", "técnico", "MD-2"]
-        },
-        {
-          id: "centro-remate",
-          name: "Centro y Remate",
-          objetivo: "Coordinar el ataque del área: quién va al primer palo, quién al segundo, quién al punto de penal y quién a la frontal.",
-          formato: "Centros desde ambos costados · 3-5 atacantes",
-          espacio: "Área grande + carriles exteriores",
-          duracion: "15-25 min",
-          claves: [
-            "Cuatro zonas de ataque del área siempre cubiertas.",
-            "Los tiempos de la carrera importan más que la velocidad de la carrera.",
-            "El centro raso al primer palo y el centro atrás son las opciones de mayor rendimiento.",
-            "La segunda jugada (rechace) se ensaya igual que la primera."
-          ],
-          variantes: [
-            "Con oposición defensiva pasiva y luego real",
-            "Con centro tras conducción, tras pared o tras cambio de orientación",
-            "Con obligación de rematar de primera"
-          ],
-          tags: ["finalización", "ataque", "área"]
-        },
-        {
-          id: "uno-v-arquero",
-          name: "1v1 con Arquero",
-          objetivo: "Resolver la situación de mayor valor del juego: mano a mano y definición bajo presión temporal.",
-          formato: "Series de 6-10 repeticiones por jugador",
-          espacio: "Desde 30 m hasta el área",
-          duracion: "12-18 min",
-          claves: [
-            "Leer la salida del arquero antes de decidir el recurso.",
-            "Definir al palo lejano cuando el arquero achica de frente.",
-            "Controlar el primer toque hacia el espacio libre, no hacia el arquero.",
-            "Recurso técnico variado: cruzado, por encima, al primer palo, amague."
-          ],
-          variantes: [
-            "Con defensor persiguiendo desde atrás",
-            "Con inicio desde pase filtrado",
-            "Con arquero que sale a destiempo (provocado)"
-          ],
-          tags: ["finalización", "duelo", "individual"]
-        },
-        {
-          id: "finalizacion-oposicion",
-          name: "Finalización con Oposición Real",
-          objetivo: "Trasladar el remate a un contexto de juego con defensores activos y decisión colectiva.",
-          formato: "5v4, 6v5 + arquero en último tercio",
-          espacio: "Último tercio completo",
-          duracion: "18-26 min",
-          claves: [
-            "Límite de tiempo para finalizar: entre 10 y 15 segundos por ataque.",
-            "Se puntúa el remate de calidad, no cualquier remate.",
-            "El equilibrio defensivo del atacante se exige incluso en tarea ofensiva.",
-            "Se rota rápido para mantener la intensidad alta."
-          ],
-          variantes: [
-            "Con reposición inmediata desde el fondo",
-            "Con contraataque del equipo defensor si recupera",
-            "Con condicionante de finalizar tras entrada al área por fuera"
-          ],
-          tags: ["finalización", "táctico", "oposición"]
-        },
-        {
-          id: "segunda-linea",
-          name: "Llegada de Segunda Línea",
-          objetivo: "Aprovechar la zona de frontal que queda libre cuando el bloque rival se repliega sobre el área.",
-          formato: "8v8 con zona de frontal habilitada",
-          espacio: "Último tercio",
-          duracion: "12-20 min",
-          claves: [
-            "El volante llega desde atrás, no espera dentro del área.",
-            "El centro atrás es el pase que activa la segunda línea.",
-            "El remate de frontal se ensaya con balón en movimiento, nunca parado.",
-            "Puntuación doble al gol desde fuera del área tras centro atrás."
-          ],
-          variantes: [
-            "Con rechace provocado por el arquero",
-            "Con obligación de llegada de dos jugadores distintos",
-            "Con defensa que puede salir a achicar la frontal"
-          ],
-          tags: ["finalización", "ataque", "segunda línea"]
-        }
-      ]
-    },
-
-    /* ================================================== 07 */
-    {
-      id: "abp",
-      code: "07",
-      title: "Balón Parado · ABP",
-      short: "ABP",
-      desc: "Acciones a balón parado: una porción decisiva de los goles de cada temporada, entrenada con el mismo rigor que el juego dinámico. Se trabaja el MD-2 y se repasa el MD-1, con el plan del rival ya cerrado.",
-      items: [
-        {
-          id: "corner-of",
-          name: "Córner Ofensivo",
-          objetivo: "Generar situación de remate franco mediante rutinas ensayadas, bloqueos legales y ataque coordinado de zonas.",
+          id: "abp-ofensivo",
+          name: "ABP Ofensivo · Córner, Tiro Libre y Lateral",
+          objetivo: "Convertir las acciones a balón parado en una fuente estable de gol mediante rutinas ensayadas y repartidas por zonas.",
           formato: "Rutinas con 6-8 atacantes",
           espacio: "Área grande",
-          duracion: "10-15 min",
+          duracion: "12-18 min",
           claves: [
-            "Zonas de ataque definidas: primer palo, punto de penal, segundo palo y frontal.",
-            "Movimientos en bloque para arrastrar marcas antes del envío.",
-            "Siempre un jugador en el rechace y dos en equilibrio defensivo.",
-            "Se ensayan tres o cuatro rutinas por temporada, no diez.",
-            "El ejecutante fija la señal: sin señal clara la rutina no funciona."
+            "Zonas definidas: primer palo, punto de penal, segundo palo y frontal.",
+            "Movimientos en bloque para arrastrar marcas antes del envío, con bloqueos legales.",
+            "Siempre un jugador al rechace y dos en equilibrio defensivo.",
+            "Tres o cuatro rutinas por temporada, no diez: el ejecutante fija la señal.",
+            "Los penales se entrenan como rutina, no como lotería: ejecutante decidido antes del partido."
           ],
           variantes: [
-            "Córner cerrado / abierto / corto",
-            "Rutina con bloqueo y liberación",
-            "Segunda jugada tras rechace ensayada"
+            "Córner cerrado, abierto o corto, y segunda jugada tras rechace",
+            "Tiro libre directo, con barrera y con envío al área",
+            "Saque lateral largo al área y rutina corta para conservar"
           ],
-          tags: ["ABP", "ofensivo", "gol"]
+          tags: [
+            "ABP",
+            "ofensivo",
+            "gol",
+            "MD-2"
+          ]
         },
         {
-          id: "corner-def",
-          name: "Córner Defensivo",
-          objetivo: "Neutralizar el ataque rival controlando zonas críticas y asegurando la segunda pelota.",
+          id: "abp-defensivo",
+          name: "ABP Defensivo · Córner, Barrera y Saque de Arco",
+          objetivo: "Neutralizar el balón parado rival controlando las zonas críticas y asegurando la segunda pelota.",
           formato: "Mixto zona + marca individual",
           espacio: "Área grande",
-          duracion: "10-15 min",
+          duracion: "12-18 min",
           claves: [
-            "Sistema mixto: zona en primer palo y área chica, marca individual a los mejores rematadores.",
-            "Un jugador en cada palo según criterio del arquero.",
-            "Uno o dos en el rechace, en la frontal.",
-            "Un jugador adelantado para amenazar el contraataque.",
-            "Despeje: alto, lejos y a banda."
+            "Reparto claro: quién va a zona, quién a marca y quién a la segunda pelota.",
+            "El primer palo y la zona del arquero no se negocian nunca.",
+            "La barrera se arma rápido y con un jugador que la ordena, no entre todos.",
+            "El saque de arco es una salida más: se decide antes si es corta o larga y a qué lado."
           ],
           variantes: [
-            "Zona pura para bloques más altos",
-            "Marca individual completa ante rivales muy fuertes de cabeza",
-            "Salida rápida ensayada tras el despeje"
+            "Zona pura, marca pura o mixto según el rival de la fecha",
+            "Con salida al contraataque tras el rechace",
+            "Saque de arco largo con estructura para la segunda pelota"
           ],
-          tags: ["ABP", "defensivo", "área"]
-        },
-        {
-          id: "tiro-libre",
-          name: "Tiros Libres",
-          objetivo: "Convertir la falta en ocasión: envío directo, envío al área o jugada ensayada según zona.",
-          formato: "Trabajo por zonas del campo",
-          espacio: "Tres cuartos y frontal",
-          duracion: "10-15 min",
-          claves: [
-            "Mapa de zonas: directo, lateral al área, lateral lejano, frontal.",
-            "Barrera defensiva: número según distancia y perfil del ejecutante.",
-            "Ejecutantes definidos por perfil y por zona, no por jerarquía.",
-            "Equilibrio defensivo obligatorio también en la falta ofensiva."
-          ],
-          variantes: [
-            "Falta lateral con envío al primer palo",
-            "Jugada ensayada de dos toques",
-            "Falta frontal directa con y sin barrera móvil"
-          ],
-          tags: ["ABP", "ofensivo", "ejecución"]
-        },
-        {
-          id: "lateral",
-          name: "Saques Laterales",
-          objetivo: "Transformar el saque de banda en una acción con intención, sobre todo en el último tercio.",
-          formato: "Rutinas por zona de campo",
-          espacio: "Bandas, tres alturas",
-          duracion: "8-12 min",
-          claves: [
-            "Campo propio: seguridad, apoyo y salida del balón.",
-            "Campo intermedio: progresión con apoyo de espalda y tercer hombre.",
-            "Campo rival: rutina ensayada, saque largo al área o pared por fuera.",
-            "Movimiento previo obligatorio: sin desmarque no hay saque."
-          ],
-          variantes: [
-            "Saque largo directo al área",
-            "Rutina de bloqueo y apertura de línea",
-            "Saque rápido para sorprender al bloque"
-          ],
-          tags: ["ABP", "transición", "banda"]
-        },
-        {
-          id: "penales",
-          name: "Penales y Rutinas de Presión",
-          objetivo: "Preparar la ejecución bajo presión psicológica, no sólo el gesto técnico.",
-          formato: "Series al final de sesiones exigentes",
-          espacio: "Área grande",
-          duracion: "8-12 min",
-          claves: [
-            "Se ejecutan con fatiga y con público simulado: el contexto es parte de la tarea.",
-            "Cada jugador define su recurso y lo repite: no se cambia de idea en la carrera.",
-            "Lista de ejecutantes cerrada y ordenada antes de cada partido de eliminación.",
-            "El arquero estudia y ensaya lectura de apoyo y de cadera."
-          ],
-          variantes: [
-            "Tanda completa simulada con orden real",
-            "Penal tras esfuerzo máximo",
-            "Sesión específica en semana de eliminación directa"
-          ],
-          tags: ["ABP", "mental", "ejecución"]
-        },
-        {
-          id: "saque-arco",
-          name: "Saque de Arco e Inicio",
-          objetivo: "Definir las salidas desde el saque de arco según la presión rival, incluyendo la disputa de la segunda pelota.",
-          formato: "Ensayo con estructura completa",
-          espacio: "Campo propio hasta media cancha",
-          duracion: "10-15 min",
-          claves: [
-            "Tres opciones ensayadas: corta, media al pivote y larga a zona de disputa.",
-            "En la larga, la estructura de segunda pelota se coloca antes del envío.",
-            "El arquero decide y comunica; el resto ejecuta sin dudar.",
-            "Si el rival presiona alto y hombre a hombre, se prioriza el juego directo."
-          ],
-          variantes: [
-            "Salida con superioridad creada por el arquero",
-            "Saque rápido para atacar el desorden",
-            "Envío largo a banda para ganar campo"
-          ],
-          tags: ["ABP", "construcción", "arquero"]
+          tags: [
+            "ABP",
+            "defensivo",
+            "MD-2"
+          ]
         }
       ]
     },
 
-    /* ================================================== 08 */
+    /* ================================================== 10 */
     {
       id: "carga",
-      code: "08",
+      code: "10",
       title: "Control de Carga y Monitoreo",
       short: "Carga",
-      desc: "Medir para decidir. Carga interna y externa, estado del jugador y criterios objetivos para ajustar la semana antes de que aparezca el problema.",
+      desc: "Lo que se mide para decidir: carga interna y externa, wellness y control neuromuscular, para que la semana siguiente se ajuste con datos y no con intuición.",
       items: [
         {
           id: "srpe",
@@ -1195,7 +1238,10 @@ window.LSD_METHODOLOGY = {
             "RPE diferenciado (respiratorio vs. muscular)",
             "Comparación con carga externa de GPS"
           ],
-          tags: ["monitoreo", "carga interna"]
+          tags: [
+            "monitoreo",
+            "carga interna"
+          ]
         },
         {
           id: "gps",
@@ -1208,14 +1254,19 @@ window.LSD_METHODOLOGY = {
             "Métricas núcleo: distancia total, distancia a alta intensidad (>19,8 km/h), sprints (>25 km/h), aceleraciones y desaceleraciones >3 m/s².",
             "Comparar siempre contra la demanda del partido, no contra un valor absoluto.",
             "Cada jugador tiene su propio umbral de alta velocidad: individualizar o el dato engaña.",
-            "El dato sirve si cambia una decisión; si no, es sólo un número."
+            "El dato sirve si cambia una decisión; si no, es sólo un número.",
+            "Los juegos reducidos también se miden: el área por jugador y el número de jugadores cambian la demanda mucho más que la duración."
           ],
           variantes: [
             "Análisis por tarea para calibrar juegos reducidos",
             "Informe semanal por puesto",
             "Seguimiento específico en readaptación"
           ],
-          tags: ["monitoreo", "carga externa", "tecnología"]
+          tags: [
+            "monitoreo",
+            "carga externa",
+            "tecnología"
+          ]
         },
         {
           id: "wellness",
@@ -1235,7 +1286,11 @@ window.LSD_METHODOLOGY = {
             "Complemento con control de peso matinal",
             "Entrevista individual cuando el dato se desvía"
           ],
-          tags: ["monitoreo", "recuperación", "salud"]
+          tags: [
+            "monitoreo",
+            "recuperación",
+            "salud"
+          ]
         },
         {
           id: "cmj",
@@ -1255,7 +1310,11 @@ window.LSD_METHODOLOGY = {
             "Salto unilateral para asimetrías",
             "Test de fuerza isométrica de isquiosurales cuando hay equipamiento"
           ],
-          tags: ["monitoreo", "neuromuscular", "test"]
+          tags: [
+            "monitoreo",
+            "neuromuscular",
+            "test"
+          ]
         },
         {
           id: "ratio-carga",
@@ -1273,121 +1332,69 @@ window.LSD_METHODOLOGY = {
           variantes: [
             "Cálculo con sRPE y con distancia de GPS por separado",
             "Seguimiento individual para jugadores con poca participación",
-            "Planificación de descargas cada 4-6 semanas"
+            "Planificación de descargas cada 4-6 semanas",
+            "Ajuste del área por jugador en los reducidos para subir o bajar la carga sin cambiar la tarea"
           ],
-          tags: ["monitoreo", "carga", "planificación"]
-        }
-      ]
-    },
-
-    /* ================================================== 09 */
-    {
-      id: "microciclo",
-      code: "09",
-      title: "Planificación y Microciclo",
-      short: "Microciclo",
-      desc: "Cómo se ordena la semana: qué se entrena cada día, con qué carga y por qué. El microciclo es donde la metodología deja de ser teoría.",
-      items: [
-        {
-          id: "morfociclo",
-          name: "Morfociclo Patrón",
-          objetivo: "Distribuir la semana entre partido y partido alternando patrones de esfuerzo y complejidad táctica.",
-          formato: "MD+1 → MD-1 (6-7 días)",
-          espacio: "—",
-          duracion: "Semana completa",
-          claves: [
-            "MD+1: regenerativo para los titulares; los que no jugaron compensan con fútbol de 60' y fuerza.",
-            "MD-4: tensión — fuerza, espacios reducidos, alta densidad de acciones.",
-            "MD-3: velocidad y duración — sprints con el jugador fresco y después espacios amplios.",
-            "MD-2: táctico sin oposición, definiciones, posesiones de activación y balón parado. 60'.",
-            "MD-1: driles de aceleración, activación, balón parado y repaso táctico. 60'.",
-            "La curva sube a mitad de semana y baja hacia el partido, siempre."
-          ],
-          variantes: [
-            "Microciclo de 5 días",
-            "Semana con partido entre semana (doble competencia)",
-            "Semana sin competencia: doble pico de carga"
-          ],
-          tags: ["planificación", "microciclo", "carga"]
-        },
-        {
-          id: "doble-competencia",
-          name: "Semana de Doble Competencia",
-          objetivo: "Sostener el rendimiento con dos partidos en menos de cinco días sin acumular fatiga peligrosa.",
-          formato: "Partido → +1 → -1 → Partido",
-          espacio: "—",
-          duracion: "3-4 días",
-          claves: [
-            "Se elimina el día de duración: no hay espacio para volumen.",
-            "Prioridad absoluta a la recuperación de los que jugaron.",
-            "Sesión táctica breve y clara: información antes que carga.",
-            "Rotación planificada, decidida antes del primer partido y no después.",
-            "Los que no jugaron entrenan la carga que el partido no les dio."
-          ],
-          variantes: [
-            "Con viaje de por medio",
-            "Con tres partidos en ocho días",
-            "Semana de eliminación directa"
-          ],
-          tags: ["planificación", "competencia", "rotación"]
-        },
-        {
-          id: "pretemporada",
-          name: "Pretemporada por Fases",
-          objetivo: "Construir la base física y la identidad de juego antes de la competencia.",
-          formato: "3 fases · 4 a 6 semanas",
-          espacio: "—",
-          duracion: "Bloque completo",
-          claves: [
-            "Fase 1 — Acumulación: volumen aeróbico, base de fuerza, principios simples.",
-            "Fase 2 — Transformación: intensidad creciente, formatos medios, plan de juego completo.",
-            "Fase 3 — Realización: velocidad, competencia, ajuste fino y descarga previa al debut.",
-            "La exposición a alta velocidad empieza en la primera semana, no en la última.",
-            "Cada amistoso tiene un objetivo declarado, no es sólo minutos."
-          ],
-          variantes: [
-            "Pretemporada corta (3 semanas) por calendario",
-            "Con concentración y doble turno",
-            "Reincorporación escalonada por grupos"
-          ],
-          tags: ["planificación", "pretemporada", "carga"]
-        },
-        {
-          id: "sesion-diaria",
-          name: "Gestión Diaria de la Sesión",
-          objetivo: "Ajustar en el día lo que la planificación no puede prever: estado real del plantel, clima, campo y contexto.",
-          formato: "Check-in previo + ajuste en vivo",
-          espacio: "—",
-          duracion: "Diario",
-          claves: [
-            "El plan es una hipótesis; el estado del plantel es el dato.",
-            "Ajustar espacio y densidad antes que eliminar tareas.",
-            "El jugador en riesgo entrena distinto, no entrena menos por defecto.",
-            "Todo ajuste se registra: sin registro no hay aprendizaje metodológico."
-          ],
-          variantes: [
-            "Sesión reducida por clima o estado del campo",
-            "Plan alternativo bajo techo",
-            "Sesión individualizada por grupos de carga"
-          ],
-          tags: ["planificación", "gestión", "sesión"]
+          tags: [
+            "monitoreo",
+            "carga",
+            "planificación"
+          ]
         }
       ]
     }
   ],
 
-  /* ---------- Tabla del microciclo tipo ---------- */
-  /* nivel: bajo · moderado · intenso · muy-intenso
-     Es una valoración metodológica, no un umbral automático sobre la
-     carga: la barra muestra la magnitud y el nivel, la exigencia real. */
-  microcycle: [
-    { day: "MD+1", tipo: "Recuperación", foco: "Regeneración",    contenidos: "Titulares: regenerativo y movilidad. Los que compensan: fútbol de 60' más trabajo de fuerza.", carga: 60,  nivel: "intenso",     dur: "60'" },
-    { day: "MD+2", tipo: "Descanso",     foco: "Libre",           contenidos: "Descanso total o activación voluntaria opcional. Trabajo individual de readaptación.",              carga: 5,   nivel: "bajo",        dur: "—" },
-    { day: "MD-4", tipo: "Tensión",      foco: "Fuerza",          contenidos: "Fuerza en gimnasio, pliometría, COD. Espacios reducidos, alta densidad de acciones (1v1 a 4v4).",   carga: 90,  nivel: "muy-intenso", dur: "80-95'" },
-    { day: "MD-3", tipo: "Velocidad y duración", foco: "Alta intensidad", contenidos: "Sprints y aceleraciones con el jugador fresco. Después, espacios amplios y formatos grandes (8v8 a 11v11).", carga: 100, nivel: "muy-intenso", dur: "85-95'" },
-    { day: "MD-2", tipo: "Táctico y ABP", foco: "Plan de partido", contenidos: "Táctico sin oposición, definiciones, posesiones de activación y balón parado. Volumen bajo: el partido ya está cerca.", carga: 45, nivel: "moderado", dur: "60'" },
-    { day: "MD-1", tipo: "Activación",   foco: "ABP y repaso",    contenidos: "Driles de aceleración, activación, balón parado y repaso táctico del plan de partido.",              carga: 55,  nivel: "moderado-alto", dur: "60'" },
-    { day: "MD",   tipo: "Competencia",  foco: "Partido",         contenidos: "Partido oficial. Referencia máxima de carga del ciclo.",                                           carga: 100, nivel: "muy-intenso", dur: "90'+" }
+  /* ---------- Morfociclos del club ----------
+     Los dos que usa Luciano, tal como los tiene armados: la semana de
+     6 días (domingo a domingo) y la de 5 (domingo a sábado). En la de
+     5 se dan vuelta el descanso y la compensación, y no hay MD-2.
+
+     fase: el arco que agrupa varios días, como en sus láminas.
+     acentuacion: el acento táctico del día, además del condicional. */
+  morfociclos: [
+    {
+      id: "seis",
+      nombre: "Morfociclo de 6 días",
+      sub: "Domingo → domingo",
+      temporada: "2026",
+      dias: [
+        { day: "MD",   tipo: "Competencia",  acentuacion: "Partido",            fase: "",              contenidos: "Partido oficial. Referencia máxima de carga del ciclo.", carga: 100, nivel: "muy-intenso", dur: "90'+",
+          claves: ["Todo lo entrenado se mide acá.", "Los minutos de cada uno deciden la carga de los días siguientes."] },
+        { day: "MD+1", tipo: "Compensación", acentuacion: "Grupo compensatorio", fase: "Compensación",  contenidos: "Los que no jugaron: fútbol de 60' más trabajo de fuerza. Los titulares, regenerativo y movilidad.", carga: 60, nivel: "intenso", dur: "60'",
+          claves: ["El día se declara por lo que hace el grupo que compensa, que es el que trabaja.", "Los titulares no entran en la parte de fútbol.", "La compensación es fútbol, no carrera suelta."] },
+        { day: "MD+2", tipo: "Descanso",     acentuacion: "Libre",              fase: "Compensación",  contenidos: "Descanso total. Trabajo individual de readaptación para quien lo necesite.", carga: 5, nivel: "bajo", dur: "—",
+          claves: ["Descansar también se planifica.", "Sólo entrena el que está en proceso de readaptación."] },
+        { day: "MD-4", tipo: "Tensión",      acentuacion: "Acentuación ofensiva", fase: "Incorporación", contenidos: "Fuerza, espacios reducidos y alta densidad de acciones (1v1 a 4v4), con el acento en la fase ofensiva.", carga: 90, nivel: "intenso", dur: "80-95'",
+          claves: ["Espacios reducidos: muchas acciones, mucho freno y mucho cambio de dirección.", "Es el día de mayor tensión muscular de la semana.", "El acento táctico va sobre lo ofensivo: salida, progresión y ataque posicional."] },
+        { day: "MD-3", tipo: "Velocidad y duración", acentuacion: "Acentuación defensiva", fase: "Incorporación", contenidos: "Sprints y aceleraciones con el jugador fresco. Después, espacios amplios y formatos grandes (8v8 a 11v11), con el acento defensivo.", carga: 100, nivel: "intenso", dur: "85-95'",
+          claves: ["La velocidad va primero, con el jugador entero.", "Después el volumen: es el día que más distancia acumula.", "El acento táctico va sobre lo defensivo: presión, bloque y repliegue."] },
+        { day: "MD-2", tipo: "Táctico y ABP", acentuacion: "Balón parado",      fase: "Descarga + ajuste táctico", contenidos: "Táctico sin oposición, definiciones, posesiones de activación y balón parado. Volumen bajo: el partido ya está cerca.", carga: 45, nivel: "moderado", dur: "60'",
+          claves: ["Acá entra el balón parado, ofensivo y defensivo.", "Sin oposición: se corrigen recorridos, no decisiones.", "Sesión corta y clara, de 60 minutos."] },
+        { day: "MD-1", tipo: "Activación",   acentuacion: "Plan de juego",      fase: "Descarga + ajuste táctico", contenidos: "Driles de aceleración, activación, repaso del balón parado y del plan de partido.", carga: 55, nivel: "moderado-alto", dur: "60'",
+          claves: ["Driles de aceleración: despertar sin fatigar.", "Repaso del plan y del balón parado, ya sin novedades.", "Lo que no se entrenó en la semana no se improvisa hoy."] }
+      ]
+    },
+    {
+      id: "cinco",
+      nombre: "Morfociclo de 5 días",
+      sub: "Domingo → sábado",
+      temporada: "2025",
+      dias: [
+        { day: "MD",   tipo: "Competencia",  acentuacion: "Partido",            fase: "",              contenidos: "Partido oficial.", carga: 100, nivel: "muy-intenso", dur: "90'+",
+          claves: ["Con un día menos, todo lo que sigue se comprime."] },
+        { day: "MD+1", tipo: "Descanso",     acentuacion: "Descanso",           fase: "",              contenidos: "Descanso. En la semana corta el descanso va pegado al partido.", carga: 5, nivel: "bajo", dur: "—",
+          claves: ["Al revés que en la semana de 6: primero se descansa y después se compensa."] },
+        { day: "MD+2", tipo: "Compensación", acentuacion: "Grupo compensatorio · G2 recovery", fase: "", contenidos: "Grupo compensatorio para los que no jugaron. Los titulares hacen G2 de recuperación.", carga: 55, nivel: "moderado-alto", dur: "60'",
+          claves: ["Dos grupos en el mismo campo: el que compensa y el que recupera.", "Es la última ventana de carga antes de empezar a bajar."] },
+        { day: "MD-4", tipo: "Tensión",      acentuacion: "Acentuación ofensiva", fase: "Incorporación + optimización", contenidos: "Espacios reducidos y alta densidad de acciones, con el acento en la fase ofensiva.", carga: 90, nivel: "intenso", dur: "80-90'",
+          claves: ["El espacio se va agrandando a lo largo de la semana: acá es el más chico.", "Acento ofensivo."] },
+        { day: "MD-3", tipo: "Duración",     acentuacion: "Acentuación defensiva", fase: "Incorporación + optimización", contenidos: "Espacios amplios y formatos grandes, con el acento en la fase defensiva.", carga: 95, nivel: "intenso", dur: "85-95'",
+          claves: ["El campo ya es grande: volumen y distancia.", "Acento defensivo."] },
+        { day: "MD-1", tipo: "Plan de juego + ABP", acentuacion: "PDJ + ABP",   fase: "",              contenidos: "Plan de juego y balón parado, con volumen bajo. En la semana de 5 días no hay MD-2: el ajuste táctico y el balón parado se juntan acá.", carga: 45, nivel: "moderado", dur: "60'",
+          claves: ["Sin MD-2, este día carga con el ajuste táctico y el balón parado.", "Volumen bajo y claridad alta."] }
+      ]
+    }
   ],
 
   /* ---------- Principios rectores (marquesina + footer) ---------- */
