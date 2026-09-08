@@ -186,6 +186,23 @@ window.LSD_CONFIG = {
         duration: "",
         desc: "", poster: "", featured: false,
         added: "2026-09-08"
+      },
+      {
+        id: "activacion-neuro-md3",
+        title: "Activación neuromuscular",
+        url: "https://youtu.be/d4lLkxmKFFU",
+        provider: "youtube",
+        vid: "d4lLkxmKFFU",
+        start: null,
+        end: null,
+        block: "warmup",
+        work: "activacion-general",
+        dia: "MD-3",
+        tags: ["activación", "neuromuscular", "MD-3"],
+        duration: "",
+        desc: "Activación neuromuscular previa al trabajo táctico en espacios grandes del MD-3.",
+        poster: "", featured: false,
+        added: "2026-09-08"
       }
     ],
 
