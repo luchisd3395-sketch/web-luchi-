@@ -740,7 +740,8 @@
     host.innerHTML = morfoCiclos().map(function (c, i) {
       return '<button class="morfo-tab' + (i === morfoActivo ? " is-active" : "") + '" role="tab" ' +
         'aria-selected="' + (i === morfoActivo) + '" data-i="' + i + '">' +
-        '<b>' + esc(c.dias.length - 1) + ' días</b><span>' + esc(c.sub) + "</span></button>";
+        '<b>' + esc(c.dias.length - 1) + ' días</b><span>' +
+        esc(c.sub + (c.temporada ? " · " + c.temporada : "")) + "</span></button>";
     }).join("");
     Array.prototype.forEach.call(host.querySelectorAll("button"), function (b) {
       b.addEventListener("click", function () {

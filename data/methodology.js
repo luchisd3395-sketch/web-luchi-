@@ -1383,7 +1383,7 @@ window.LSD_METHODOLOGY = {
       id: "cinco",
       nombre: "Morfociclo de 5 días",
       sub: "Domingo → sábado",
-      temporada: "2025",
+      temporada: "2026",
       dias: [
         { day: "MD",   tipo: "Competencia",  acentuacion: "Partido",            fase: "",              contenidos: "Partido oficial.", carga: 100, nivel: "muy-intenso", dur: "90'+",
           claves: ["Con un día menos, todo lo que sigue se comprime."] },
