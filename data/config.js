@@ -75,19 +75,17 @@ window.LSD_CONFIG = {
         added: "2026-09-08"
       },
       {
-        id: "tarea-p5jfb8cwvnw",
-        /* No puedo abrir YouTube desde este entorno, así que no le pongo un
-           nombre inventado: queda sin carpeta hasta que Luciano diga qué es. */
-        title: "Tarea sin clasificar",
+        id: "reducido-6v6",
+        title: "Reducido 6v6",
         url: "https://youtu.be/p5jfB8Cwvnw",
         provider: "youtube",
         vid: "p5jfB8Cwvnw",
         start: null,
         end: null,
-        block: "",
-        work: null,
+        block: "ssg",
+        work: "ssg-5v5",
         dia: "",
-        tags: [],
+        tags: ["reducido", "6v6"],
         duration: "",
         desc: "", poster: "", featured: false,
         added: "2026-09-08"
