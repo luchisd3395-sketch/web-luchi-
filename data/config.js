@@ -132,9 +132,10 @@ window.LSD_CONFIG = {
         block: "warmup",
         work: "driles-aceleracion",
         dia: "MD-3",
-        tags: ["coordinación", "aceleración", "activación"],
+        tags: ["coordinación", "aceleración", "activación", "espacios grandes"],
         duration: "",
-        desc: "", poster: "", featured: false,
+        desc: "Inicio de la activación para el trabajo en espacios grandes del MD-3.",
+        poster: "", featured: false,
         added: "2026-09-08"
       }
     ],
