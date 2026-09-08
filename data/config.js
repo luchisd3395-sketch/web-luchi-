@@ -67,7 +67,7 @@ window.LSD_CONFIG = {
         end: null,
         block: "ssg",
         work: null,
-        dia: "MD-4",
+        dia: "MD-1",
         tags: ["SSG", "side small game", "rondo", "11v4"],
         duration: "",
         desc: "", poster: "", featured: true,
