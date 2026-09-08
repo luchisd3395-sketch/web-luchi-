@@ -38,25 +38,6 @@ window.LSD_CONFIG = {
         added: "2026-09-01"
       },
       {
-        id: "smg-4v4-mas-4",
-        title: "SMG · Reducido 4v4+4",
-        /* Grabación del club, servida desde el propio repositorio. Está en
-           HEVC, que Safari reproduce y otros navegadores no: la página lo
-           detecta y ofrece abrir o descargar el archivo. */
-        url: "assets/video/smg-side-medium-game.mov",
-        provider: "file",
-        vid: "",
-        start: null,
-        end: null,
-        block: "ssg",
-        work: "ssg-comodines",
-        dia: "MD-4",
-        tags: ["SMG", "side medium game", "4v4+4", "comodines"],
-        duration: "0:09",
-        desc: "", poster: "", featured: false,
-        added: "2026-09-08"
-      },
-      {
         id: "ssg-rondo-11v4",
         title: "SSG · Rondo 11v4",
         /* Side Small Game, con el nombre que usa el club. */
