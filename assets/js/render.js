@@ -762,10 +762,25 @@
       if (d.fase && ult && ult.fase === d.fase) ult.n++;
       else tramos.push({ fase: d.fase || "", n: 1, desde: i });
     });
+    // la barra de cierre del partido no lleva fase, pero ocupa su columna
+    if (ciclo.dias[0] && ciclo.dias[0].day === "MD") tramos.push({ fase: "", n: 1 });
     host.innerHTML = tramos.map(function (t) {
       return '<span class="morfo-fase' + (t.fase ? "" : " is-vacia") + '" style="flex:' + t.n + '">' +
         (t.fase ? '<i></i><b>' + esc(t.fase) + "</b>" : "") + "</span>";
     }).join("");
+  }
+
+  /** Canchita con la zona de trabajo, como las de sus láminas: el espacio
+     crece del día de tensión al de duración. */
+  function campito(campo) {
+    var zonas = { reducido: [46, 62, 16, 12], medio: [30, 40, 40, 30], amplio: [4, 6, 92, 88] };
+    var z = zonas[campo];
+    if (!z) return "";
+    return '<svg class="mb-campo" viewBox="0 0 60 40" aria-hidden="true">' +
+      '<rect x="1" y="1" width="58" height="38" rx="1"/>' +
+      '<line x1="30" y1="1" x2="30" y2="39"/><circle cx="30" cy="20" r="6"/>' +
+      '<rect class="zona" x="' + (z[0] * 0.6) + '" y="' + (z[1] * 0.4) + '" width="' +
+        (z[2] * 0.6) + '" height="' + (z[3] * 0.4) + '"/></svg>';
   }
 
   function renderMorfoBarras(ciclo) {
@@ -773,27 +788,47 @@
     if (!host) return;
     var max = ciclo.dias.reduce(function (m, d) { return Math.max(m, d.carga || 0); }, 100);
 
-    host.innerHTML = ciclo.dias.map(function (d, i) {
+    function barra(d, i, cierre) {
       var n = nivelDe(d);
       var alto = Math.max(6, Math.round((d.carga / max) * 100));
       var partido = d.day === "MD";
       var cuantos = fotosDelDia(d.day).length + videosDelDia(d.day).length;
+
+      /* Un día con dos grupos se dibuja con dos bloques, como en la lámina:
+         el que compensa arriba y el que recupera abajo. */
+      var relleno;
+      if (d.grupos && d.grupos.length) {
+        relleno = d.grupos.map(function (g, k) {
+          var h = Math.max(8, Math.round((g.carga / max) * 100));
+          return '<span class="mb-fill mb-grupo' + (h < 25 ? " is-corta" : "") + '" data-nivel="' +
+            nivelDe(g) + '" style="height:' + h + '%">' +
+            '<span class="mb-acento">' + esc(g.label) + "</span></span>";
+        }).join("");
+      } else {
+        relleno = '<span class="mb-fill' + (alto < 25 ? " is-corta" : "") + '" data-nivel="' + n +
+          '" style="height:' + alto + '%">' +
+          (d.campo ? campito(d.campo) : "") +
+          '<span class="mb-acento">' + esc(d.acentuacion || d.tipo) + "</span></span>";
+      }
+
       return '<button class="morfo-barra' + (partido ? " is-partido" : "") +
-          (i === morfoDiaAbierto ? " is-abierta" : "") + '" data-i="' + i + '" ' +
-          'aria-expanded="' + (i === morfoDiaAbierto) + '" ' +
-          'aria-label="' + esc(d.day + " · " + d.tipo + " · " + nivelLabel(n) + ", " + d.carga + "%") + '">' +
-        '<span class="mb-col">' +
-          '<span class="mb-fill' + (alto < 25 ? " is-corta" : "") + '" data-nivel="' + n +
-            '" style="height:' + alto + '%">' +
-            '<span class="mb-acento">' + esc(d.acentuacion || d.tipo) + "</span>" +
-          "</span>" +
-        "</span>" +
+          (d.grupos ? " tiene-grupos" : "") +
+          (i === morfoDiaAbierto && !cierre ? " is-abierta" : "") + '" data-i="' + i + '" ' +
+          'aria-expanded="' + (i === morfoDiaAbierto && !cierre) + '" ' +
+          (cierre ? 'aria-label="Competencia: la semana termina donde empieza"' :
+            'aria-label="' + esc(d.day + " · " + d.tipo + " · " + nivelLabel(n) + ", " + d.carga + "%") + '"') + '>' +
+        '<span class="mb-col">' + relleno + "</span>" +
         '<span class="mb-pie">' +
-          '<span class="mb-dia">' + esc(d.day) + "</span>" +
+          '<span class="mb-dia">' + esc(cierre ? "MD" : d.day) + "</span>" +
           '<span class="mb-tipo">' + esc(d.tipo) + "</span>" +
-          (cuantos ? '<span class="mb-mat">' + cuantos + "</span>" : "") +
+          (cuantos && !cierre ? '<span class="mb-mat">' + cuantos + "</span>" : "") +
         "</span></button>";
-    }).join("");
+    }
+
+    /* La semana va de partido a partido: la competencia cierra igual que abre. */
+    var html = ciclo.dias.map(function (d, i) { return barra(d, i, false); }).join("");
+    if (ciclo.dias[0] && ciclo.dias[0].day === "MD") html += barra(ciclo.dias[0], 0, true);
+    host.innerHTML = html;
 
     Array.prototype.forEach.call(host.querySelectorAll(".morfo-barra"), function (b) {
       b.addEventListener("click", function () {

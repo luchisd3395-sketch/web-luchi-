@@ -550,6 +550,25 @@
 }
 /* En una barra muy baja el rótulo no entra: se oculta y queda el del pie */
 .mb-fill.is-corta .mb-acento { display: none; }
+
+/* Días con dos grupos: dos bloques apilados, el que compensa sobre el que recupera */
+.morfo-barra.tiene-grupos .mb-col { flex-direction: column; justify-content: flex-end; }
+.mb-grupo { width: 100%; }
+.mb-grupo + .mb-grupo { border-top: 1px solid var(--bg); }
+
+/* La canchita: el espacio de trabajo del día, que crece hacia el fin de semana */
+.mb-campo {
+  position: absolute; left: 50%; top: .4rem; transform: translateX(-50%);
+  width: 74%; max-width: 54px; opacity: .9;
+}
+.mb-campo rect, .mb-campo circle, .mb-campo line { fill: none; stroke: rgba(255,255,255,.75); stroke-width: 1; }
+.mb-campo .zona { fill: rgba(255,255,255,.55); stroke: none; }
+.mb-fill { position: relative; }
+.mb-fill[data-nivel="moderado"] .mb-campo rect,
+.mb-fill[data-nivel="moderado"] .mb-campo circle,
+.mb-fill[data-nivel="moderado"] .mb-campo line { stroke: rgba(0,0,0,.5); }
+.mb-fill[data-nivel="moderado"] .mb-campo .zona { fill: rgba(0,0,0,.35); }
+.mb-fill.is-corta .mb-campo { display: none; }
 .mb-fill[data-nivel="moderado"] .mb-acento { color: #3d2e02; text-shadow: none; }
 
 .mb-pie { display: flex; flex-direction: column; gap: .15rem; }

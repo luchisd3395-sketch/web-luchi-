@@ -1362,14 +1362,18 @@ window.LSD_METHODOLOGY = {
         { day: "MD",   tipo: "Competencia",  acentuacion: "Partido",            fase: "",              contenidos: "Partido oficial. Referencia máxima de carga del ciclo.", carga: 100, nivel: "muy-intenso", dur: "90'+",
           claves: ["Todo lo entrenado se mide acá.", "Los minutos de cada uno deciden la carga de los días siguientes."] },
         { day: "MD+1", tipo: "Compensación", acentuacion: "Grupo compensatorio", fase: "Compensación",  contenidos: "Los que no jugaron: fútbol de 60' más trabajo de fuerza. Los titulares, regenerativo y movilidad.", carga: 60, nivel: "intenso", dur: "60'",
+          grupos: [
+            { label: "Grupo comp", carga: 60, nivel: "intenso" },
+            { label: "G2", carga: 25, nivel: "bajo" }
+          ],
           claves: ["El día se declara por lo que hace el grupo que compensa, que es el que trabaja.", "Los titulares no entran en la parte de fútbol.", "La compensación es fútbol, no carrera suelta."] },
         { day: "MD+2", tipo: "Descanso",     acentuacion: "Libre",              fase: "Compensación",  contenidos: "Descanso total. Trabajo individual de readaptación para quien lo necesite.", carga: 5, nivel: "bajo", dur: "—",
           claves: ["Descansar también se planifica.", "Sólo entrena el que está en proceso de readaptación."] },
-        { day: "MD-4", tipo: "Tensión",      acentuacion: "Acentuación ofensiva", fase: "Incorporación", contenidos: "Fuerza, espacios reducidos y alta densidad de acciones (1v1 a 4v4), con el acento en la fase ofensiva.", carga: 90, nivel: "intenso", dur: "80-95'",
+        { day: "MD-4", tipo: "Tensión",      acentuacion: "Acentuación ofensiva", campo: "reducido", fase: "Incorporación", contenidos: "Fuerza, espacios reducidos y alta densidad de acciones (1v1 a 4v4), con el acento en la fase ofensiva.", carga: 90, nivel: "intenso", dur: "80-95'",
           claves: ["Espacios reducidos: muchas acciones, mucho freno y mucho cambio de dirección.", "Es el día de mayor tensión muscular de la semana.", "El acento táctico va sobre lo ofensivo: salida, progresión y ataque posicional."] },
-        { day: "MD-3", tipo: "Velocidad y duración", acentuacion: "Acentuación defensiva", fase: "Incorporación", contenidos: "Sprints y aceleraciones con el jugador fresco. Después, espacios amplios y formatos grandes (8v8 a 11v11), con el acento defensivo.", carga: 100, nivel: "intenso", dur: "85-95'",
+        { day: "MD-3", tipo: "Velocidad y duración", acentuacion: "Acentuación defensiva", campo: "amplio", fase: "Incorporación", contenidos: "Sprints y aceleraciones con el jugador fresco. Después, espacios amplios y formatos grandes (8v8 a 11v11), con el acento defensivo.", carga: 100, nivel: "intenso", dur: "85-95'",
           claves: ["La velocidad va primero, con el jugador entero.", "Después el volumen: es el día que más distancia acumula.", "El acento táctico va sobre lo defensivo: presión, bloque y repliegue."] },
-        { day: "MD-2", tipo: "Táctico y ABP", acentuacion: "Balón parado",      fase: "Descarga + ajuste táctico", contenidos: "Táctico sin oposición, definiciones, posesiones de activación y balón parado. Volumen bajo: el partido ya está cerca.", carga: 45, nivel: "moderado", dur: "60'",
+        { day: "MD-2", tipo: "Táctico y ABP", acentuacion: "Balón parado",      campo: "medio", fase: "Descarga + ajuste táctico", contenidos: "Táctico sin oposición, definiciones, posesiones de activación y balón parado. Volumen bajo: el partido ya está cerca.", carga: 45, nivel: "moderado", dur: "60'",
           claves: ["Acá entra el balón parado, ofensivo y defensivo.", "Sin oposición: se corrigen recorridos, no decisiones.", "Sesión corta y clara, de 60 minutos."] },
         { day: "MD-1", tipo: "Activación",   acentuacion: "Plan de juego",      fase: "Descarga + ajuste táctico", contenidos: "Driles de aceleración, activación, repaso del balón parado y del plan de partido.", carga: 55, nivel: "moderado-alto", dur: "60'",
           claves: ["Driles de aceleración: despertar sin fatigar.", "Repaso del plan y del balón parado, ya sin novedades.", "Lo que no se entrenó en la semana no se improvisa hoy."] }
@@ -1386,10 +1390,14 @@ window.LSD_METHODOLOGY = {
         { day: "MD+1", tipo: "Descanso",     acentuacion: "Descanso",           fase: "",              contenidos: "Descanso. En la semana corta el descanso va pegado al partido.", carga: 5, nivel: "bajo", dur: "—",
           claves: ["Al revés que en la semana de 6: primero se descansa y después se compensa."] },
         { day: "MD+2", tipo: "Compensación", acentuacion: "Grupo compensatorio · G2 recovery", fase: "", contenidos: "Grupo compensatorio para los que no jugaron. Los titulares hacen G2 de recuperación.", carga: 55, nivel: "moderado-alto", dur: "60'",
+          grupos: [
+            { label: "Grupo comp", carga: 55, nivel: "moderado-alto" },
+            { label: "G2", carga: 25, nivel: "bajo" }
+          ],
           claves: ["Dos grupos en el mismo campo: el que compensa y el que recupera.", "Es la última ventana de carga antes de empezar a bajar."] },
-        { day: "MD-4", tipo: "Tensión",      acentuacion: "Acentuación ofensiva", fase: "Incorporación + optimización", contenidos: "Espacios reducidos y alta densidad de acciones, con el acento en la fase ofensiva.", carga: 90, nivel: "intenso", dur: "80-90'",
+        { day: "MD-4", tipo: "Tensión",      acentuacion: "Acentuación ofensiva", campo: "reducido", fase: "Incorporación + optimización", contenidos: "Espacios reducidos y alta densidad de acciones, con el acento en la fase ofensiva.", carga: 90, nivel: "intenso", dur: "80-90'",
           claves: ["El espacio se va agrandando a lo largo de la semana: acá es el más chico.", "Acento ofensivo."] },
-        { day: "MD-3", tipo: "Duración",     acentuacion: "Acentuación defensiva", fase: "Incorporación + optimización", contenidos: "Espacios amplios y formatos grandes, con el acento en la fase defensiva.", carga: 95, nivel: "intenso", dur: "85-95'",
+        { day: "MD-3", tipo: "Duración",     acentuacion: "Acentuación defensiva", campo: "amplio", fase: "Incorporación + optimización", contenidos: "Espacios amplios y formatos grandes, con el acento en la fase defensiva.", carga: 95, nivel: "intenso", dur: "85-95'",
           claves: ["El campo ya es grande: volumen y distancia.", "Acento defensivo."] },
         { day: "MD-1", tipo: "Plan de juego + ABP", acentuacion: "PDJ + ABP",   fase: "",              contenidos: "Plan de juego y balón parado, con volumen bajo. En la semana de 5 días no hay MD-2: el ajuste táctico y el balón parado se juntan acá.", carga: 45, nivel: "moderado", dur: "60'",
           claves: ["Sin MD-2, este día carga con el ajuste táctico y el balón parado.", "Volumen bajo y claridad alta."] }
