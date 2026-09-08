@@ -88,6 +88,22 @@ window.LSD_CONFIG = {
         duration: "",
         desc: "", poster: "", featured: false,
         added: "2026-09-08"
+      },
+      {
+        id: "cruces-de-pases",
+        title: "Cruces de pases",
+        url: "https://youtu.be/0iNPYxEud2Y",
+        provider: "youtube",
+        vid: "0iNPYxEud2Y",
+        start: null,
+        end: null,
+        block: "warmup",
+        work: null,
+        dia: "",
+        tags: ["activación", "pase", "warm up"],
+        duration: "",
+        desc: "", poster: "", featured: false,
+        added: "2026-09-08"
       }
     ],
 
