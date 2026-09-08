@@ -137,6 +137,22 @@ window.LSD_CONFIG = {
         desc: "Inicio de la activación para el trabajo en espacios grandes del MD-3.",
         poster: "", featured: false,
         added: "2026-09-08"
+      },
+      {
+        id: "rondo-3v2-mas-1",
+        title: "Rondo 3v2+1 · progresiones",
+        url: "https://youtu.be/cu32oXIVEho",
+        provider: "youtube",
+        vid: "cu32oXIVEho",
+        start: null,
+        end: null,
+        block: "posesion",
+        work: "rondo-dinamico",
+        dia: "",
+        tags: ["rondo", "3v2+1", "progresión"],
+        duration: "",
+        desc: "", poster: "", featured: false,
+        added: "2026-09-08"
       }
     ],
 
