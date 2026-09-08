@@ -58,17 +58,18 @@ window.LSD_CONFIG = {
         added: "2026-09-08"
       },
       {
-        id: "rondo-11v4",
-        title: "Rondo 11v4",
+        id: "ssg-rondo-11v4",
+        title: "SSG · Rondo 11v4",
+        /* Side Small Game, con el nombre que usa el club. */
         url: "https://youtu.be/8qhsf9m6MZw",
         provider: "youtube",
         vid: "8qhsf9m6MZw",
         start: null,
         end: null,
-        block: "posesion",
-        work: "rondo-base",
+        block: "ssg",
+        work: null,
         dia: "",
-        tags: ["rondo", "posesión", "11v4"],
+        tags: ["SSG", "side small game", "rondo", "11v4"],
         duration: "",
         desc: "", poster: "", featured: true,
         added: "2026-09-08"
