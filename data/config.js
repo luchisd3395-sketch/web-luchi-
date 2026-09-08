@@ -73,6 +73,24 @@ window.LSD_CONFIG = {
         duration: "",
         desc: "", poster: "", featured: true,
         added: "2026-09-08"
+      },
+      {
+        id: "tarea-p5jfb8cwvnw",
+        /* No puedo abrir YouTube desde este entorno, así que no le pongo un
+           nombre inventado: queda sin carpeta hasta que Luciano diga qué es. */
+        title: "Tarea sin clasificar",
+        url: "https://youtu.be/p5jfB8Cwvnw",
+        provider: "youtube",
+        vid: "p5jfB8Cwvnw",
+        start: null,
+        end: null,
+        block: "",
+        work: null,
+        dia: "",
+        tags: [],
+        duration: "",
+        desc: "", poster: "", featured: false,
+        added: "2026-09-08"
       }
     ],
 
