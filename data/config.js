@@ -148,10 +148,11 @@ window.LSD_CONFIG = {
         end: null,
         block: "posesion",
         work: "rondo-dinamico",
-        dia: "",
-        tags: ["rondo", "3v2+1", "progresión"],
+        dia: "MD-3",
+        tags: ["rondo", "3v2+1", "progresión", "activación"],
         duration: "",
-        desc: "", poster: "", featured: false,
+        desc: "Activación del MD-3: rondo con progresión antes del trabajo en espacios grandes.",
+        poster: "", featured: false,
         added: "2026-09-08"
       }
     ],
