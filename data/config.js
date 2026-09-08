@@ -120,6 +120,22 @@ window.LSD_CONFIG = {
         duration: "",
         desc: "", poster: "", featured: false,
         added: "2026-09-08"
+      },
+      {
+        id: "coordinacion-aceleraciones",
+        title: "Coordinación y aceleraciones",
+        url: "https://youtu.be/X-OkLgBnrfw",
+        provider: "youtube",
+        vid: "X-OkLgBnrfw",
+        start: null,
+        end: null,
+        block: "warmup",
+        work: "driles-aceleracion",
+        dia: "MD-3",
+        tags: ["coordinación", "aceleración", "activación"],
+        duration: "",
+        desc: "", poster: "", featured: false,
+        added: "2026-09-08"
       }
     ],
 
