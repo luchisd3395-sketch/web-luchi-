@@ -258,6 +258,29 @@
     var reg = vRecoger();
     if (!reg) return;
 
+    /* Un archivo del dispositivo no trae miniatura y la tarjeta quedaba
+       negra: se le saca un fotograma antes de guardarlo, del tramo elegido. */
+    if (!reg.poster && vArchivo && vArchivo.file && LSD.esLocal(reg.url) && LSD.posterDeVideo) {
+      mensaje($("vMsg"), "Preparando la portada…", "warn");
+      var archivo = vArchivo.file;
+      LSD.posterDeVideo(archivo, reg.start || 0, function (err, r) {
+        if (err || !r) { vGuardarYa(reg, seguir); return; }
+        var nombre = (archivo.name || "portada").replace(/\.[^.]+$/, "") + "-portada.jpg";
+        var foto;
+        try { foto = new File([r.blob], nombre, { type: "image/jpeg" }); }
+        catch (e) { foto = r.blob; foto.name = nombre; }
+        LSD.files.guardar(foto, function (err2, clave) {
+          if (!err2 && clave) reg.poster = "local:" + clave;
+          vGuardarYa(reg, seguir);
+        });
+      });
+      return;
+    }
+
+    vGuardarYa(reg, seguir);
+  }
+
+  function vGuardarYa(reg, seguir) {
     if (vEditando) {
       S.write(function (st) {
         st.media.videos.forEach(function (v, i) {
@@ -312,6 +335,7 @@
     var caja = $("vPreview");
     caja.classList.remove("hidden");
     caja.innerHTML = LSD.playerMarkup(reg, false);
+    if (LSD.vigilarReproductores) LSD.vigilarReproductores(caja);
   }
 
   function vLista() {
@@ -337,6 +361,7 @@
           (v.duration ? "  ·  " + v.duration : "")) + "</div></div>" +
         '<div class="f-acts">' +
           '<button data-acc="sube" data-i="' + i + '" title="Subir">↑</button>' +
+          (pendiente ? '<button data-acc="portada" data-i="' + i + '" title="Sacar otra portada del vídeo">Portada</button>' : "") +
           '<button data-acc="edita" data-i="' + i + '">Editar</button>' +
           '<button class="f-del" data-acc="borra" data-i="' + i + '">Borrar</button>' +
         "</div></div>";
@@ -358,7 +383,43 @@
           vLista();
         } else if (acc === "edita") {
           vEditar(v);
+        } else if (acc === "portada") {
+          vRehacerPortada(v);
         }
+      });
+    });
+  }
+
+  /** Vuelve a sacar la portada del vídeo guardado, desde su «desde».
+     Cada vez arranca un poco más adelante, para poder elegir otro plano. */
+  function vRehacerPortada(v) {
+    var msg = $("vMsg");
+    if (!LSD.esLocal(v.url) || !LSD.posterDeVideo) return;
+    mensaje(msg, "Sacando otra portada…", "warn");
+
+    LSD.files.archivo(v.url.slice(6), function (err, file) {
+      if (err || !file) { mensaje(msg, "No se pudo leer el vídeo guardado.", "err"); return; }
+      var desde = (v.start || 0) + (v.posterPaso || 0);
+      LSD.posterDeVideo(file, desde, function (err2, r) {
+        if (err2 || !r) { mensaje(msg, "No se pudo sacar la portada de este vídeo.", "err"); return; }
+        var foto;
+        var nombre = (file.name || "portada").replace(/\.[^.]+$/, "") + "-portada.jpg";
+        try { foto = new File([r.blob], nombre, { type: "image/jpeg" }); }
+        catch (e) { foto = r.blob; foto.name = nombre; }
+        LSD.files.guardar(foto, function (err3, clave) {
+          if (err3 || !clave) { mensaje(msg, "No se pudo guardar la portada.", "err"); return; }
+          var anterior = v.poster;
+          S.write(function (st) {
+            var x = st.media.videos.filter(function (y) { return y.id === v.id; })[0];
+            if (!x) return;
+            x.poster = "local:" + clave;
+            x.posterPaso = ((x.posterPaso || 0) + 2) % 10;   // la próxima, dos segundos más allá
+          });
+          if (anterior && LSD.esLocal(anterior)) LSD.files.borrar(anterior.slice(6));
+          mensaje(msg, "Portada nueva, del segundo " + Math.round(r.segundo) + ". " +
+            "Tocá «Portada» otra vez si querés otro plano.", "ok");
+          vLista();
+        });
       });
     });
   }
@@ -936,7 +997,7 @@
         mensaje($("vMsg"), "Guardando el vídeo…", "warn");
         LSD.files.guardar(file, function (err, clave) {
           if (err) { mensaje($("vMsg"), "No se pudo guardar el vídeo: " + esc(err.message), "err"); return; }
-          vArchivo = { clave: clave, nombre: file.name, peso: file.size };
+          vArchivo = { clave: clave, nombre: file.name, peso: file.size, file: file };
           $("vFileInfo").className = "f-detected is-on";
           $("vFileInfo").innerHTML =
             '<video src="' + esc(LSD.files.url(clave)) + '" muted></video>' +

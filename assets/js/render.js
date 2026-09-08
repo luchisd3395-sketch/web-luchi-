@@ -431,10 +431,49 @@
         (opts.autoplay ? "autoplay " : "") + (c.muted ? "muted " : "") + (c.loop ? "loop " : "") +
         (v.poster ? 'poster="' + esc(v.poster) + '" ' : "") + 'style="width:100%;height:100%;object-fit:contain;background:#000"></video>';
     }
-    return '<iframe src="' + esc(LSD.embedUrl(v, opts)) + '" title="' + esc(v.title) +
-      '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';
+    /* Hay contextos que no dejan incrustar YouTube —una vista previa
+       publicada, por ejemplo—. En vez de un rectángulo negro, se ofrece el
+       enlace para abrirlo donde sí se puede. */
+    return '<div class="player-host">' +
+      '<iframe src="' + esc(LSD.embedUrl(v, opts)) + '" title="' + esc(v.title) +
+      '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>' +
+      '<div class="player-bloqueado" hidden>' +
+        "<p>Este visor no deja reproducir " + esc(LSD.providerLabel(v.provider)) + " dentro de la página.</p>" +
+        '<a class="btn-abrir" href="' + esc(v.url) + '" target="_blank" rel="noopener">Abrir el vídeo ▸</a>' +
+      "</div>" +
+      (w.LSD_PREVIEW
+        ? '<a class="player-salida" href="' + esc(v.url) + '" target="_blank" rel="noopener">' +
+          "¿No se ve? Abrilo en " + esc(LSD.providerLabel(v.provider)) + " ▸</a>"
+        : "") +
+      "</div>";
   }
   LSD.playerMarkup = playerMarkup;
+
+  /* Un visor con reglas estrictas —una vista previa publicada, por ejemplo—
+     no deja incrustar YouTube. Desde dentro del iframe eso no se puede leer,
+     pero el navegador lo avisa con «securitypolicyviolation»: ahí se cambia
+     el reproductor por el enlace para abrirlo donde sí se puede. */
+  var sinIncrustar = false;
+
+  function marcarBloqueados(scope) {
+    $$(".player-host", scope || d).forEach(function (host) {
+      var aviso = $(".player-bloqueado", host);
+      if (aviso) aviso.hidden = false;
+      host.classList.add("is-bloqueado");
+    });
+  }
+
+  d.addEventListener("securitypolicyviolation", function (e) {
+    var dir = String(e.effectiveDirective || e.violatedDirective || "");
+    if (dir.indexOf("frame-src") < 0 && dir.indexOf("child-src") < 0) return;
+    sinIncrustar = true;
+    marcarBloqueados();
+  });
+
+  function vigilarReproductores(scope) {
+    if (sinIncrustar) marcarBloqueados(scope);
+  }
+  LSD.vigilarReproductores = vigilarReproductores;
 
 
   /** Arranca y detiene la previsualización silenciosa al pasar el cursor. */
@@ -526,6 +565,7 @@
           if (t && !t.classList.contains("is-live")) {
             t.classList.add("is-live");
             t.innerHTML = playerMarkup(v, false);
+            vigilarReproductores(t);
           }
         } else {
           openPlayer(v);
@@ -1113,6 +1153,7 @@
         (v.desc ? '<div class="modal-body"><p class="lede">' + esc(v.desc) + '</p></div>' : '') +
       '</div>'
     );
+    vigilarReproductores($("#overlay"));
     bindOverlay([]);
   }
   LSD.openPlayer = openPlayer;
@@ -1127,7 +1168,7 @@
         var v = list[parseInt(el.getAttribute("data-i"), 10)];
         if (!v) return;
         var t = $(".video-thumb", el);
-        if (t && !t.classList.contains("is-live")) { t.classList.add("is-live"); t.innerHTML = playerMarkup(v, false); }
+        if (t && !t.classList.contains("is-live")) { t.classList.add("is-live"); t.innerHTML = playerMarkup(v, false); vigilarReproductores(t); }
       });
     });
   }

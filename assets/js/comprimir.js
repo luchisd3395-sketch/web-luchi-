@@ -99,6 +99,115 @@
     });
   };
 
+  /* =============================================================
+     Portada de un vídeo
+     -------------------------------------------------------------
+     Un archivo del dispositivo no trae miniatura, así que la
+     tarjeta quedaba negra. Se saca un fotograma del propio vídeo.
+     ============================================================= */
+  var POSTER_ANCHO = 1280;
+
+  /** ¿El fotograma es una pantalla plana —negro de arranque, fundido—? */
+  function fotogramaPlano(ctx, ancho, alto) {
+    var d;
+    try { d = ctx.getImageData(0, 0, ancho, alto).data; }
+    catch (e) { return false; }          // sin permiso para leerlo: se acepta
+    var n = 0, sum = 0, sum2 = 0;
+    for (var i = 0; i < d.length; i += 4 * 97) {   // una muestra cada tantos píxeles
+      var lum = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+      sum += lum; sum2 += lum * lum; n++;
+    }
+    if (!n) return false;
+    var media = sum / n;
+    var desvio = Math.sqrt(Math.max(0, sum2 / n - media * media));
+    return desvio < 8 && media < 40;     // casi sin contraste y oscuro
+  }
+
+  /**
+   * Saca un fotograma del vídeo y lo devuelve como JPEG.
+   * cb(err, { blob, ancho, alto, duracion, segundo })
+   * Prueba varios instantes: si el primero sale negro —un fundido de
+   * entrada, por ejemplo—, sigue más adelante en vez de entregar una
+   * portada inservible.
+   */
+  LSD.posterDeVideo = function (file, segundo, cb) {
+    if (!file || !w.URL || !w.URL.createObjectURL) { cb(new Error("Sin archivo.")); return; }
+
+    var url = URL.createObjectURL(file);
+    var vid = document.createElement("video");
+    vid.muted = true;                    // sin esto iOS no pinta el fotograma
+    vid.playsInline = true;
+    vid.setAttribute("playsinline", "");
+    vid.preload = "auto";
+    vid.crossOrigin = "anonymous";
+    vid.style.cssText = "position:fixed;left:-9999px;top:0;width:2px;height:2px;opacity:0";
+    document.body.appendChild(vid);
+
+    var terminado = false;
+    function limpiar() {
+      try { URL.revokeObjectURL(url); } catch (e) {}
+      if (vid.parentNode) vid.parentNode.removeChild(vid);
+    }
+    function fallar(msg) {
+      if (terminado) return;
+      terminado = true; limpiar(); cb(new Error(msg));
+    }
+    function entregar(blob, ancho, alto, seg) {
+      if (terminado) return;
+      terminado = true;
+      var dur = vid.duration;
+      limpiar();
+      cb(null, { blob: blob, ancho: ancho, alto: alto, duracion: dur, segundo: seg });
+    }
+
+    var guardia = setTimeout(function () { fallar("El vídeo tardó demasiado en abrirse."); }, 20000);
+
+    vid.addEventListener("error", function () { clearTimeout(guardia); fallar("El navegador no pudo abrir este vídeo."); });
+
+    vid.addEventListener("loadeddata", function () {
+      var dur = isFinite(vid.duration) && vid.duration > 0 ? vid.duration : 0;
+      // El instante pedido primero; después, puntos de rescate.
+      var intentos = [];
+      var pedido = Number(segundo) || 0;
+      if (pedido > 0 && (!dur || pedido < dur - 0.2)) intentos.push(pedido + 0.15);
+      [1, 2, 5].forEach(function (s) { if (!dur || s < dur - 0.2) intentos.push(s); });
+      if (dur) intentos.push(dur * 0.2, dur * 0.5);
+      if (!intentos.length) intentos.push(0);
+
+      var i = 0;
+      function probar() {
+        if (i >= intentos.length) { clearTimeout(guardia); fallar("No se pudo sacar un fotograma."); return; }
+        var t = intentos[i++];
+        var alSaltar = function () {
+          vid.removeEventListener("seeked", alSaltar);
+          var ancho = Math.min(POSTER_ANCHO, vid.videoWidth || POSTER_ANCHO);
+          var alto = Math.round(ancho * ((vid.videoHeight || 720) / (vid.videoWidth || 1280)));
+          var cv = document.createElement("canvas");
+          cv.width = ancho; cv.height = alto;
+          var ctx = cv.getContext("2d");
+          try { ctx.drawImage(vid, 0, 0, ancho, alto); }
+          catch (e) { clearTimeout(guardia); fallar("No se pudo dibujar el fotograma."); return; }
+
+          // Si salió negro y quedan instantes por probar, se sigue buscando.
+          if (fotogramaPlano(ctx, ancho, alto) && i < intentos.length) { probar(); return; }
+
+          cv.toBlob(function (blob) {
+            clearTimeout(guardia);
+            if (!blob) { fallar("No se pudo generar la portada."); return; }
+            entregar(blob, ancho, alto, t);
+          }, "image/jpeg", 0.82);
+        };
+        vid.addEventListener("seeked", alSaltar);
+        try { vid.currentTime = t; }
+        catch (e) { vid.removeEventListener("seeked", alSaltar); probar(); }
+      }
+      probar();
+    });
+
+    vid.src = url;
+    vid.load();
+  };
+
   /** "4,8 MB → 1,2 MB · 2560×1707", o sólo el peso si no se tocó. */
   LSD.resumenCompresion = function (r) {
     var peso = LSD.pesoLegible;

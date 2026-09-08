@@ -113,6 +113,24 @@
       tx.onerror = function () { cb(tx.error); };
     },
 
+    /** Devuelve el archivo guardado, para volver a trabajarlo (una portada
+       nueva, por ejemplo) sin pedirle a la persona que lo suba de nuevo. */
+    archivo: function (clave, cb) {
+      if (!db) { cb(new Error("El almacén de archivos no está disponible.")); return; }
+      var tx;
+      try { tx = db.transaction(ALMACEN, "readonly").objectStore(ALMACEN).get(clave); }
+      catch (e) { cb(e); return; }
+      tx.onsuccess = function () {
+        var r = tx.result;
+        if (!r || !r.blob) { cb(new Error("Ese archivo ya no está guardado.")); return; }
+        var f = r.blob;
+        try { f = new File([r.blob], r.nombre || "archivo", { type: r.tipo || r.blob.type }); }
+        catch (e) {}
+        cb(null, f);
+      };
+      tx.onerror = function () { cb(tx.error || new Error("No se pudo leer el archivo.")); };
+    },
+
     url: function (clave) { return urls[clave] || ""; },
     info: function (clave) { return meta[clave] || null; },
     claves: function () { return Object.keys(meta); },

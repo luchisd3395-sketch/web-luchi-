@@ -114,7 +114,12 @@ lleva hasta la tarjeta recién creada, señalada unos segundos; y **«Subir otro
 **«Subir y cargar otro»**, que mantiene el vídeo y limpia los tiempos, para cortar varios tramos
 de la misma grabación.
 
-Abajo, la lista de lo cargado, con editar, borrar y reordenar.
+**La portada la saca la propia página**: al subir un archivo se le extrae un fotograma —del «desde»
+elegido, no del principio— y queda como tapa de la tarjeta. Si ese instante está en negro (un
+fundido de entrada, la cámara todavía tapada), lo detecta y busca más adelante. El botón
+**«Portada»** de la lista la vuelve a sacar dos segundos más allá, para elegir otro plano.
+
+Abajo, la lista de lo cargado, con editar, portada, borrar y reordenar.
 
 ### Fotos
 
