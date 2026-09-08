@@ -83,10 +83,11 @@ window.LSD_CONFIG = {
         end: null,
         block: "ssg",
         work: "ssg-5v5",
-        dia: "MD-4",
-        tags: ["reducido", "6v6"],
+        dia: "MD+1",
+        tags: ["reducido", "6v6", "compensación"],
         duration: "",
-        desc: "", poster: "", featured: false,
+        desc: "Fútbol de compensación del MD+1, para el grupo que no llegó a los 60 minutos de partido.",
+        poster: "", featured: false,
         added: "2026-09-08"
       },
       {
