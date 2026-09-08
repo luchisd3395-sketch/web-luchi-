@@ -427,9 +427,19 @@
     }
     var opts = { autoplay: inline ? false : c.autoplay, muted: c.muted, loop: c.loop };
     if (v.provider === "file") {
-      return '<video src="' + esc(mediaUrl(v.url)) + '" controls playsinline ' +
+      /* Un archivo puede venir en un formato que este navegador no decodifica
+         —HEVC, por ejemplo, que Safari sí y otros no—. En vez de dejar un
+         rectángulo negro, se ofrece abrirlo o descargarlo. */
+      return '<div class="player-host">' +
+        '<video src="' + esc(mediaUrl(v.url)) + '" controls playsinline ' +
         (opts.autoplay ? "autoplay " : "") + (c.muted ? "muted " : "") + (c.loop ? "loop " : "") +
-        (v.poster ? 'poster="' + esc(v.poster) + '" ' : "") + 'style="width:100%;height:100%;object-fit:contain;background:#000"></video>';
+        (v.poster ? 'poster="' + esc(mediaUrl(v.poster)) + '" ' : "") +
+        'style="width:100%;height:100%;object-fit:contain;background:#000"></video>' +
+        '<div class="player-bloqueado" hidden>' +
+          "<p>Este navegador no puede reproducir este vídeo. Está grabado en HEVC, " +
+          "que Safari abre y otros navegadores todavía no.</p>" +
+          '<a class="btn-abrir" href="' + esc(v.url) + '" target="_blank" rel="noopener">Abrir o descargar el vídeo ▸</a>' +
+        "</div></div>";
     }
     /* Hay contextos que no dejan incrustar YouTube —una vista previa
        publicada, por ejemplo—. En vez de un rectángulo negro, se ofrece el
@@ -472,6 +482,20 @@
 
   function vigilarReproductores(scope) {
     if (sinIncrustar) marcarBloqueados(scope);
+
+    /* Los archivos propios avisan por su cuenta: si el navegador no sabe
+       decodificarlos, el elemento dispara «error». */
+    $$(".player-host video", scope || d).forEach(function (vid) {
+      if (vid.dataset.vigilado) return;
+      vid.dataset.vigilado = "1";
+      vid.addEventListener("error", function () {
+        var host = vid.closest ? vid.closest(".player-host") : null;
+        if (!host) return;
+        var aviso = $(".player-bloqueado", host);
+        if (aviso) aviso.hidden = false;
+        host.classList.add("is-bloqueado");
+      });
+    });
   }
   LSD.vigilarReproductores = vigilarReproductores;
 
