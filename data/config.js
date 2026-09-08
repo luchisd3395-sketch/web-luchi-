@@ -58,20 +58,17 @@ window.LSD_CONFIG = {
         added: "2026-09-08"
       },
       {
-        id: "smg-youtube",
-        title: "SMG · Side Medium Game",
-        /* Subido por Luciano a YouTube. No pude abrirlo desde acá para
-           comprobar qué tarea es: queda en Juegos Reducidos y se mueve
-           desde el panel si corresponde a otro bloque. */
+        id: "rondo-11v4",
+        title: "Rondo 11v4",
         url: "https://youtu.be/8qhsf9m6MZw",
         provider: "youtube",
         vid: "8qhsf9m6MZw",
         start: null,
         end: null,
-        block: "ssg",
-        work: null,
+        block: "posesion",
+        work: "rondo-base",
         dia: "",
-        tags: ["SMG", "reducido"],
+        tags: ["rondo", "posesión", "11v4"],
         duration: "",
         desc: "", poster: "", featured: true,
         added: "2026-09-08"
