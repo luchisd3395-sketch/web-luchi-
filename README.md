@@ -508,7 +508,7 @@ Arriba hay dos solapas, que son los dos morfociclos que usa el club:
 
 | | 6 días · domingo → domingo | 5 días · domingo → sábado |
 |---|---|---|
-| MD+1 | Compensación (fútbol de 60') | Descanso |
+| MD+1 | Dos grupos: recuperan y compensan | Descanso |
 | MD+2 | Descanso | Compensación + G2 recovery |
 | MD-4 | Tensión · acentuación **ofensiva** | Tensión · acentuación **ofensiva** |
 | MD-3 | Velocidad y duración · acentuación **defensiva** | Duración · acentuación **defensiva** |
@@ -530,8 +530,12 @@ Cada día lleva un nivel declarado, con su color:
 
 Es la escala de sus propias láminas —B, M, A, MA—, con un escalón más: el **moderado-alto** existe
 porque el MD-1 no es ni una cosa ni la otra. El partido es el único día en rojo; los de acentuación
-van en naranja. Y el MD+1 está en naranja por los que no jugaron, que compensan con fútbol de 60':
-el nivel declara el día del grupo que más trabaja, no el del que se recupera.
+van en naranja. Y el MD+1 está en naranja por el grupo que compensa: el nivel declara el día del
+grupo que más trabaja, no el del que se recupera.
+
+**Los días de dos grupos se dibujan con dos bloques**, uno sobre otro. El corte es por minutos
+jugados: **el que jugó más de 60' recupera** —bloque verde— y **el resto compensa** con fútbol de
+60' y fuerza —bloque naranja—. Pasa en el MD+1 de la semana de 6 y en el MD+2 de la de 5.
 
 El gráfico y la tabla salen del **mismo array** `morfociclos` de `data/methodology.js`, así que no
 pueden contradecirse. El nivel está declarado ahí (campo `nivel`) y no se deduce del porcentaje: la

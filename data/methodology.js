@@ -82,7 +82,7 @@ window.LSD_METHODOLOGY = {
           espacio: "—",
           duracion: "Semana completa",
           claves: [
-            "MD+1: regenerativo para los titulares; los que no jugaron compensan con fútbol de 60' y fuerza.",
+            "MD+1: dos grupos según los minutos del partido — más de 60' recuperan, el resto compensa con fútbol de 60' y fuerza.",
             "MD-4: tensión — fuerza, espacios reducidos, alta densidad de acciones.",
             "MD-3: velocidad y duración — sprints con el jugador fresco y después espacios amplios.",
             "MD-2: táctico sin oposición, definiciones, posesiones de activación y balón parado. 60'.",
@@ -1361,12 +1361,12 @@ window.LSD_METHODOLOGY = {
       dias: [
         { day: "MD",   tipo: "Competencia",  acentuacion: "Partido",            fase: "",              contenidos: "Partido oficial. Referencia máxima de carga del ciclo.", carga: 100, nivel: "muy-intenso", dur: "90'+",
           claves: ["Todo lo entrenado se mide acá.", "Los minutos de cada uno deciden la carga de los días siguientes."] },
-        { day: "MD+1", tipo: "Compensación", acentuacion: "Grupo compensatorio", fase: "Compensación",  contenidos: "Los que no jugaron: fútbol de 60' más trabajo de fuerza. Los titulares, regenerativo y movilidad.", carga: 60, nivel: "intenso", dur: "60'",
+        { day: "MD+1", tipo: "Recuperan y compensan", acentuacion: "Dos grupos", fase: "Compensación",  contenidos: "Se parte el plantel por los minutos del partido: los que jugaron más de 60' recuperan; el resto compensa con fútbol de 60' más trabajo de fuerza.", carga: 60, nivel: "intenso", dur: "60'",
           grupos: [
-            { label: "Grupo comp", carga: 60, nivel: "intenso" },
-            { label: "G2", carga: 25, nivel: "bajo" }
+            { label: "Compensan", carga: 60, nivel: "intenso" },
+            { label: "Recuperan", carga: 35, nivel: "bajo" }
           ],
-          claves: ["El día se declara por lo que hace el grupo que compensa, que es el que trabaja.", "Los titulares no entran en la parte de fútbol.", "La compensación es fútbol, no carrera suelta."] },
+          claves: ["El corte es por minutos jugados: más de 60' van a recuperación, el resto a compensación.", "Los que recuperan hacen regenerativo y movilidad, y no entran en la parte de fútbol.", "La compensación es fútbol, no carrera suelta.", "El día se declara por el grupo que compensa, que es el que trabaja."] },
         { day: "MD+2", tipo: "Descanso",     acentuacion: "Libre",              fase: "Compensación",  contenidos: "Descanso total. Trabajo individual de readaptación para quien lo necesite.", carga: 5, nivel: "bajo", dur: "—",
           claves: ["Descansar también se planifica.", "Sólo entrena el que está en proceso de readaptación."] },
         { day: "MD-4", tipo: "Tensión",      acentuacion: "Acentuación ofensiva", campo: "reducido", fase: "Incorporación", contenidos: "Fuerza, espacios reducidos y alta densidad de acciones (1v1 a 4v4), con el acento en la fase ofensiva.", carga: 90, nivel: "intenso", dur: "80-95'",
@@ -1389,12 +1389,12 @@ window.LSD_METHODOLOGY = {
           claves: ["Con un día menos, todo lo que sigue se comprime."] },
         { day: "MD+1", tipo: "Descanso",     acentuacion: "Descanso",           fase: "",              contenidos: "Descanso. En la semana corta el descanso va pegado al partido.", carga: 5, nivel: "bajo", dur: "—",
           claves: ["Al revés que en la semana de 6: primero se descansa y después se compensa."] },
-        { day: "MD+2", tipo: "Compensación", acentuacion: "Grupo compensatorio · G2 recovery", fase: "", contenidos: "Grupo compensatorio para los que no jugaron. Los titulares hacen G2 de recuperación.", carga: 55, nivel: "moderado-alto", dur: "60'",
+        { day: "MD+2", tipo: "Recuperan y compensan", acentuacion: "Dos grupos · G2 recovery", fase: "", contenidos: "Mismo corte que en la semana larga: los que jugaron más de 60' recuperan (G2), y el resto compensa.", carga: 55, nivel: "moderado-alto", dur: "60'",
           grupos: [
-            { label: "Grupo comp", carga: 55, nivel: "moderado-alto" },
-            { label: "G2", carga: 25, nivel: "bajo" }
+            { label: "Compensan", carga: 55, nivel: "moderado-alto" },
+            { label: "Recuperan", carga: 35, nivel: "bajo" }
           ],
-          claves: ["Dos grupos en el mismo campo: el que compensa y el que recupera.", "Es la última ventana de carga antes de empezar a bajar."] },
+          claves: ["El corte es por minutos jugados: más de 60' van al G2 de recuperación.", "Dos grupos en el mismo campo, con dos trabajos distintos.", "Es la última ventana de carga antes de empezar a bajar."] },
         { day: "MD-4", tipo: "Tensión",      acentuacion: "Acentuación ofensiva", campo: "reducido", fase: "Incorporación + optimización", contenidos: "Espacios reducidos y alta densidad de acciones, con el acento en la fase ofensiva.", carga: 90, nivel: "intenso", dur: "80-90'",
           claves: ["El espacio se va agrandando a lo largo de la semana: acá es el más chico.", "Acento ofensivo."] },
         { day: "MD-3", tipo: "Duración",     acentuacion: "Acentuación defensiva", campo: "amplio", fase: "Incorporación + optimización", contenidos: "Espacios amplios y formatos grandes, con el acento en la fase defensiva.", carga: 95, nivel: "intenso", dur: "85-95'",
