@@ -172,6 +172,23 @@ window.LSD_CONFIG = {
         desc: "Posesión que termina en definición de los delanteros. Trabajo del MD-2.",
         poster: "", featured: false,
         added: "2026-09-08"
+      },
+      {
+        id: "rondo-activacion-md1",
+        title: "Rondo de activación",
+        url: "https://youtu.be/qCNKDE9QSQY",
+        provider: "youtube",
+        vid: "qCNKDE9QSQY",
+        start: null,
+        end: null,
+        block: "warmup",
+        work: "activacion-balon",
+        dia: "MD-1",
+        tags: ["rondo", "activación", "MD-1"],
+        duration: "",
+        desc: "Rondo de entrada del día previo al partido.",
+        poster: "", featured: false,
+        added: "2026-09-08"
       }
     ],
 
