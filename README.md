@@ -12,19 +12,21 @@ sitio, el formato de la galería de vídeos y se administra el archivo de vídeo
 
 ## 1. Cómo verlo
 
-**Opción rápida:** abrí `index.html` con doble clic. No hace falta compilar nada — es HTML, CSS y
-JavaScript puro, sin dependencias.
+**En internet:** **https://luchisd3395-sketch.github.io/web-luchi-/**
 
-**Con servidor local** (recomendado, para que todo funcione igual que en producción):
+Ahí abre en cualquier teléfono o computadora, sin instalar nada y sin cuenta, y los vídeos de
+YouTube se reproducen dentro de la página. Se publica solo: el workflow `.github/workflows/pages.yml`
+sube el sitio con cada cambio que entra en `main`.
+
+**Opción rápida, en la computadora:** abrí `index.html` con doble clic. No hace falta compilar nada
+— es HTML, CSS y JavaScript puro, sin dependencias.
+
+**Con servidor local** (para probar igual que en producción):
 
 ```bash
 python3 -m http.server 8080
 # después, en el navegador: http://localhost:8080
 ```
-
-**Publicarlo en internet:** subí el repositorio a GitHub y activá **GitHub Pages**
-(Settings › Pages › Deploy from a branch › rama y carpeta `/root`). No requiere ninguna configuración
-adicional.
 
 ---
 
