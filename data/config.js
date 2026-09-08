@@ -115,7 +115,7 @@ window.LSD_CONFIG = {
         end: null,
         block: "circuitos",
         work: "rueda-pases",
-        dia: "",
+        dia: "MD-3",
         tags: ["circuito", "pase", "sprint"],
         duration: "",
         desc: "", poster: "", featured: false,
