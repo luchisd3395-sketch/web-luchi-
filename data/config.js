@@ -20,20 +20,19 @@ window.LSD_CONFIG = {
   },
 
   media: {
-    /* Primer fragmento cargado desde el panel. No pude ver el vídeo, así que
-       el bloque es una suposición: se corrige en dos clics desde «Vídeos». */
     videos: [
       {
-        id: "actividad-1",
-        title: "Actividad 1",
+        id: "fuerza-en-cancha",
+        title: "Fuerza en cancha",
         url: "https://youtube.com/watch?v=tH5lOo9OFPE",
         provider: "youtube",
         vid: "tH5lOo9OFPE",
         start: 0,
         end: 30,
-        block: "ssg",
-        work: null,
-        tags: [],
+        block: "fuerza",
+        work: "fuerza-especifica",
+        dia: "",
+        tags: ["fuerza", "campo"],
         duration: "0:30",
         desc: "", poster: "", featured: false,
         added: "2026-09-01"
