@@ -58,7 +58,18 @@
   /* ---------------------------------------------------------
      Utilidades
      --------------------------------------------------------- */
+  /** Descarga un archivo. Devuelve false si el entorno no lo permite:
+     en la vista previa publicada las descargas están bloqueadas, y
+     fallar en silencio dejaría al autor esperando un archivo que nunca
+     llega. Quien llama debe comprobar el resultado. */
   function download(filename, text, mime) {
+    if (w.LSD_PREVIEW) {
+      T.err("Acá no se puede descargar: esta es la vista previa publicada.");
+      T.dim("El navegador no permite descargas dentro de ella. Para bajar el archivo,");
+      T.dim("abrí el sitio desde el repositorio (o desde GitHub Pages) y repetí el comando.");
+      T.dim("Lo que sí funciona acá: cambiar el sitio y ver cómo queda.");
+      return false;
+    }
     try {
       var blob = new Blob([text], { type: mime || "application/json;charset=utf-8" });
       var url = URL.createObjectURL(blob);
@@ -67,7 +78,20 @@
       d.body.appendChild(a); a.click(); d.body.removeChild(a);
       setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
       return true;
-    } catch (e) { return false; }
+    } catch (e) {
+      T.err("El navegador rechazó la descarga.");
+      return false;
+    }
+  }
+
+  /** Acorta una ruta para mostrarla: una imagen incrustada en base64
+     ocupa cientos de miles de caracteres y taparía toda la terminal. */
+  function corto(u) {
+    var v = String(u || "");
+    if (!v) return "";
+    var m = v.match(/^data:([^;,]+)/);
+    if (m) return "[" + m[1] + " incrustada · " + Math.round(v.length * 0.75 / 1024) + " KB]";
+    return v.length > 76 ? v.slice(0, 73) + "…" : v;
   }
 
   function blockIds() { return M.blocks.map(function (b) { return b.id; }); }
@@ -122,7 +146,7 @@
     { g: "Vídeos",        cmds: ["video", "videos", "lote", "fragmentos", "mover", "renombrar"] },
     { g: "Imágenes",      cmds: ["imagen", "momentos"] },
     { g: "Contenido",     cmds: ["bloques", "trabajos", "buscar", "seccion"] },
-    { g: "Datos",         cmds: ["exportar", "importar", "publicar", "demo", "clave"] }
+    { g: "Datos",         cmds: ["exportar", "importar", "publicar", "archivos", "demo", "clave"] }
   ];
 
   T.register({
@@ -162,6 +186,54 @@
     name: "limpiar", alias: ["clear", "cls"],
     desc: "Limpia la pantalla de la terminal",
     run: function () { T.clear(); T.banner(); }
+  });
+
+  T.register({
+    name: "archivos", alias: ["files"],
+    desc: "Lo subido desde el dispositivo: qué ocupa y liberar lo que ya no se usa",
+    usage: "archivos [limpiar]",
+    complete: function (prev, partial) {
+      return prev.length ? [] : [{ name: "limpiar", desc: "Borra lo que ya no referencia ninguna foto ni vídeo" }];
+    },
+    run: function (args) {
+      var F = w.LSD.files;
+      if (!F || !F.disponible()) { T.err("Este navegador no guarda archivos."); return; }
+
+      var sub = (args[0] || "").toLowerCase();
+      if (sub && sub !== "limpiar") {
+        T.err("Subcomando desconocido: «" + args[0] + "». Sólo hay:  archivos  ·  archivos limpiar");
+        return;
+      }
+
+      if (sub === "limpiar") {
+        F.limpiar(function (n) {
+          if (!n) T.ok("No había nada que sobrara.");
+          else T.ok(n + (n === 1 ? " archivo borrado" : " archivos borrados") + ": ya no los usaba nadie.");
+        });
+        return;
+      }
+
+      var claves = F.claves();
+      T.head("ARCHIVOS EN ESTE NAVEGADOR");
+      if (!claves.length) {
+        T.dim("Todavía no subiste ninguno desde el dispositivo.");
+      } else {
+        T.table(claves.map(function (k) {
+          var i = F.info(k);
+          return [i.nombre, w.LSD.pesoLegible(i.peso), i.fecha];
+        }));
+        T.space();
+        T.print("Total: " + w.LSD.pesoLegible(F.peso()) + " en " + claves.length +
+          (claves.length === 1 ? " archivo" : " archivos") + ".");
+      }
+      F.espacio(function (e) {
+        /* El navegador tarda en actualizar su propia cuenta de lo usado, así que
+           se muestra sólo el techo: el total de arriba ya sale de los archivos. */
+        if (e && e.total) T.dim("Este navegador le da a la página hasta " + w.LSD.pesoLegible(e.total) + ".");
+        T.dim("Nada de esto sale de este navegador: para publicarlo hay que pasarlo al repositorio.");
+        T.dim("Liberar lo que ya no usa ninguna foto ni vídeo:  archivos limpiar");
+      });
+    }
   });
 
   T.register({
@@ -432,12 +504,14 @@
       if (prev.length === 0) {
         return [{ name: "video", desc: "vídeos de fondo, en bucle y sin sonido" },
                 { name: "foto", desc: "foto de fondo" },
+                { name: "foco", desc: "qué franja de la foto se ve" },
                 { name: "estilo", desc: "completa · dividida · minima · apagada" },
                 { name: "quitar", desc: "sacar la media de la portada" }]
           .concat(HERO_STYLES.concat(Object.keys(VALUE_ALIAS["layout.hero"] || {})).map(function (v) { return { name: v, desc: "estilo de portada" }; }));
       }
       var sub = da(prev[0]);
       if (sub === "estilo") return HERO_STYLES.concat(Object.keys(VALUE_ALIAS["layout.hero"] || {}));
+      if (sub === "foco" && prev.length === 1) return ["10", "20", "30", "50", "70"];
       if (sub === "video" && prev.length === 1) return ["add", "list", "rm", "quitar"];
       return [];
     },
@@ -448,6 +522,7 @@
       T.dim("        portada video list             lista los vídeos de portada");
       T.dim("        portada video rm <#n>          quita uno");
       T.dim("FOTO    portada foto <url>             foto de fondo (también sirve de poster del vídeo)");
+      T.dim("FOCO    portada foco 20                qué franja de la foto se ve (0 arriba · 100 abajo)");
       T.dim("ESTILO  portada completa               completa · dividida · minima · apagada");
       T.dim("QUITAR  portada quitar                 deja la portada sin media");
       T.space();
@@ -465,12 +540,13 @@
         T.head("PORTADA");
         T.table([
           ["estilo", cfg.layout.hero],
-          ["foto", cfg.site.heroImage || "—"],
+          ["foto", corto(cfg.site.heroImage) || "—"],
+          ["foco", cfg.site.heroFocus + "%"],
           ["vídeos", (cfg.media.heroVideos || []).length + " cargados"]
         ]);
         (cfg.media.heroVideos || []).forEach(function (v, i) {
           T.html('<div class="t-line"><span class="t-dim">#' + (i + 1) + "</span> " +
-            '<span class="t-ok">' + esc(v.url) + '</span> <span class="t-dim">· ' +
+            '<span class="t-ok">' + esc(corto(v.url)) + '</span> <span class="t-dim">· ' +
             esc(LSD.providerLabel(v.provider)) + "</span></div>");
         });
         T.space();
@@ -502,6 +578,23 @@
         return;
       }
 
+      /* --- punto de foco --- */
+      if (sub === "foco" || sub === "encuadre" || sub === "focus") {
+        if (!args[1]) {
+          T.html('<div class="t-line"><span class="t-key">site.heroFocus</span> = <span class="t-ok">' +
+            esc(String(S.get("site.heroFocus"))) + "%</span></div>");
+          T.dim("La portada es apaisada: una foto vertical se recorta y el foco elige qué franja se ve.");
+          T.dim("0 = arriba del todo   ·   50 = centro   ·   100 = abajo del todo");
+          T.chips(["10", "20", "30", "50", "70"], "portada foco ");
+          return;
+        }
+        var resF = S.set("site.heroFocus", args[1]);
+        if (!resF.ok) { T.err(resF.err); return; }
+        T.ok("Foco de la portada → " + resF.value + "%");
+        T.dim("  Valores bajos muestran la parte de arriba de la foto; altos, la de abajo.");
+        return;
+      }
+
       /* --- vídeo --- */
       if (sub === "video" || sub === "videos" || sub === "clip") {
         var sub2 = da(args[1] || "");
@@ -512,7 +605,7 @@
           T.head("VÍDEOS DE PORTADA (" + vids.length + ")");
           vids.forEach(function (v, i) {
             T.html('<div class="t-line"><span class="t-dim">#' + (i + 1) + "</span> " +
-              '<span class="t-ok">' + esc(v.url) + '</span><div class="t-dim" style="padding-left:2.2rem">' +
+              '<span class="t-ok">' + esc(corto(v.url)) + '</span><div class="t-dim" style="padding-left:2.2rem">' +
               esc(LSD.providerLabel(v.provider)) +
               (v.provider === "file" ? "  ·  se alterna al terminar" : "  ·  se alterna cada 24 s") + "</div></div>");
           });
@@ -565,7 +658,7 @@
       }
 
       T.err("Subcomando desconocido: «" + args[0] + "»");
-      T.chips(["video", "foto", "estilo", "quitar", "completa", "dividida", "minima"], "portada ");
+      T.chips(["video", "foto", "foco", "estilo", "quitar", "completa", "dividida", "minima"], "portada ");
     }
   });
 
@@ -906,7 +999,7 @@
       /* ---------- EXPORT / IMPORT ---------- */
       if (sub === "export" || sub === "exportar") {
         var json = JSON.stringify(S.config.media.videos, null, 2);
-        download("lsd-videos.json", json);
+        if (!download("lsd-videos.json", json)) return;
         T.ok("Descargado lsd-videos.json (" + S.config.media.videos.length + " vídeos).");
         return;
       }
@@ -992,10 +1085,10 @@
         T.head("FOTOGRAFÍAS");
         T.html('<div class="t-line"><span class="t-key">portada</span> <span class="' +
           (S.get("site.heroImage") ? "t-ok" : "t-dim") + '">' +
-          esc(S.get("site.heroImage") || "— sin foto —") + "</span></div>");
+          esc(corto(S.get("site.heroImage")) || "— sin foto —") + "</span></div>");
         M.blocks.forEach(function (b) {
           T.html('<div class="t-line"><span class="t-key">' + esc(b.id) + '</span> <span class="' +
-            (imgs[b.id] ? "t-ok" : "t-dim") + '">' + esc(imgs[b.id] || "— sin foto —") + "</span></div>");
+            (imgs[b.id] ? "t-ok" : "t-dim") + '">' + esc(corto(imgs[b.id]) || "— sin foto —") + "</span></div>");
         });
         T.space();
         T.dim("Tratamiento actual: " + S.get("layout.blockImg") + "   ·   imagen bloque <id> <url>");
@@ -1164,7 +1257,7 @@
         T.head("MOMENTOS EN EL CLUB (" + fotos.length + ")");
         fotos.forEach(function (f, i) {
           T.html('<div class="t-line"><span class="t-dim">#' + (i + 1) + "</span>  " +
-            '<span class="t-ok">' + esc(f.src) + "</span>" +
+            '<span class="t-ok">' + esc(corto(f.src)) + "</span>" +
             (f.pie ? '<div class="t-dim" style="padding-left:2.2rem">' + esc(f.pie) + "</div>" : ""));
         });
         T.space();
@@ -1987,11 +2080,11 @@
     complete: function (prev) { return prev.length ? [] : ["config", "videos"]; },
     run: function (args) {
       if (da(args[0] || "") === "videos") {
-        download("lsd-videos.json", JSON.stringify(S.config.media.videos, null, 2));
+        if (!download("lsd-videos.json", JSON.stringify(S.config.media.videos, null, 2))) return;
         T.ok("Descargado lsd-videos.json");
         return;
       }
-      download("lsd-config.json", S.export());
+      if (!download("lsd-config.json", S.export())) return;
       T.ok("Descargado lsd-config.json — guardá este archivo como copia de seguridad.");
     }
   });
@@ -2023,7 +2116,7 @@
         "   Sustituí este archivo en el repositorio para que estos ajustes\n" +
         "   sean los que vean todos los visitantes. */\n" +
         "window.LSD_CONFIG = " + S.export() + ";\n";
-      download("config.js", body, "application/javascript;charset=utf-8");
+      if (!download("config.js", body, "application/javascript;charset=utf-8")) return;
       T.ok("Descargado config.js");
       T.space();
       T.head("CÓMO DEJARLO FIJO");
@@ -2052,10 +2145,10 @@
         ["SSG 3v3 alta densidad", "ssg", "ssg-1v1", "SSG,duelo"],
         ["Nordic curl · progresión", "fuerza", "prevencion", "prevención,isquiosurales"],
         ["Trineo pesado · aceleración", "fuerza", "fuerza-especifica", "fuerza,campo"],
-        ["Salida de balón 6v4 + arqueros", "tactico", "salida-balon", "ofensivo,construcción"],
-        ["Presión alta con activación por señal", "tactico", "presion-alta", "defensivo,presión"],
-        ["Córner ofensivo · rutina de bloqueo", "abp", "corner-of", "ABP,gol"],
-        ["Circuito de finalización con arquero", "finalizacion", "circuitos-finalizacion", "finalización,técnico"]
+        ["Salida de balón 6v4 + arqueros", "tactico-analitico", "salida-balon", "ofensivo,construcción"],
+        ["Presión alta con activación por señal", "tactico-global", "presion-alta", "defensivo,presión"],
+        ["Córner ofensivo · rutina de bloqueo", "tactico-global", "abp-ofensivo", "ABP,gol"],
+        ["Circuito de finalización con arquero", "circuitos", "circuitos-finalizacion", "finalización,técnico"]
       ];
       S.write(function (st) {
         samples.forEach(function (s, i) {

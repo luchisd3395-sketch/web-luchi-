@@ -111,7 +111,10 @@
   background: linear-gradient(180deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.30) 38%, rgba(0,0,0,.32) 62%, rgba(0,0,0,.80) 100%);
 }
 .hero-media img, .hero-media video {
-  width: 100%; height: 100%; object-fit: cover; object-position: center;
+  width: 100%; height: 100%; object-fit: cover;
+  /* En una portada apaisada, una foto vertical se recorta mucho: el foco
+     decide qué franja se ve. 0% = arriba del todo, 100% = abajo. */
+  object-position: center var(--hero-focus, 50%);
 }
 /* Los reproductores embebidos se recortan para cubrir toda la portada */
 .hero-media iframe {
@@ -489,6 +492,175 @@
 .ficha-list li::before { content: ""; position: absolute; left: 0; top: .62em; width: 7px; height: 1px; background: var(--accent); }
 
 /* ========================= MICROCICLO ========================= */
+
+/* --- El gráfico de la semana, como en las láminas del club --- */
+.morfo { margin-bottom: 1.6rem; }
+
+.morfo-tabs { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.morfo-tab {
+  display: flex; flex-direction: column; gap: .1rem; text-align: left;
+  padding: .55rem .9rem; border: 1px solid var(--border); border-radius: 3px;
+  background: var(--bg); transition: all .2s var(--ease);
+}
+.morfo-tab b { font-family: var(--font-mono); font-size: .78rem; letter-spacing: .06em; color: var(--text); }
+.morfo-tab span { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); letter-spacing: .08em; }
+.morfo-tab:hover { border-color: var(--text); }
+.morfo-tab.is-active { background: var(--text); border-color: var(--text); }
+.morfo-tab.is-active b, .morfo-tab.is-active span { color: var(--bg); }
+
+.morfo-plot { border: 1px solid var(--border); background: var(--bg-2); padding: 1.1rem 1rem .8rem; }
+
+/* Los arcos de fase: un tramo por grupo de días */
+.morfo-fases { display: flex; gap: .4rem; margin-bottom: .55rem; }
+.morfo-fase { display: flex; flex-direction: column; align-items: center; gap: .25rem; min-width: 0; }
+.morfo-fase i { display: block; width: 100%; height: 6px; border: 1px solid var(--border); border-bottom: 0; }
+.morfo-fase b {
+  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted); font-weight: 400;
+  text-align: center; line-height: 1.4; max-width: 100%;
+}
+.morfo-fase.is-vacia { visibility: hidden; }
+
+.morfo-barras { display: flex; gap: .4rem; align-items: stretch; }
+.morfo-barra {
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: .5rem;
+  padding: 0; background: none; border: 0; cursor: pointer; text-align: center;
+}
+.mb-col {
+  display: flex; align-items: flex-end; justify-content: center;
+  height: clamp(150px, 22vw, 260px);
+  background: var(--surface-2); border: 1px solid var(--border);
+  transition: border-color .2s var(--ease);
+}
+.mb-fill {
+  width: 100%; display: flex; align-items: center; justify-content: center;
+  background: var(--nivel-bajo); transition: filter .2s var(--ease);
+}
+.mb-fill[data-nivel="bajo"]           { background: var(--nivel-bajo); }
+.mb-fill[data-nivel="moderado"]       { background: var(--nivel-moderado); }
+.mb-fill[data-nivel="moderado-alto"]  { background: var(--nivel-moderado-alto); }
+.mb-fill[data-nivel="intenso"]        { background: var(--nivel-intenso); }
+.mb-fill[data-nivel="muy-intenso"]    { background: var(--nivel-muy-intenso); }
+/* El acento va escrito dentro de la barra, en vertical, como en sus láminas */
+.mb-acento {
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .12em;
+  text-transform: uppercase; color: #fff; padding: .5rem 0;
+  max-height: 100%; overflow: hidden; text-shadow: 0 1px 2px rgba(0,0,0,.45);
+}
+/* En una barra muy baja el rótulo no entra: se oculta y queda el del pie */
+.mb-fill.is-corta .mb-acento { display: none; }
+
+/* Días con dos grupos: dos bloques apilados, el que compensa sobre el que recupera */
+.morfo-barra.tiene-grupos .mb-col { flex-direction: column; justify-content: flex-end; }
+.mb-grupo { width: 100%; }
+.mb-grupo + .mb-grupo { border-top: 1px solid var(--bg); }
+
+/* La canchita: el espacio de trabajo del día, que crece hacia el fin de semana */
+.mb-campo {
+  position: absolute; left: 50%; top: .4rem; transform: translateX(-50%);
+  width: 74%; max-width: 54px; opacity: .9;
+}
+.mb-campo rect, .mb-campo circle, .mb-campo line { fill: none; stroke: rgba(255,255,255,.75); stroke-width: 1; }
+.mb-campo .zona { fill: rgba(255,255,255,.55); stroke: none; }
+.mb-fill { position: relative; }
+.mb-fill[data-nivel="moderado"] .mb-campo rect,
+.mb-fill[data-nivel="moderado"] .mb-campo circle,
+.mb-fill[data-nivel="moderado"] .mb-campo line { stroke: rgba(0,0,0,.5); }
+.mb-fill[data-nivel="moderado"] .mb-campo .zona { fill: rgba(0,0,0,.35); }
+.mb-fill.is-corta .mb-campo { display: none; }
+.mb-fill[data-nivel="moderado"] .mb-acento { color: #3d2e02; text-shadow: none; }
+
+.mb-pie { display: flex; flex-direction: column; gap: .15rem; }
+.mb-dia { font-family: var(--font-mono); font-size: .8rem; letter-spacing: .06em; color: var(--text); }
+.mb-tipo {
+  font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted);
+  letter-spacing: .06em; line-height: 1.4;
+}
+.mb-mat {
+  align-self: center; font-family: var(--font-mono); font-size: var(--fs-micro);
+  color: var(--accent-2-ink); background: var(--accent-2); border-radius: 999px;
+  min-width: 18px; padding: 0 .35rem; line-height: 1.5;
+}
+.morfo-barra:hover .mb-col, .morfo-barra:focus-visible .mb-col { border-color: var(--text); }
+.morfo-barra:hover .mb-fill { filter: brightness(1.08); }
+.morfo-barra.is-abierta .mb-col { border-color: var(--text); box-shadow: inset 0 0 0 1px var(--text); }
+.morfo-barra.is-partido .mb-col { border-style: dashed; }
+
+.morfo-pista {
+  font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted);
+  letter-spacing: .08em; margin-top: .7rem;
+}
+
+/* --- El día abierto --- */
+.morfo-dia { border: 1px solid var(--text); border-top: 0; padding: 1.3rem 1.2rem; background: var(--bg); }
+.md-head { display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+.md-id { display: flex; align-items: baseline; gap: .7rem; flex: 1 1 auto; }
+.md-day { font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1; }
+.md-tipo { font-family: var(--font-mono); font-size: .8rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.md-meta { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+.md-dato, .md-fase {
+  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .08em;
+  color: var(--muted); border: 1px solid var(--border); padding: .15rem .45rem;
+}
+.md-fase { text-transform: uppercase; }
+.md-cerrar { font-size: .9rem; color: var(--muted); padding: .2rem .5rem; border: 1px solid var(--border); }
+.md-cerrar:hover { color: var(--text); border-color: var(--text); }
+.md-acento {
+  font-family: var(--font-mono); font-size: .78rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--accent); margin-top: .8rem;
+}
+.md-cont { margin-top: .5rem; max-width: 68ch; }
+.md-claves { margin-top: .9rem; display: grid; gap: .4rem; max-width: 78ch; }
+.md-claves li { position: relative; padding-left: 1.1rem; font-size: .92rem; color: var(--muted); }
+.md-claves li::before { content: ""; position: absolute; left: 0; top: .62em; width: 7px; height: 1px; background: var(--accent); }
+
+.md-bloque { margin-top: 1.4rem; }
+.md-bloque h4 {
+  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: .6rem;
+}
+.md-videos { display: flex; gap: .6rem; flex-wrap: wrap; }
+.md-video {
+  display: flex; flex-direction: column; gap: .3rem; width: 150px; text-align: left;
+  border: 1px solid var(--border); padding: .35rem; background: var(--bg);
+}
+.md-video img, .md-ph { width: 100%; aspect-ratio: 16/9; object-fit: cover; background: var(--surface-2); }
+.md-ph { display: grid; place-items: center; font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); }
+.md-video span { font-size: .76rem; line-height: 1.35; }
+.md-video:hover, .md-video.is-on { border-color: var(--text); }
+.md-player { margin-top: .7rem; }
+.md-player iframe, .md-player video { width: 100%; max-width: 640px; aspect-ratio: 16/9; border: 0; background: #000; }
+.md-fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .5rem; }
+.md-fotos img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border: 1px solid var(--border); }
+.md-tareas { display: flex; gap: .5rem; flex-wrap: wrap; }
+.md-tarea {
+  display: flex; flex-direction: column; gap: .15rem; text-align: left;
+  border: 1px solid var(--border); padding: .5rem .7rem; background: var(--bg);
+}
+.md-tarea b { font-size: .82rem; font-weight: 500; }
+.md-tarea span { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); letter-spacing: .08em; }
+.md-tarea:hover { border-color: var(--text); }
+.md-vacio { margin-top: 1.2rem; font-size: .88rem; color: var(--muted); max-width: 60ch; }
+
+/* --- La tabla, ahora plegada debajo --- */
+.morfo-tabla { margin-top: 1.6rem; }
+.morfo-tabla summary {
+  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted); cursor: pointer; padding: .5rem 0;
+}
+.morfo-tabla summary:hover { color: var(--text); }
+.morfo-tabla[open] summary { margin-bottom: .8rem; }
+
+@media (max-width: 720px) {
+  .mb-col { height: clamp(120px, 34vw, 180px); }
+  .mb-acento { font-size: 9px; letter-spacing: .06em; }
+  .mb-tipo { display: none; }
+  .morfo-fase b { font-size: 9px; letter-spacing: .04em; }
+  .morfo-barras, .morfo-fases { gap: .25rem; }
+  .md-video { width: 120px; }
+}
+
 .micro-table-wrap { overflow-x: auto; border: 1px solid var(--border); }
 .micro-table { min-width: 860px; font-size: .85rem; }
 .micro-table th, .micro-table td { padding: .9rem 1rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
@@ -504,6 +676,7 @@
 .load-bar { display: block; height: 100%; min-width: 3px; background: var(--nivel-bajo); }
 .load-bar[data-nivel="bajo"]        { background: var(--nivel-bajo); }
 .load-bar[data-nivel="moderado"]    { background: var(--nivel-moderado); }
+.load-bar[data-nivel="moderado-alto"] { background: var(--nivel-moderado-alto); }
 .load-bar[data-nivel="intenso"]     { background: var(--nivel-intenso); }
 .load-bar[data-nivel="muy-intenso"] { background: var(--nivel-muy-intenso); }
 
@@ -513,6 +686,7 @@
 }
 .load-tag[data-nivel="bajo"]        { color: var(--nivel-bajo-ink); }
 .load-tag[data-nivel="moderado"]    { color: var(--nivel-moderado-ink); }
+.load-tag[data-nivel="moderado-alto"] { color: var(--nivel-moderado-alto-ink); }
 .load-tag[data-nivel="intenso"]     { color: var(--nivel-intenso-ink); }
 .load-tag[data-nivel="muy-intenso"] { color: var(--nivel-muy-intenso-ink); }
 .load-pct { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); margin-left: .4rem; }
@@ -527,12 +701,14 @@
 .load-legend i { width: 22px; height: 8px; display: block; border: 1px solid var(--border); }
 .load-legend i[data-nivel="bajo"]        { background: var(--nivel-bajo); }
 .load-legend i[data-nivel="moderado"]    { background: var(--nivel-moderado); }
+.load-legend i[data-nivel="moderado-alto"] { background: var(--nivel-moderado-alto); }
 .load-legend i[data-nivel="intenso"]     { background: var(--nivel-intenso); }
 .load-legend i[data-nivel="muy-intenso"] { background: var(--nivel-muy-intenso); }
 
 /* Sobre banda negra la palabra usa el tono vivo, que ahí sí se lee */
 .section.is-inverted .load-tag[data-nivel="bajo"]        { color: #23c46f; }
 .section.is-inverted .load-tag[data-nivel="moderado"]    { color: var(--nivel-moderado); }
+.section.is-inverted .load-tag[data-nivel="moderado-alto"] { color: #f0a92a; }
 .section.is-inverted .load-tag[data-nivel="intenso"]     { color: var(--nivel-intenso); }
 .section.is-inverted .load-tag[data-nivel="muy-intenso"] { color: #f0303d; }
 .section.is-inverted .load-track { background: #1c1c1c; border-color: rgba(255,255,255,.18); }
@@ -844,3 +1020,39 @@
 .section.is-inverted .mom-dots button { background: rgba(255, 255, 255, .28); }
 .section.is-inverted .mom-dots button.is-active { background: var(--accent); }
 .section.is-inverted .mom-slide { background: #161616; }
+
+/* Vídeo recién subido: se señala unos segundos para no perderlo de vista */
+.video-card.is-nuevo {
+  outline: 3px solid var(--accent); outline-offset: 3px;
+  animation: latido 1.1s ease-out 2;
+}
+@keyframes latido {
+  0%   { outline-color: var(--accent); }
+  50%  { outline-color: transparent; }
+  100% { outline-color: var(--accent); }
+}
+[data-motion="off"] .video-card.is-nuevo { animation: none; }
+
+/* Reproductor incrustado que el visor no deja cargar: se ofrece el enlace */
+.player-host { position: relative; width: 100%; height: 100%; }
+.player-host iframe { width: 100%; height: 100%; border: 0; display: block; }
+.player-host.is-bloqueado iframe { display: none; }
+.player-bloqueado {
+  display: grid; place-items: center; gap: .9rem; text-align: center;
+  min-height: 220px; height: 100%; padding: 2rem; background: var(--surface-2);
+}
+.player-bloqueado p { font-size: .86rem; color: var(--muted); max-width: 34ch; }
+.btn-abrir {
+  font-family: var(--font-mono); font-size: .7rem; letter-spacing: .12em;
+  text-transform: uppercase; padding: .7rem 1.1rem;
+  background: var(--accent); color: var(--accent-ink);
+}
+.btn-abrir:hover { filter: brightness(1.1); }
+.player-salida {
+  position: absolute; left: 50%; bottom: .6rem; transform: translateX(-50%);
+  font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em;
+  text-transform: uppercase; padding: .4rem .7rem; border-radius: 3px;
+  background: rgba(0,0,0,.72); color: #fff; white-space: nowrap;
+}
+.player-salida:hover { background: var(--accent); color: var(--accent-ink); }
+.player-host.is-bloqueado .player-salida { display: none; }

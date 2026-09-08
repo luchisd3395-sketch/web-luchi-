@@ -154,7 +154,7 @@
 
   /** Miniatura automática según proveedor. */
   LSD.thumbUrl = function (v) {
-    if (v.poster) return v.poster;
+    if (v.poster) return LSD.resolveUrl ? LSD.resolveUrl(v.poster) : v.poster;
     switch (v.provider) {
       case "youtube": return "https://i.ytimg.com/vi/" + v.vid + "/hqdefault.jpg";
       case "drive":   return "https://drive.google.com/thumbnail?id=" + v.vid + "&sz=w1200";

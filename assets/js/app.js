@@ -54,6 +54,15 @@
     checkDisplayFont();
     LSD.renderAll();
     LSD.term.mount();
+    if (LSD.panel) LSD.panel.mount();
+
+    /* Los archivos subidos desde el dispositivo viven en IndexedDB, que se
+       abre de forma asíncrona. Si hay alguno, se repinta cuando esté listo. */
+    if (LSD.files) {
+      LSD.files.init(function (err, n) {
+        if (!err && n) { LSD.renderAll(); LSD.panel && LSD.panel.refrescar(); }
+      });
+    }
 
     /* Re-render ante cualquier cambio de configuración */
     var raf = null;

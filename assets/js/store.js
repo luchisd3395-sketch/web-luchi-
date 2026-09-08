@@ -43,7 +43,8 @@
       email: "",
       instagram: "",
       footerNote: "Documento vivo. Se actualiza con cada temporada.",
-      heroImage: ""
+      heroImage: "",
+      heroFocus: 50
     },
     theme: {
       preset: "agro",
@@ -109,7 +110,8 @@
       videos: [],
       images: {},
       heroVideos: [],
-      gallery: []
+      gallery: [],
+      dias: {}          /* fotos de cada día del microciclo: "MD-3": [rutas] */
     }
   };
   LSD.DEFAULTS = DEFAULTS;
@@ -133,6 +135,7 @@
     "site.instagram":  C("text", "Usuario de Instagram (opcional)"),
     "site.footerNote": C("text", "Nota del pie de página"),
     "site.heroImage":  C("text", "Imagen de fondo de la portada (URL o ruta del repositorio)"),
+    "site.heroFocus":  C("num", "Punto de foco vertical de la portada (0 arriba · 100 abajo)", { min: 0, max: 100 }),
 
     "theme.preset":    C("enum", "Paleta completa", { values: Object.keys(PRESETS) }),
     "theme.mode":      C("enum", "Modo de color", { values: ["dark", "light"] }),
@@ -312,6 +315,7 @@
     if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
     if (!Array.isArray(state.media.heroVideos)) state.media.heroVideos = [];
     if (!Array.isArray(state.media.gallery)) state.media.gallery = [];
+    if (!state.media.dias || typeof state.media.dias !== "object") state.media.dias = {};
     if (!Array.isArray(state.layout.sections)) state.layout.sections = clone(DEFAULTS.layout.sections);
     if (!Array.isArray(state.layout.hidden)) state.layout.hidden = [];
     if (!Array.isArray(state.layout.inverted)) state.layout.inverted = [];
@@ -385,6 +389,7 @@
     if (!state.media.images || typeof state.media.images !== "object") state.media.images = {};
     if (!Array.isArray(state.media.heroVideos)) state.media.heroVideos = [];
     if (!Array.isArray(state.media.gallery)) state.media.gallery = [];
+    if (!state.media.dias || typeof state.media.dias !== "object") state.media.dias = {};
       persist();
       store.emit("*");
     },
@@ -398,7 +403,10 @@
     export: function () { return JSON.stringify(state, null, 2); },
 
     on: function (fn) { listeners.push(fn); return fn; },
-    emit: function (what) { listeners.forEach(function (fn) { try { fn(what, state); } catch (e) { console.error(e); } }); }
+    emit: function (what) {
+      listeners.forEach(function (fn) { try { fn(what, state); } catch (e) { console.error(e); } });
+      if (LSD.panel && LSD.panel.refrescar) { try { LSD.panel.refrescar(); } catch (e) {} }
+    }
   };
 
   load();

@@ -135,10 +135,10 @@
       <div class="video-strip" id="videoStrip"></div>
 
       <div class="empty-state hidden" id="videosEmpty">
-        Todavía no hay vídeos en el archivo.<br>
-        Abrí la terminal con la tecla <kbd>`</kbd> o el botón <kbd>TERMINAL</kbd> y escribí:<br><br>
-        <kbd>video add "Rondo 4v2" https://youtu.be/XXXXXXX --bloque posesion</kbd><br><br>
-        Para ver ejemplos y probar los formatos: <kbd>demo</kbd>
+        Todavía no hay vídeos en el archivo.<br><br>
+        Tocá <kbd>TERMINAL</kbd> y, en la pestaña <kbd>Vídeos</kbd>, pegá el enlace de YouTube o elegí
+        el archivo, poné desde y hasta qué minuto y dale a <kbd>Subir vídeo a la página</kbd>.<br>
+        La carpeta se puede elegir después, desde la pestaña <kbd>Archivos</kbd>.
       </div>
     </div>
   </section>
@@ -192,17 +192,32 @@
             con qué carga relativa y con qué intención.</p>
         </div>
       </div>
-      <div class="micro-table-wrap reveal">
-        <table class="micro-table">
-          <thead>
-            <tr>
-              <th>Día</th><th>Tipo</th><th>Foco</th><th>Contenidos</th><th>Duración</th><th>Carga</th>
-            </tr>
-          </thead>
-          <tbody id="microBody"></tbody>
-        </table>
+      <!-- Gráfico tocable: cada barra abre su día -->
+      <div class="morfo reveal">
+        <div class="morfo-tabs" id="morfoTabs" role="tablist" aria-label="Morfociclos"></div>
+        <div class="morfo-plot">
+          <div class="morfo-fases" id="morfoFases" aria-hidden="true"></div>
+          <div class="morfo-barras" id="morfoBarras"></div>
+        </div>
+        <div class="morfo-dia" id="morfoDia" hidden></div>
+        <p class="morfo-pista" id="morfoPista">Tocá una barra para entrar en el día. Con el teclado: ← → para moverte, Esc para cerrar.</p>
       </div>
+
       <div class="load-legend reveal" id="microLegend"></div>
+
+      <details class="morfo-tabla reveal">
+        <summary>Ver la semana en tabla</summary>
+        <div class="micro-table-wrap">
+          <table class="micro-table">
+            <thead>
+              <tr>
+                <th>Día</th><th>Tipo</th><th>Foco</th><th>Contenidos</th><th>Duración</th><th>Carga</th>
+              </tr>
+            </thead>
+            <tbody id="microBody"></tbody>
+          </table>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -239,28 +254,230 @@
 <!-- ==================== TERMINAL ==================== -->
 <button class="term-fab" id="termFab" title="Abrir terminal (tecla `)">⌘ Terminal</button>
 
-<section class="term" id="term" data-dock="bottom" aria-label="Terminal de configuración">
+<section class="term" id="term" data-dock="bottom" aria-label="Panel de administración del sitio">
   <div class="term-bar">
     <span class="term-lights" aria-hidden="true"><i></i><i></i><i></i></span>
-    <span class="term-name"><b>lsd</b>//console<span class="term-name-sub"> — configuración del sitio</span></span>
+    <span class="term-name"><b>lsd</b><span class="term-name-sub"> — administración del sitio</span></span>
+
+    <nav class="term-tabs" id="termTabs" aria-label="Secciones del panel">
+      <button class="term-tab is-active" data-tab="videos">Vídeos</button>
+      <button class="term-tab" data-tab="fotos">Fotos</button>
+      <button class="term-tab" data-tab="archivos">Archivos</button>
+      <button class="term-tab" data-tab="consola">Consola</button>
+    </nav>
+
     <span class="term-bar-actions">
       <button id="termDock" title="Cambiar posición">Anclaje</button>
-      <button id="termClear" title="Limpiar pantalla">Limpiar</button>
+      <button id="termClear" title="Limpiar la consola">Limpiar</button>
       <button id="termClose" title="Cerrar (Esc)">Cerrar</button>
     </span>
   </div>
 
-  <div class="term-out" id="termOut"></div>
+  <!-- ============ VÍDEOS ============ -->
+  <div class="term-pane" id="paneVideos">
+   <div class="pane-scroll">
 
-  <div class="term-input-row">
-    <div class="term-sug" id="termSug"></div>
-    <span class="term-prompt">lsd ❯</span>
-    <span class="term-ghost">
-      <span class="term-ghost-text" id="termGhost"></span>
-      <input class="term-input" id="termInput" type="text" autocomplete="off" autocapitalize="off"
-             autocorrect="off" spellcheck="false" placeholder="escribí `ayuda` y pulsá Enter">
-    </span>
-    <span class="term-hint">Tab autocompleta · ↑↓ historial · Esc cierra</span>
+    <div class="pane-head">
+      <h4>Añadir un vídeo</h4>
+      <div class="src-tabs" id="vSrcTabs">
+        <button class="is-active" data-src="enlace">Enlace</button>
+        <button data-src="archivo">Subir archivo</button>
+      </div>
+    </div>
+
+    <div class="src-pane" id="vSrcEnlace">
+      <label class="f-field">
+        <span>Enlace del vídeo</span>
+        <input id="vLink" type="text" spellcheck="false" autocomplete="off"
+               placeholder="https://youtube.com/watch?v=…">
+      </label>
+      <p class="f-note">YouTube, Vimeo o Google Drive. También sirve una ruta del repositorio,
+        como <code>assets/video/tarea.mp4</code>.</p>
+      <div class="f-detected" id="vDetect"></div>
+    </div>
+
+    <div class="src-pane hidden" id="vSrcArchivo">
+      <input type="file" id="vFile" accept="video/*" hidden>
+      <input type="file" id="vFileCam" accept="video/*" capture="environment" hidden>
+
+      <div class="picker">
+        <button type="button" class="pick-btn" id="vPickLib">
+          <b>Elegir un vídeo</b><span>Se abre el selector y elegís cuál</span>
+        </button>
+        <button type="button" class="pick-btn" id="vPickCam">
+          <b>Grabar ahora</b><span>Abre la cámara</span>
+        </button>
+      </div>
+
+      <div class="dropzone dropzone-sm" id="vDrop" tabindex="0" role="button">
+        o arrastrá el archivo acá · .mp4 o .webm · hasta 25 MB
+      </div>
+
+      <div class="f-detected" id="vFileInfo"></div>
+
+      <p class="f-privacidad">
+        <b>Sólo entra lo que elijas.</b> Se abre el selector de tu dispositivo y esta página
+        recibe únicamente el archivo que toques: no puede ver el resto de tu galería.
+        El vídeo queda guardado <b>en este navegador</b> y no se envía a ningún lado.
+      </p>
+
+      <p class="f-aviso">Como queda en el navegador, los visitantes no lo ven hasta que se
+        publique en el repositorio. Un enlace de YouTube, en cambio, lo ve todo el mundo enseguida.</p>
+    </div>
+
+    <div class="f-row">
+      <label class="f-field f-sm"><span>Desde</span>
+        <input id="vFrom" type="text" inputmode="numeric" placeholder="0:00"></label>
+      <label class="f-field f-sm"><span>Hasta</span>
+        <input id="vTo" type="text" inputmode="numeric" placeholder="0:30"></label>
+      <div class="f-dur"><span>Duración</span><b id="vDur">—</b></div>
+    </div>
+
+    <label class="f-field"><span>Título</span>
+      <input id="vTitle" type="text" placeholder="Se numera solo si lo dejás vacío"></label>
+
+    <div class="f-row">
+      <label class="f-field"><span>Carpeta · opcional</span><select id="vBlock"></select></label>
+      <label class="f-field"><span>Unidad de trabajo · opcional</span><select id="vWork"></select></label>
+      <label class="f-field"><span>Día del microciclo · opcional</span><select id="vDia"></select></label>
+    </div>
+
+    <label class="f-field"><span>Etiquetas · opcional</span>
+      <input id="vTags" type="text" placeholder="SSG, posesión"></label>
+
+    <div class="f-msg" id="vMsg"></div>
+
+    <div class="f-actions">
+      <button class="btn-primary btn-grande" id="vSave">Subir vídeo a la página</button>
+      <button class="btn-ghost" id="vTest">Probar el corte</button>
+      <button class="btn-ghost" id="vSaveMore">Subir y cargar otro</button>
+      <button class="btn-ghost" id="vReset">Limpiar</button>
+    </div>
+
+    <div class="f-preview hidden" id="vPreview"></div>
+
+    <div class="pane-head pane-head-list">
+      <h4>Vídeos cargados <span class="pane-count" id="vCount"></span></h4>
+      <button class="btn-ghost" id="vCopy" title="Copia el listado para pegarlo en el chat">Copiar para enviar</button>
+    </div>
+    <div class="f-list" id="vList"></div>
+
+   </div>
+  </div>
+
+  <!-- ============ FOTOS ============ -->
+  <div class="term-pane hidden" id="paneFotos">
+   <div class="pane-scroll">
+
+    <div class="pane-head">
+      <h4>Añadir una foto</h4>
+      <div class="src-tabs" id="fSrcTabs">
+        <button class="is-active" data-src="archivo">Subir archivo</button>
+        <button data-src="enlace">Enlace</button>
+      </div>
+    </div>
+
+    <div class="src-pane" id="fSrcArchivo">
+      <input type="file" id="fFile" accept="image/*" multiple hidden>
+      <input type="file" id="fFileCam" accept="image/*" capture="environment" hidden>
+
+      <div class="picker">
+        <button type="button" class="pick-btn" id="fPickLib">
+          <b>Elegir fotos</b><span>Se abre el selector y elegís cuáles</span>
+        </button>
+        <button type="button" class="pick-btn" id="fPickCam">
+          <b>Sacar una foto</b><span>Abre la cámara</span>
+        </button>
+      </div>
+
+      <div class="dropzone dropzone-sm" id="fDrop" tabindex="0" role="button">
+        o arrastrá las fotos acá · .jpg o .png · hasta 8 MB cada una
+      </div>
+
+      <div class="f-queue" id="fQueue"></div>
+      <div class="f-detected" id="fFileInfo"></div>
+
+      <p class="f-privacidad">
+        <b>Sólo entra lo que elijas.</b> Se abre el selector de tu dispositivo y esta página
+        recibe únicamente las fotos que toques: no puede ver el resto de tu galería.
+        Antes de guardar las repasás una por una y sacás las que no quieras.
+      </p>
+
+      <p class="f-aviso">Quedan guardadas <b>en este navegador</b> y no se envían a ningún lado.
+        Para que las vean los visitantes hay que publicarlas en el repositorio.</p>
+    </div>
+
+    <div class="src-pane hidden" id="fSrcEnlace">
+      <label class="f-field">
+        <span>Enlace o ruta de la foto</span>
+        <input id="fLink" type="text" spellcheck="false" autocomplete="off"
+               placeholder="assets/img/foto.jpg"></label>
+      <div class="f-detected" id="fDetect"></div>
+    </div>
+
+    <label class="f-field"><span>¿Dónde va?</span><select id="fDest"></select></label>
+
+    <label class="f-field" id="fPieCampo"><span>Pie de foto · opcional</span>
+      <input id="fPie" type="text" placeholder="Entrada en calor antes del partido"></label>
+
+    <div class="f-msg" id="fMsg"></div>
+
+    <div class="f-actions">
+      <button class="btn-primary" id="fSave">Añadir foto</button>
+      <button class="btn-ghost" id="fReset">Limpiar</button>
+    </div>
+
+    <div class="pane-head pane-head-list">
+      <h4>Fotos del sitio <span class="pane-count" id="fCount"></span></h4>
+      <button class="btn-ghost" id="fCopy" title="Copia el listado para pegarlo en el chat">Copiar para enviar</button>
+    </div>
+    <div class="f-list" id="fList"></div>
+
+   </div>
+  </div>
+
+  <!-- ============ ARCHIVOS ============ -->
+  <div class="term-pane hidden" id="paneArchivos">
+   <div class="pane-scroll">
+
+    <div class="pane-head">
+      <h3>Archivos del sitio</h3>
+      <p>Todo lo que hay cargado, fotos y vídeos, con la carpeta en la que está.
+         Para moverlo, cambiá la carpeta en el desplegable de su fila.</p>
+    </div>
+
+    <div class="a-filtros">
+      <label class="f-field f-field-sm"><span>Mostrar</span>
+        <select id="aTipo">
+          <option value="">Todo</option>
+          <option value="video">Sólo vídeos</option>
+          <option value="foto">Sólo fotos</option>
+        </select></label>
+      <label class="f-field f-field-sm"><span>Carpeta</span>
+        <select id="aCarpeta"></select></label>
+    </div>
+
+    <div class="f-msg" id="aMsg"></div>
+    <div class="a-resumen" id="aResumen"></div>
+    <div class="f-list" id="aList"></div>
+
+   </div>
+  </div>
+
+  <!-- ============ CONSOLA ============ -->
+  <div class="term-pane hidden" id="paneConsola">
+    <div class="term-out" id="termOut"></div>
+
+    <div class="term-input-row">
+      <div class="term-sug" id="termSug"></div>
+      <span class="term-prompt">lsd ❯</span>
+      <span class="term-ghost">
+        <span class="term-ghost-text" id="termGhost"></span>
+        <input class="term-input" id="termInput" type="text" autocomplete="off" autocapitalize="off"
+               autocorrect="off" spellcheck="false" placeholder="escribí `ayuda` y pulsá Enter">
+      </span>
+      <span class="term-hint">Tab autocompleta · ↑↓ historial · Esc cierra</span>
+    </div>
   </div>
 
   <div class="term-lock" id="termLock">
@@ -275,10 +492,13 @@
 <script src="data/methodology.js"></script>
 <script src="data/config.js"></script>
 <script src="assets/js/store.js"></script>
+<script src="assets/js/filestore.js"></script>
+<script src="assets/js/comprimir.js"></script>
 <script src="assets/js/media.js"></script>
 <script src="assets/js/render.js"></script>
 <script src="assets/js/terminal.js"></script>
 <script src="assets/js/commands.js"></script>
+<script src="assets/js/mediapanel.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

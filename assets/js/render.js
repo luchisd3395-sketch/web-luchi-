@@ -83,6 +83,9 @@
     s.setProperty("--radius", t.radius + "px");
     s.setProperty("--grid-gap", c.video.gap + "px");
     s.setProperty("--term-height", c.terminal.height + "vh");
+    // Punto de foco de la portada: va por variable para que valga igual
+    // en la foto y en el vídeo, y cambie sin repintar la media.
+    s.setProperty("--hero-focus", (c.site.heroFocus == null ? 50 : c.site.heroFocus) + "%");
 
     root.setAttribute("data-mode", t.mode);
     root.setAttribute("data-font", t.font);
@@ -150,6 +153,13 @@
   }
   LSD.safeUrl = safeUrl;
 
+  /** Ruta lista para el navegador: resuelve un archivo subido desde el
+     dispositivo ("local:clave") y después lo sanea como cualquier otra. */
+  function mediaUrl(u) {
+    return safeUrl(LSD.resolveUrl ? LSD.resolveUrl(u) : u);
+  }
+  LSD.mediaUrl = mediaUrl;
+
   function renderHero() {
     var c = LSD.store.config, s = c.site;
     var nWorks = allWorks().length;
@@ -163,7 +173,7 @@
       stat(M.blocks.length, "Bloques metodológicos"),
       stat(nWorks, "Unidades de trabajo"),
       stat(videos().length, "Vídeos en el archivo"),
-      stat(M.microcycle.length, "Días de microciclo")
+      stat(((M.morfociclos || [])[0] || { dias: M.microcycle || [] }).dias.length - 1, "Días de microciclo")
     ].join("");
     $("#brandName").textContent = s.author;
     $("#brandSub").textContent = s.title;
@@ -193,7 +203,7 @@
     var hero = $(".hero");
 
     var vids = c.media.heroVideos || [];
-    var img = safeUrl(c.site.heroImage);
+    var img = mediaUrl(c.site.heroImage);
     var hasMedia = vids.length > 0 || !!img;
 
     if (hero) hero.classList.toggle("has-media", hasMedia);
@@ -226,10 +236,10 @@
     heroIndex = heroIndex % vids.length;
     var v = vids[heroIndex];
     var solo = vids.length === 1;
-    var poster = safeUrl(LSD.store.config.site.heroImage);
+    var poster = mediaUrl(LSD.store.config.site.heroImage);
 
     if (v.provider === "file") {
-      host.innerHTML = '<video src="' + esc(safeUrl(v.url)) + '" autoplay muted playsinline ' +
+      host.innerHTML = '<video src="' + esc(mediaUrl(v.url)) + '" autoplay muted playsinline ' +
         (solo ? "loop " : "") + (poster ? 'poster="' + esc(poster) + '" ' : "") +
         'preload="auto"></video>' + mutedTag(true);
       var el = host.querySelector("video");
@@ -274,7 +284,7 @@
     var imgs = LSD.store.config.media.images || {};
     $("#blocksGrid").innerHTML = M.blocks.map(function (b) {
       var nv = videosOf(b.id).length;
-      var img = safeUrl(imgs[b.id]);
+      var img = mediaUrl(imgs[b.id]);
       return '<button class="block-card reveal' + (img ? " has-img" : "") + '" data-block="' + b.id + '">' +
         (img ? '<span class="bc-img" style="background-image:url(&quot;' + esc(img) + '&quot;)"></span>' +
                '<span class="bar-bottom"></span>' : "") +
@@ -387,7 +397,7 @@
         (v.start != null ? '<span class="video-frag" title="Fragmento de una grabación más larga">' +
           esc(LSD.formatTime(v.start)) + (v.end != null ? '–' + esc(LSD.formatTime(v.end)) : '') + '</span>' : '') +
         (c.video.hoverPlay && LSD.canHoverPreview(v)
-          ? '<video class="hover-preview" src="' + esc(LSD.safeUrl(v.url)) + '" muted loop playsinline preload="none"></video>'
+          ? '<video class="hover-preview" src="' + esc(mediaUrl(v.url)) + '" muted loop playsinline preload="none"></video>'
           : '') +
         '</div>';
     }
@@ -417,14 +427,53 @@
     }
     var opts = { autoplay: inline ? false : c.autoplay, muted: c.muted, loop: c.loop };
     if (v.provider === "file") {
-      return '<video src="' + esc(v.url) + '" controls playsinline ' +
+      return '<video src="' + esc(mediaUrl(v.url)) + '" controls playsinline ' +
         (opts.autoplay ? "autoplay " : "") + (c.muted ? "muted " : "") + (c.loop ? "loop " : "") +
         (v.poster ? 'poster="' + esc(v.poster) + '" ' : "") + 'style="width:100%;height:100%;object-fit:contain;background:#000"></video>';
     }
-    return '<iframe src="' + esc(LSD.embedUrl(v, opts)) + '" title="' + esc(v.title) +
-      '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>';
+    /* Hay contextos que no dejan incrustar YouTube —una vista previa
+       publicada, por ejemplo—. En vez de un rectángulo negro, se ofrece el
+       enlace para abrirlo donde sí se puede. */
+    return '<div class="player-host">' +
+      '<iframe src="' + esc(LSD.embedUrl(v, opts)) + '" title="' + esc(v.title) +
+      '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>' +
+      '<div class="player-bloqueado" hidden>' +
+        "<p>Este visor no deja reproducir " + esc(LSD.providerLabel(v.provider)) + " dentro de la página.</p>" +
+        '<a class="btn-abrir" href="' + esc(v.url) + '" target="_blank" rel="noopener">Abrir el vídeo ▸</a>' +
+      "</div>" +
+      (w.LSD_PREVIEW
+        ? '<a class="player-salida" href="' + esc(v.url) + '" target="_blank" rel="noopener">' +
+          "¿No se ve? Abrilo en " + esc(LSD.providerLabel(v.provider)) + " ▸</a>"
+        : "") +
+      "</div>";
   }
   LSD.playerMarkup = playerMarkup;
+
+  /* Un visor con reglas estrictas —una vista previa publicada, por ejemplo—
+     no deja incrustar YouTube. Desde dentro del iframe eso no se puede leer,
+     pero el navegador lo avisa con «securitypolicyviolation»: ahí se cambia
+     el reproductor por el enlace para abrirlo donde sí se puede. */
+  var sinIncrustar = false;
+
+  function marcarBloqueados(scope) {
+    $$(".player-host", scope || d).forEach(function (host) {
+      var aviso = $(".player-bloqueado", host);
+      if (aviso) aviso.hidden = false;
+      host.classList.add("is-bloqueado");
+    });
+  }
+
+  d.addEventListener("securitypolicyviolation", function (e) {
+    var dir = String(e.effectiveDirective || e.violatedDirective || "");
+    if (dir.indexOf("frame-src") < 0 && dir.indexOf("child-src") < 0) return;
+    sinIncrustar = true;
+    marcarBloqueados();
+  });
+
+  function vigilarReproductores(scope) {
+    if (sinIncrustar) marcarBloqueados(scope);
+  }
+  LSD.vigilarReproductores = vigilarReproductores;
 
 
   /** Arranca y detiene la previsualización silenciosa al pasar el cursor. */
@@ -445,6 +494,22 @@
       });
     });
   }
+
+  /** Lleva a un vídeo recién subido y lo señala: la subida termina cuando
+     se lo ve en la página, no cuando el panel dice que sí. */
+  LSD.irAlVideo = function (id) {
+    ui.filterVideos = "all";
+    renderVideoFilters();
+    renderVideos();
+    LSD.observeReveal();
+    setTimeout(function () {
+      var card = $('#videoCollection [data-vid="' + String(id).replace(/"/g, '\\"') + '"]');
+      if (!card) { var s = $("#videos"); if (s) s.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+      card.classList.add("is-nuevo");
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(function () { card.classList.remove("is-nuevo"); }, 4000);
+    }, 120);
+  };
 
   function renderVideos() {
     var c = LSD.store.config, cfg = c.video;
@@ -500,6 +565,7 @@
           if (t && !t.classList.contains("is-live")) {
             t.classList.add("is-live");
             t.innerHTML = playerMarkup(v, false);
+            vigilarReproductores(t);
           }
         } else {
           openPlayer(v);
@@ -548,7 +614,7 @@
     $(".mom-bar").classList.toggle("hidden", fotos.length < 2);
 
     strip.innerHTML = fotos.map(function (f, i) {
-      var url = safeUrl(f.src);
+      var url = mediaUrl(f.src);
       return '<div class="mom-slide reveal" role="group" aria-label="Foto ' + (i + 1) + " de " + fotos.length + '">' +
         "<figure><img src=\"" + esc(url) + '" alt="' + esc(f.pie || "") + '" loading="' + (i < 2 ? "eager" : "lazy") + '">' +
         (f.pie ? "<figcaption>" + esc(f.pie) + "</figcaption>" : "") +
@@ -647,10 +713,11 @@
      MICROCICLO
      ================================================================ */
   var NIVELES = [
-    { id: "bajo",        label: "Bajo" },
-    { id: "moderado",    label: "Moderado" },
-    { id: "intenso",     label: "Intenso" },
-    { id: "muy-intenso", label: "Muy intenso" }
+    { id: "bajo",           label: "Bajo" },
+    { id: "moderado",       label: "Moderado" },
+    { id: "moderado-alto",  label: "Moderado-alto" },
+    { id: "intenso",        label: "Intenso" },
+    { id: "muy-intenso",    label: "Muy intenso" }
   ];
 
   /** Nivel de un día: el declarado en los datos, o deducido de la carga. */
@@ -667,11 +734,15 @@
     return id;
   }
 
+  /* La tabla y el gráfico salen del mismo sitio: el morfociclo activo.
+     Así no pueden contradecirse. */
   function renderMicro() {
-    $("#microBody").innerHTML = M.microcycle.map(function (r) {
+    var ciclo = (M.morfociclos || [])[morfoActivo] || (M.morfociclos || [])[0];
+    var filas = ciclo ? ciclo.dias : (M.microcycle || []);
+    $("#microBody").innerHTML = filas.map(function (r) {
       var n = nivelDe(r);
       return '<tr><td class="md">' + esc(r.day) + '</td><td>' + esc(r.tipo) + '</td>' +
-        '<td class="muted">' + esc(r.foco) + '</td>' +
+        '<td class="muted">' + esc(r.acentuacion || r.foco || "") + '</td>' +
         '<td class="muted">' + esc(r.contenidos) + '</td>' +
         '<td style="white-space:nowrap">' + esc(r.dur) + '</td>' +
         '<td>' +
@@ -688,6 +759,272 @@
         return '<span><i data-nivel="' + n.id + '"></i>' + esc(n.label) + "</span>";
       }).join("");
     }
+  }
+
+  /* ================================================================
+     MORFOCICLO INTERACTIVO
+     ----------------------------------------------------------------
+     Las dos semanas que arma Luciano, dibujadas como en sus láminas:
+     barras por carga, color por nivel y los arcos de fase encima.
+     Cada barra es un botón que abre el día con su material.
+     ================================================================ */
+  var morfoActivo = 0;
+  var morfoDiaAbierto = -1;
+
+  function morfoCiclos() { return M.morfociclos || []; }
+
+  /** Fotos guardadas para un día, desde la configuración. */
+  function fotosDelDia(day) {
+    var d = LSD.store.config.media.dias || {};
+    return (d[day] || []).slice();
+  }
+  /** Vídeos marcados con ese día. */
+  function videosDelDia(day) {
+    return videos().filter(function (v) { return v.dia === day; });
+  }
+  /** Unidades de trabajo etiquetadas con ese día (MD-3, MD+1…). */
+  function tareasDelDia(day) {
+    var t = String(day).toLowerCase();
+    return allWorks().filter(function (w) {
+      return (w.item.tags || []).some(function (x) { return String(x).toLowerCase() === t; });
+    });
+  }
+
+  function renderMorfoTabs() {
+    var host = $("#morfoTabs");
+    if (!host) return;
+    host.innerHTML = morfoCiclos().map(function (c, i) {
+      return '<button class="morfo-tab' + (i === morfoActivo ? " is-active" : "") + '" role="tab" ' +
+        'aria-selected="' + (i === morfoActivo) + '" data-i="' + i + '">' +
+        '<b>' + esc(c.dias.length - 1) + ' días</b><span>' +
+        esc(c.sub + (c.temporada ? " · " + c.temporada : "")) + "</span></button>";
+    }).join("");
+    Array.prototype.forEach.call(host.querySelectorAll("button"), function (b) {
+      b.addEventListener("click", function () {
+        morfoActivo = parseInt(b.getAttribute("data-i"), 10);
+        morfoDiaAbierto = -1;
+        renderMorfo();
+        renderMicro();
+      });
+    });
+  }
+
+  /** Los arcos de fase: días seguidos que comparten `fase`. */
+  function renderMorfoFases(ciclo) {
+    var host = $("#morfoFases");
+    if (!host) return;
+    var tramos = [];
+    ciclo.dias.forEach(function (d, i) {
+      var ult = tramos[tramos.length - 1];
+      if (d.fase && ult && ult.fase === d.fase) ult.n++;
+      else tramos.push({ fase: d.fase || "", n: 1, desde: i });
+    });
+    // la barra de cierre del partido no lleva fase, pero ocupa su columna
+    if (ciclo.dias[0] && ciclo.dias[0].day === "MD") tramos.push({ fase: "", n: 1 });
+    host.innerHTML = tramos.map(function (t) {
+      return '<span class="morfo-fase' + (t.fase ? "" : " is-vacia") + '" style="flex:' + t.n + '">' +
+        (t.fase ? '<i></i><b>' + esc(t.fase) + "</b>" : "") + "</span>";
+    }).join("");
+  }
+
+  /** Canchita con la zona de trabajo, como las de sus láminas: el espacio
+     crece del día de tensión al de duración. */
+  function campito(campo) {
+    var zonas = { reducido: [46, 62, 16, 12], medio: [30, 40, 40, 30], amplio: [4, 6, 92, 88] };
+    var z = zonas[campo];
+    if (!z) return "";
+    return '<svg class="mb-campo" viewBox="0 0 60 40" aria-hidden="true">' +
+      '<rect x="1" y="1" width="58" height="38" rx="1"/>' +
+      '<line x1="30" y1="1" x2="30" y2="39"/><circle cx="30" cy="20" r="6"/>' +
+      '<rect class="zona" x="' + (z[0] * 0.6) + '" y="' + (z[1] * 0.4) + '" width="' +
+        (z[2] * 0.6) + '" height="' + (z[3] * 0.4) + '"/></svg>';
+  }
+
+  function renderMorfoBarras(ciclo) {
+    var host = $("#morfoBarras");
+    if (!host) return;
+    var max = ciclo.dias.reduce(function (m, d) { return Math.max(m, d.carga || 0); }, 100);
+
+    function barra(d, i, cierre) {
+      var n = nivelDe(d);
+      var alto = Math.max(6, Math.round((d.carga / max) * 100));
+      var partido = d.day === "MD";
+      var cuantos = fotosDelDia(d.day).length + videosDelDia(d.day).length;
+
+      /* Un día con dos grupos se dibuja con dos bloques, como en la lámina:
+         el que compensa arriba y el que recupera abajo. */
+      var relleno;
+      if (d.grupos && d.grupos.length) {
+        relleno = d.grupos.map(function (g, k) {
+          var h = Math.max(8, Math.round((g.carga / max) * 100));
+          return '<span class="mb-fill mb-grupo' + (h < 25 ? " is-corta" : "") + '" data-nivel="' +
+            nivelDe(g) + '" style="height:' + h + '%">' +
+            '<span class="mb-acento">' + esc(g.label) + "</span></span>";
+        }).join("");
+      } else {
+        relleno = '<span class="mb-fill' + (alto < 25 ? " is-corta" : "") + '" data-nivel="' + n +
+          '" style="height:' + alto + '%">' +
+          (d.campo ? campito(d.campo) : "") +
+          '<span class="mb-acento">' + esc(d.acentuacion || d.tipo) + "</span></span>";
+      }
+
+      return '<button class="morfo-barra' + (partido ? " is-partido" : "") +
+          (d.grupos ? " tiene-grupos" : "") +
+          (i === morfoDiaAbierto && !cierre ? " is-abierta" : "") + '" data-i="' + i + '" ' +
+          'aria-expanded="' + (i === morfoDiaAbierto && !cierre) + '" ' +
+          (cierre ? 'aria-label="Competencia: la semana termina donde empieza"' :
+            'aria-label="' + esc(d.day + " · " + d.tipo + " · " + nivelLabel(n) + ", " + d.carga + "%") + '"') + '>' +
+        '<span class="mb-col">' + relleno + "</span>" +
+        '<span class="mb-pie">' +
+          '<span class="mb-dia">' + esc(cierre ? "MD" : d.day) + "</span>" +
+          '<span class="mb-tipo">' + esc(d.tipo) + "</span>" +
+          (cuantos && !cierre ? '<span class="mb-mat">' + cuantos + "</span>" : "") +
+        "</span></button>";
+    }
+
+    /* La semana va de partido a partido: la competencia cierra igual que abre. */
+    var html = ciclo.dias.map(function (d, i) { return barra(d, i, false); }).join("");
+    if (ciclo.dias[0] && ciclo.dias[0].day === "MD") html += barra(ciclo.dias[0], 0, true);
+    host.innerHTML = html;
+
+    Array.prototype.forEach.call(host.querySelectorAll(".morfo-barra"), function (b) {
+      b.addEventListener("click", function () {
+        var i = parseInt(b.getAttribute("data-i"), 10);
+        abrirDia(i === morfoDiaAbierto ? -1 : i);
+      });
+      b.addEventListener("keydown", function (e) {
+        var i = parseInt(b.getAttribute("data-i"), 10);
+        var n = ciclo.dias.length;
+        if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+          e.preventDefault();
+          var j = (i + (e.key === "ArrowRight" ? 1 : n - 1)) % n;
+          var sig = host.querySelector('.morfo-barra[data-i="' + j + '"]');
+          if (sig) { sig.focus(); if (morfoDiaAbierto >= 0) abrirDia(j, true); }
+        } else if (e.key === "Escape" && morfoDiaAbierto >= 0) {
+          e.preventDefault(); abrirDia(-1, true);
+        }
+      });
+    });
+  }
+
+  function abrirDia(i, sinDesplazar) {
+    /* Repintar las barras destruye el botón que tenía el foco, y sin foco
+       las flechas y Esc dejan de servir: se devuelve a la misma barra. */
+    var teniaFoco = document.activeElement && document.activeElement.classList
+      && document.activeElement.classList.contains("morfo-barra");
+    var volverA = teniaFoco ? document.activeElement.getAttribute("data-i") : null;
+
+    morfoDiaAbierto = i;
+    var ciclo = morfoCiclos()[morfoActivo];
+    renderMorfoBarras(ciclo);
+    renderMorfoDia(ciclo);
+
+    if (volverA != null) {
+      var b = $('#morfoBarras .morfo-barra[data-i="' + volverA + '"]');
+      if (b) b.focus({ preventScroll: true });
+    }
+    if (i >= 0 && !sinDesplazar) {
+      var panel = $("#morfoDia");
+      if (panel) panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+  }
+
+  function renderMorfoDia(ciclo) {
+    var panel = $("#morfoDia");
+    if (!panel) return;
+    if (morfoDiaAbierto < 0) { panel.hidden = true; panel.innerHTML = ""; return; }
+
+    var d = ciclo.dias[morfoDiaAbierto];
+    var n = nivelDe(d);
+    var fotos = fotosDelDia(d.day);
+    var vids = videosDelDia(d.day);
+    var tareas = tareasDelDia(d.day);
+
+    var html =
+      '<div class="md-head">' +
+        '<div class="md-id"><span class="md-day">' + esc(d.day) + "</span>" +
+          '<span class="md-tipo">' + esc(d.tipo) + "</span></div>" +
+        '<div class="md-meta">' +
+          '<span class="load-tag" data-nivel="' + n + '">' + esc(nivelLabel(n)) + "</span>" +
+          '<span class="md-dato">' + esc(d.dur) + "</span>" +
+          '<span class="md-dato">' + d.carga + "%</span>" +
+          (d.fase ? '<span class="md-fase">' + esc(d.fase) + "</span>" : "") +
+        "</div>" +
+        '<button class="md-cerrar" id="mdCerrar" aria-label="Cerrar el día">✕</button>' +
+      "</div>" +
+      '<p class="md-acento">' + esc(d.acentuacion) + "</p>" +
+      '<p class="md-cont">' + esc(d.contenidos) + "</p>" +
+      ((d.claves || []).length
+        ? '<ul class="md-claves">' + d.claves.map(function (k) { return "<li>" + esc(k) + "</li>"; }).join("") + "</ul>"
+        : "");
+
+    if (vids.length) {
+      html += '<div class="md-bloque"><h4>Vídeos de este día</h4><div class="md-videos">' +
+        vids.map(function (v) {
+          var th = LSD.thumbUrl(v);
+          return '<button class="md-video" data-vid="' + esc(v.id) + '">' +
+            (th ? '<img src="' + esc(mediaUrl(th)) + '" alt="">' : '<span class="md-ph">vídeo</span>') +
+            "<span>" + esc(v.title) + "</span></button>";
+        }).join("") + '</div><div class="md-player" id="mdPlayer" hidden></div></div>';
+    }
+    if (fotos.length) {
+      html += '<div class="md-bloque"><h4>Fotos de este día</h4><div class="md-fotos">' +
+        fotos.map(function (f) {
+          return '<img src="' + esc(mediaUrl(f)) + '" alt="">';
+        }).join("") + "</div></div>";
+    }
+    if (tareas.length) {
+      html += '<div class="md-bloque"><h4>Tareas del archivo para este día</h4><div class="md-tareas">' +
+        tareas.map(function (w) {
+          return '<button class="md-tarea" data-work="' + esc(w.item.id) + '">' +
+            '<b>' + esc(w.item.name) + "</b><span>" + esc(w.block.code + " · " + w.block.short) + "</span></button>";
+        }).join("") + "</div></div>";
+    }
+    if (!vids.length && !fotos.length) {
+      html += '<p class="md-vacio">Todavía no hay fotos ni vídeos cargados para este día. ' +
+        "Se suben desde el panel, eligiendo «" + esc(d.day) + "» como día.</p>";
+    }
+
+    panel.innerHTML = html;
+    panel.hidden = false;
+
+    var cerrar = $("#mdCerrar");
+    if (cerrar) cerrar.addEventListener("click", function () { abrirDia(-1); });
+
+    Array.prototype.forEach.call(panel.querySelectorAll(".md-tarea"), function (b) {
+      b.addEventListener("click", function () { openFicha(b.getAttribute("data-work")); });
+    });
+
+    /* El vídeo se ve acá mismo, con su recorte: entrar en el día no
+       debería obligar a irse a otra sección. */
+    Array.prototype.forEach.call(panel.querySelectorAll(".md-video"), function (b) {
+      b.addEventListener("click", function () {
+        var v = vids.filter(function (x) { return x.id === b.getAttribute("data-vid"); })[0];
+        var caja = $("#mdPlayer");
+        if (!v || !caja) return;
+        Array.prototype.forEach.call(panel.querySelectorAll(".md-video"), function (o) {
+          o.classList.toggle("is-on", o === b);
+        });
+        caja.hidden = false;
+        var tramo = v.start != null
+          ? "#t=" + Math.round(v.start) + (v.end != null ? "," + Math.round(v.end) : "") : "";
+        caja.innerHTML = v.provider === "file" || LSD.esLocal(v.url)
+          ? '<video src="' + esc(mediaUrl(v.url) + tramo) + '" controls playsinline></video>'
+          : '<iframe src="' + esc(LSD.embedUrl(v)) + '" title="' + esc(v.title) +
+            '" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>';
+      });
+    });
+  }
+
+  function renderMorfo() {
+    var ciclos = morfoCiclos();
+    if (!ciclos.length || !$("#morfoBarras")) return;
+    if (morfoActivo >= ciclos.length) morfoActivo = 0;
+    var ciclo = ciclos[morfoActivo];
+    renderMorfoTabs();
+    renderMorfoFases(ciclo);
+    renderMorfoBarras(ciclo);
+    renderMorfoDia(ciclo);
   }
 
   /* ================================================================
@@ -816,6 +1153,7 @@
         (v.desc ? '<div class="modal-body"><p class="lede">' + esc(v.desc) + '</p></div>' : '') +
       '</div>'
     );
+    vigilarReproductores($("#overlay"));
     bindOverlay([]);
   }
   LSD.openPlayer = openPlayer;
@@ -830,7 +1168,7 @@
         var v = list[parseInt(el.getAttribute("data-i"), 10)];
         if (!v) return;
         var t = $(".video-thumb", el);
-        if (t && !t.classList.contains("is-live")) { t.classList.add("is-live"); t.innerHTML = playerMarkup(v, false); }
+        if (t && !t.classList.contains("is-live")) { t.classList.add("is-live"); t.innerHTML = playerMarkup(v, false); vigilarReproductores(t); }
       });
     });
   }
@@ -869,6 +1207,7 @@
     renderVideos();
     renderMomentos();
     renderMicro();
+    renderMorfo();
     renderFooter();
     LSD.observeReveal();
   };
