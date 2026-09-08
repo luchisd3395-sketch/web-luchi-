@@ -135,10 +135,10 @@
       <div class="video-strip" id="videoStrip"></div>
 
       <div class="empty-state hidden" id="videosEmpty">
-        Todavía no hay vídeos en el archivo.<br>
-        Abrí la terminal con la tecla <kbd>`</kbd> o el botón <kbd>TERMINAL</kbd> y escribí:<br><br>
-        <kbd>video add "Rondo 4v2" https://youtu.be/XXXXXXX --bloque posesion</kbd><br><br>
-        Para ver ejemplos y probar los formatos: <kbd>demo</kbd>
+        Todavía no hay vídeos en el archivo.<br><br>
+        Tocá <kbd>TERMINAL</kbd> y, en la pestaña <kbd>Vídeos</kbd>, pegá el enlace de YouTube o elegí
+        el archivo, poné desde y hasta qué minuto y dale a <kbd>Subir vídeo a la página</kbd>.<br>
+        La carpeta se puede elegir después, desde la pestaña <kbd>Archivos</kbd>.
       </div>
     </div>
   </section>
@@ -337,7 +337,7 @@
       <input id="vTitle" type="text" placeholder="Se numera solo si lo dejás vacío"></label>
 
     <div class="f-row">
-      <label class="f-field"><span>Bloque</span><select id="vBlock"></select></label>
+      <label class="f-field"><span>Carpeta · opcional</span><select id="vBlock"></select></label>
       <label class="f-field"><span>Unidad de trabajo · opcional</span><select id="vWork"></select></label>
       <label class="f-field"><span>Día del microciclo · opcional</span><select id="vDia"></select></label>
     </div>
@@ -348,9 +348,9 @@
     <div class="f-msg" id="vMsg"></div>
 
     <div class="f-actions">
-      <button class="btn-primary" id="vSave">Añadir vídeo</button>
-      <button class="btn-ghost" id="vSaveMore">Añadir y seguir</button>
+      <button class="btn-primary btn-grande" id="vSave">Subir vídeo a la página</button>
       <button class="btn-ghost" id="vTest">Probar el corte</button>
+      <button class="btn-ghost" id="vSaveMore">Subir y cargar otro</button>
       <button class="btn-ghost" id="vReset">Limpiar</button>
     </div>
 

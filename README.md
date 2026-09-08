@@ -104,9 +104,15 @@ exporta el vídeo antes de entregarlo, y si está en iCloud primero lo baja. El 
 **«Buscando el archivo…»** mientras tanto, para que no parezca colgado.
 
 Después: **desde** y **hasta** (admiten `0:30`, `30` y `0:00:30`, con la duración calculada en
-vivo), título, bloque, unidad de trabajo y etiquetas. **Probar el corte** incrusta el reproductor
-con esos tiempos para confirmarlo antes de guardar. **Añadir y seguir** mantiene el vídeo y limpia
-los tiempos, para cortar varios tramos de la misma grabación.
+vivo), título, y —opcionales— carpeta, unidad de trabajo, día del microciclo y etiquetas.
+**Probar el corte** incrusta el reproductor con esos tiempos para confirmarlo antes de guardar.
+
+El proceso termina en un solo botón: **«Subir vídeo a la página»**. Nada más es obligatorio —ni
+siquiera la carpeta: sin ella el vídeo se sube igual y se ordena después desde «Archivos»—, y al
+terminar aparece la confirmación con dos salidas: **«Verlo en la página»**, que cierra el panel y
+lleva hasta la tarjeta recién creada, señalada unos segundos; y **«Subir otro»**. La otra vía es
+**«Subir y cargar otro»**, que mantiene el vídeo y limpia los tiempos, para cortar varios tramos
+de la misma grabación.
 
 Abajo, la lista de lo cargado, con editar, borrar y reordenar.
 

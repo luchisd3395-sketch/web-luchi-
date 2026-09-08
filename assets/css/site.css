@@ -1020,3 +1020,15 @@
 .section.is-inverted .mom-dots button { background: rgba(255, 255, 255, .28); }
 .section.is-inverted .mom-dots button.is-active { background: var(--accent); }
 .section.is-inverted .mom-slide { background: #161616; }
+
+/* Vídeo recién subido: se señala unos segundos para no perderlo de vista */
+.video-card.is-nuevo {
+  outline: 3px solid var(--accent); outline-offset: 3px;
+  animation: latido 1.1s ease-out 2;
+}
+@keyframes latido {
+  0%   { outline-color: var(--accent); }
+  50%  { outline-color: transparent; }
+  100% { outline-color: var(--accent); }
+}
+[data-motion="off"] .video-card.is-nuevo { animation: none; }

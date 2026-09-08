@@ -456,6 +456,22 @@
     });
   }
 
+  /** Lleva a un vídeo recién subido y lo señala: la subida termina cuando
+     se lo ve en la página, no cuando el panel dice que sí. */
+  LSD.irAlVideo = function (id) {
+    ui.filterVideos = "all";
+    renderVideoFilters();
+    renderVideos();
+    LSD.observeReveal();
+    setTimeout(function () {
+      var card = $('#videoCollection [data-vid="' + String(id).replace(/"/g, '\\"') + '"]');
+      if (!card) { var s = $("#videos"); if (s) s.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+      card.classList.add("is-nuevo");
+      card.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(function () { card.classList.remove("is-nuevo"); }, 4000);
+    }, 120);
+  };
+
   function renderVideos() {
     var c = LSD.store.config, cfg = c.video;
     var dark = (c.layout.inverted || []).indexOf("videos") >= 0;

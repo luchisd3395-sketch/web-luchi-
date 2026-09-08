@@ -28,6 +28,8 @@
     if (!el) return;
     el.className = "f-msg" + (texto ? " is-" + (clase || "err") : "");
     el.innerHTML = texto || "";
+    // Un aviso que queda fuera de la pantalla es un aviso que no existe.
+    if (texto && el.scrollIntoView) el.scrollIntoView({ block: "nearest" });
   }
 
   function opcionesBloque(sel, vacio) {
@@ -202,7 +204,7 @@
     $("vPreview").classList.add("hidden");
     $("vPreview").innerHTML = "";
     vEditando = null;
-    $("vSave").textContent = "Añadir vídeo";
+    $("vSave").textContent = "Subir vídeo a la página";
     mensaje($("vMsg"), "");
   }
 
@@ -229,10 +231,12 @@
     }
     if (hasta != null && desde == null) desde = 0;
 
-    var bloque = $("vBlock").value;
-    if (!bloque) { mensaje(msg, "Elegí a qué bloque va.", "err"); return null; }
+    /* La carpeta es opcional a propósito: frenar la subida por no haberla
+       elegido dejaba el vídeo afuera. Sin carpeta se sube igual y después
+       se mueve desde «Archivos». */
+    var bloque = $("vBlock").value || "";
 
-    var unidad = $("vWork").value || null;
+    var unidad = bloque ? ($("vWork").value || null) : null;
     var titulo = $("vTitle").value.trim();
     if (!titulo) {
       titulo = "Actividad " + (S.config.media.videos.filter(function (v) { return v.block === bloque; }).length + 1);
@@ -272,11 +276,34 @@
       var local = LSD.esLocal(reg.url);
       // Limpiar primero: vLimpiar() borra el mensaje, así que el aviso va después.
       vLimpiar(!seguir);
-      mensaje($("vMsg"), local
-        ? "Vídeo añadido. Está guardado en este navegador: para que lo vean los visitantes hay que publicarlo."
-        : "Vídeo añadido.", local ? "warn" : "ok");
+      vListo(reg, local);
     }
     vLista();
+  }
+
+  /** Confirmación con salida: subir un vídeo termina viéndolo en la página,
+     no leyendo un mensaje en el panel. */
+  function vListo(reg, local) {
+    var msg = $("vMsg");
+    var partes = ["<b>Vídeo subido.</b> Ya está en la página."];
+    if (!reg.block) partes.push("Quedó <b>sin carpeta</b>: se le pone una desde la pestaña «Archivos».");
+    if (local) partes.push("Está guardado <b>en este navegador</b>: para que lo vean los visitantes hay que publicarlo.");
+
+    mensaje(msg, partes.join(" ") +
+      '<span class="f-msg-acciones">' +
+        '<button type="button" class="btn-mini" id="vVer">Verlo en la página</button>' +
+        '<button type="button" class="btn-mini" id="vOtro">Subir otro</button>' +
+      "</span>", local || !reg.block ? "warn" : "ok");
+
+    var ver = $("vVer");
+    if (ver) ver.addEventListener("click", function () {
+      if (LSD.term && LSD.term.close) LSD.term.close();
+      if (LSD.irAlVideo) LSD.irAlVideo(reg.id);
+    });
+    var otro = $("vOtro");
+    if (otro) otro.addEventListener("click", function () { vLimpiar(true); $("vLink").focus(); });
+
+    msg.scrollIntoView({ block: "nearest" });
   }
 
   function vProbar() {
@@ -887,7 +914,7 @@
       });
 
       /* --- vídeos --- */
-      opcionesBloque($("vBlock"), "— elegí un bloque —");
+      opcionesBloque($("vBlock"), "— sin carpeta, la elijo después —");
       opcionesUnidad($("vWork"), "");
       opcionesDia($("vDia"), "— sin día —");
       $("vBlock").addEventListener("change", function () { opcionesUnidad($("vWork"), $("vBlock").value); });
