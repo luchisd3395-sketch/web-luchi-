@@ -189,6 +189,22 @@ window.LSD_CONFIG = {
         desc: "Rondo de entrada del día previo al partido.",
         poster: "", featured: false,
         added: "2026-09-08"
+      },
+      {
+        id: "smg-4v4-mas-4-youtube",
+        title: "SMG · Reducido 4v4+4",
+        url: "https://youtu.be/yv7osoPvlI0",
+        provider: "youtube",
+        vid: "yv7osoPvlI0",
+        start: null,
+        end: null,
+        block: "ssg",
+        work: "ssg-comodines",
+        dia: "MD-4",
+        tags: ["SMG", "reducido", "4v4+4", "comodines"],
+        duration: "",
+        desc: "", poster: "", featured: false,
+        added: "2026-09-08"
       }
     ],
 
