@@ -155,6 +155,23 @@ window.LSD_CONFIG = {
         desc: "Activación del MD-3: rondo con progresión antes del trabajo en espacios grandes.",
         poster: "", featured: false,
         added: "2026-09-08"
+      },
+      {
+        id: "ssg-posesion-finalizacion",
+        title: "SSG · Posesión con finalización",
+        url: "https://youtu.be/AKPC5Pn95kc",
+        provider: "youtube",
+        vid: "AKPC5Pn95kc",
+        start: null,
+        end: null,
+        block: "ssg",
+        work: "ssg-reglas",
+        dia: "MD-2",
+        tags: ["SSG", "posesión", "finalización", "delanteros"],
+        duration: "",
+        desc: "Posesión que termina en definición de los delanteros. Trabajo del MD-2.",
+        poster: "", featured: false,
+        added: "2026-09-08"
       }
     ],
 
