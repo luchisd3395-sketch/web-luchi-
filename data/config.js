@@ -104,6 +104,22 @@ window.LSD_CONFIG = {
         duration: "",
         desc: "", poster: "", featured: false,
         added: "2026-09-08"
+      },
+      {
+        id: "circuito-pases-sprint",
+        title: "Circuito de pases · desarrollo del sprint",
+        url: "https://youtu.be/b6yWNbihtaQ",
+        provider: "youtube",
+        vid: "b6yWNbihtaQ",
+        start: null,
+        end: null,
+        block: "circuitos",
+        work: "rueda-pases",
+        dia: "",
+        tags: ["circuito", "pase", "sprint"],
+        duration: "",
+        desc: "", poster: "", featured: false,
+        added: "2026-09-08"
       }
     ],
 
