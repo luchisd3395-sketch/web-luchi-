@@ -31,7 +31,7 @@ window.LSD_CONFIG = {
         end: 30,
         block: "fuerza",
         work: "fuerza-especifica",
-        dia: "",
+        dia: "MD-4",
         tags: ["fuerza", "campo"],
         duration: "0:30",
         desc: "", poster: "", featured: false,
