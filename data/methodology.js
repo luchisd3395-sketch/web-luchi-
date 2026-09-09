@@ -521,6 +521,27 @@ window.LSD_METHODOLOGY = {
       desc: "El formato madre del entrenamiento: jugar con menos jugadores y menos espacio para multiplicar las acciones y decidir el tipo de carga con las reglas.",
       items: [
         {
+          id: "juegos-por-tamano",
+          name: "Juegos por Tamaño · SSG, SMG y SLG",
+          objetivo: "Elegir el tamaño del juego según lo que se busca ese día: cuanto más chico el espacio, más condicional el trabajo; cuanto más grande, más táctico.",
+          formato: "Tres formatos según el tamaño del espacio",
+          espacio: "Del espacio reducido al campo completo",
+          duracion: "Variable según el día del microciclo",
+          claves: [
+            "SSG · Side Small Game — espacio chico. Es el formato de los fondos: el volumen se consigue con la densidad de acciones, no con la distancia.",
+            "SMG · Side Medium Game — espacio medio. Es el formato de las posesiones.",
+            "SLG · Side Large Game — espacio grande. Es donde se entrena lo táctico, con la estructura más cerca de la del partido.",
+            "El tamaño manda sobre el número: los mismos jugadores cambian de intención según el espacio que tengan.",
+            "Ésta es la clasificación con la que se nombran las tareas del club, y la que ordena el archivo de vídeo."
+          ],
+          variantes: [
+            "Con comodines, para sostener la superioridad y la circulación",
+            "Con reglas de provocación, para dirigir la conducta sin nombrarla",
+            "Orientado a una fase del juego concreta"
+          ],
+          tags: ["SSG", "SMG", "SLG", "clasificación"]
+        },
+        {
           id: "ssg-1v1",
           name: "SSG 1v1 y 2v2 · Duelo",
           objetivo: "Máxima frecuencia de duelo, conducción, regate y definición. Altísima densidad de acciones por jugador.",

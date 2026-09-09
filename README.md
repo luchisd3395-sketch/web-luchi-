@@ -505,7 +505,7 @@ Y cada unidad de trabajo se describe siempre con la misma ficha, para mantener u
 Añadir un bloque o una unidad es agregar un objeto más al array: la página, los filtros, el buscador
 y el autocompletado de la terminal lo recogen solos.
 
-**Estado actual del archivo:** 10 bloques · 49 unidades de trabajo · dos morfociclos, de 6 y de 5 días.
+**Estado actual del archivo:** 10 bloques · 50 unidades de trabajo · dos morfociclos, de 6 y de 5 días.
 
 ---
 
