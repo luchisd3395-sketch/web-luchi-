@@ -523,12 +523,12 @@ window.LSD_METHODOLOGY = {
         {
           id: "juegos-por-tamano",
           name: "Juegos por Tamaño · SSG, SMG y SLG",
-          objetivo: "Elegir el tamaño del juego según lo que se busca ese día: cuanto más chico el espacio, más condicional el trabajo; cuanto más grande, más táctico.",
+          objetivo: "Elegir el tamaño del juego según lo que se busca ese día: en espacio chico se juegan los rondos, en espacio medio las posesiones y en espacio grande lo táctico.",
           formato: "Tres formatos según el tamaño del espacio",
           espacio: "Del espacio reducido al campo completo",
           duracion: "Variable según el día del microciclo",
           claves: [
-            "SSG · Side Small Game — espacio chico. Es el formato de los fondos: el volumen se consigue con la densidad de acciones, no con la distancia.",
+            "SSG · Side Small Game — espacio chico. Es el formato de los rondos: mucha acción por jugador en poco terreno.",
             "SMG · Side Medium Game — espacio medio. Es el formato de las posesiones.",
             "SLG · Side Large Game — espacio grande. Es donde se entrena lo táctico, con la estructura más cerca de la del partido.",
             "El tamaño manda sobre el número: los mismos jugadores cambian de intención según el espacio que tengan.",
@@ -539,7 +539,7 @@ window.LSD_METHODOLOGY = {
             "Con reglas de provocación, para dirigir la conducta sin nombrarla",
             "Orientado a una fase del juego concreta"
           ],
-          tags: ["SSG", "SMG", "SLG", "clasificación"]
+          tags: ["SSG", "SMG", "SLG", "rondos", "posesiones", "táctico", "clasificación"]
         },
         {
           id: "ssg-1v1",
