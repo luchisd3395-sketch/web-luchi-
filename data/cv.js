@@ -27,7 +27,10 @@ window.LSD_CV = {
     portada: "assets/img/portada-cv-predio.jpg",
     recorte: false,
     foco: "4%",
-    retrato: "assets/img/retrato-cv.jpg",
+    /* `avatar` es la foto redonda chica de la barra de arriba: tiene que ser
+       un primer plano. `retrato` es el vertical grande del bloque BIO. */
+    avatar: "assets/img/retrato-cv.jpg",
+    retrato: "assets/img/retrato-cv-estadio.jpg",
     /* Enlaces del encabezado. Los que estén vacíos no aparecen. */
     instagram: "",
     linkedin: "",

@@ -266,7 +266,14 @@ a { color: inherit; }
 .cv-bio { display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); gap: clamp(1.6rem, 4vw, 4rem); align-items: start; }
 @media (max-width: 900px) { .cv-bio { grid-template-columns: 1fr; } }
 
-.cv-retrato { width: clamp(96px, 12vw, 148px); height: clamp(96px, 12vw, 148px); border-radius: 50%; object-fit: cover; border: 2px solid var(--cv-line-2); margin-bottom: 1.2rem; }
+/* Retrato vertical, no circular: la foto es de cuerpo entero y el estadio
+   forma parte de lo que cuenta. */
+.cv-retrato {
+  width: clamp(200px, 55vw, 268px); aspect-ratio: 3 / 4; height: auto;
+  object-fit: cover; border-radius: 14px;
+  border: 1px solid var(--cv-line-2); margin-bottom: 1.4rem;
+  box-shadow: 0 22px 55px rgba(0, 0, 0, .4);
+}
 .cv-nombre-grande {
   margin: 0; font-family: var(--cv-display); font-weight: 400;
   font-size: clamp(2.3rem, 5.4vw, 4.6rem); line-height: .88; text-transform: uppercase; color: #fff;

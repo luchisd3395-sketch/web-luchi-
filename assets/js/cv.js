@@ -58,8 +58,10 @@
       if (hay(P.foco)) foto.style.objectPosition = "center " + P.foco;
     } else { foto.remove(); }
 
+    /* En la barra va el primer plano; si no hay, sirve el retrato grande. */
     var cara = $("#cvFace");
-    if (hay(P.retrato)) { cara.src = P.retrato; cara.alt = ""; }
+    var chica = hay(P.avatar) ? P.avatar : P.retrato;
+    if (hay(chica)) { cara.src = chica; cara.alt = ""; }
     else { var f = $(".cv-pill-face"); if (f) f.remove(); }
 
     /* El sello de arriba a la derecha: el vídeo más nuevo marca la fecha. */
