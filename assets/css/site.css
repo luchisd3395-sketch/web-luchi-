@@ -49,6 +49,14 @@
 .nav a:hover, .nav a.is-active { color: var(--text); }
 .nav a:hover::after, .nav a.is-active::after { width: 100%; }
 
+/* El CV sale del sitio, así que se marca como destino y no como ancla. */
+.nav a.nav-fuera {
+  padding: .38rem .8rem; border: 1px solid var(--border); border-radius: 999px;
+  color: var(--text); transition: background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+}
+.nav a.nav-fuera::after { content: none; }
+.nav a.nav-fuera:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
 .header-actions { display: flex; align-items: center; gap: .55rem; }
 
 .btn-term {

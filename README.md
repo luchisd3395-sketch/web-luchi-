@@ -449,13 +449,17 @@ mundo al entrar.
 
 ```
 index.html                  Estructura de la página
+cv.html                     El CV: página aparte, con su propio diseño
 data/
   methodology.js            TODO el contenido metodológico (bloques, unidades, morfociclos)
   config.js                 Configuración publicada del sitio (la genera `publicar`)
+  cv.js                     Trayectoria, ficha y datos del CV
 assets/
   css/base.css              Tokens de diseño, reset y tipografía
   css/site.css              Cabecera, portada, secciones, tarjetas y galería de vídeo
+  css/cv.css                Estilos del CV (fondo azul, fichas, línea de tiempo)
   css/terminal.css          Estilos de la terminal
+  js/cv.js                  Pinta el CV desde data/cv.js
   js/store.js               Configuración, esquema de ajustes y persistencia
   js/media.js               Detección de proveedor de vídeo, embeds y miniaturas
   img/                      Tus fotografías (ver assets/img/LEEME.txt)

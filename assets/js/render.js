@@ -1098,6 +1098,8 @@
       if (c.hidden.indexOf(id) >= 0) return;
       html.push('<a href="#' + id + '">' + esc(SECTION_LABEL[id] || id) + '</a>');
     });
+    /* El CV vive en su propia página, así que va al final y sale del sitio. */
+    html.push('<a class="nav-fuera" href="cv.html">CV</a>');
     nav.innerHTML = html.join("");
     nav.querySelectorAll("a").forEach(function (a) {
       a.addEventListener("click", function () { nav.classList.remove("is-open"); });
