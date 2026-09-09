@@ -24,10 +24,10 @@ window.LSD_CV = {
     /* Foto de la portada. `recorte: true` es para un PNG sin fondo, que se
        para entero sobre el degradado; con una foto normal se deja en false.
        `foco` corre el encuadre: 0% arriba del todo, 50% al medio. */
-    portada: "assets/img/retrato-profe.jpg",
+    portada: "assets/img/portada-cv-predio.jpg",
     recorte: false,
-    foco: "28%",
-    retrato: "assets/img/retrato-profe.jpg",
+    foco: "4%",
+    retrato: "assets/img/retrato-cv.jpg",
     /* Enlaces del encabezado. Los que estén vacíos no aparecen. */
     instagram: "",
     linkedin: "",
