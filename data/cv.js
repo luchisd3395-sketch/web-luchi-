@@ -32,10 +32,10 @@ window.LSD_CV = {
     avatar: "assets/img/retrato-cv.jpg",
     retrato: "assets/img/retrato-cv-estadio.jpg",
     /* Enlaces del encabezado. Los que estén vacíos no aparecen. */
-    instagram: "",
+    instagram: "https://instagram.com/luchisd11",
     linkedin: "",
     mail: "",
-    telefono: ""
+    telefono: "+54 9 2395 43-9825"
   },
 
   /* --- El párrafo de arriba: quién es y cómo trabaja --------- */
@@ -49,7 +49,7 @@ window.LSD_CV = {
     { label: "Ciudad",       valor: "Carlos Casares",              nota: "Buenos Aires, Argentina" },
     { label: "Formación",    valor: "Profesor de Educación Física", nota: "Instituto N.º 13 · Pehuajó" },
     { label: "Idiomas",      valor: "Español",                     nota: "" },
-    { label: "Contacto",     valor: "",                            nota: "" }
+    { label: "Contacto",     valor: "+54 9 2395 43-9825",          nota: "Instagram · @luchisd11" }
   ],
 
   /* --- Áreas de trabajo: los chips del bloque MÉTODO ---------
