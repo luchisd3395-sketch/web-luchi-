@@ -64,27 +64,153 @@ window.LSD_CV = {
 
        desde:   año de entrada          (número)
        hasta:   año de salida, o null si sigue
+       etapa:   cuando hubo más de un cambio en el mismo año
        club:    nombre completo
        escudo:  "assets/img/escudos/<archivo>.png"  (opcional)
        liga:    categoría o división
        rol:     el cargo exacto
        cuerpo:  entrenador o cuerpo técnico
+       tareas:  de qué estuvo a cargo
        datos:   hasta cinco casillas de números
        logros:  lista de líneas destacadas
        nota:    un párrafo corto, si hace falta
+
+     Toda la carrera es en el mismo club, así que la línea de tiempo pone
+     debajo de cada punto el cuerpo técnico y no el club: eso lo resuelve
+     sola la página, no hace falta escribirlo acá.
   */
   trayectoria: [
     {
-      desde: null, hasta: null,
-      club: "Club Agropecuario Argentino",
-      escudo: "",
-      liga: "Primera Nacional",
-      rol: "Preparador Físico",
+      desde: 2019, hasta: 2019, etapa: "",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Categorías inferiores",
+      rol: "Preparador Físico · primer profe",
       cuerpo: "",
+      tareas: [],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2020, hasta: 2020, etapa: "",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico institucional",
+      cuerpo: "Cuerpo técnico de Manuel Fernández",
+      tareas: ["Gimnasio", "Tareas alternas en campo", "Videoanálisis"],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2021, hasta: 2021, etapa: "",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico institucional",
+      cuerpo: "Cuerpo técnico de Manuel Fernández",
+      tareas: ["Gimnasio", "Tareas alternas en campo", "Videoanálisis"],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2022, hasta: 2022, etapa: "1ª etapa",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico institucional",
+      cuerpo: "Cuerpo técnico de Federico Hernández",
+      tareas: [],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2022, hasta: 2022, etapa: "2ª etapa · desde mayo",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico institucional",
+      cuerpo: "Cuerpo técnico de Diego Osella",
+      tareas: ["Gimnasio", "Tareas de campo", "Control de carga con GPS Catapult"],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2022, hasta: 2022, etapa: "3ª etapa · interinato",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico 2",
+      cuerpo: "Cuerpo técnico de Andrés Zerillo",
+      tareas: [],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2023, hasta: 2023, etapa: "",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico institucional",
+      cuerpo: "Cuerpo técnico de Gabriel Gómez",
+      tareas: ["Control de carga", "Gimnasio"],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2024, hasta: 2024, etapa: "1ª etapa",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico institucional",
+      cuerpo: "Cuerpo técnico de Gabriel Gómez",
+      tareas: [
+        "Control de carga con GPS Catapult",
+        "Gimnasio",
+        "Fuerza en sesiones previas al entrenamiento",
+        "Fuerza durante el entrenamiento"
+      ],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2024, hasta: 2024, etapa: "2ª etapa · interinato",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico del plantel profesional",
+      cuerpo: "Cuerpo técnico de Adrián Adrover",
+      tareas: [],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2024, hasta: 2024, etapa: "3ª etapa",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico institucional",
+      cuerpo: "Cuerpo técnico de Pablo Vico",
+      tareas: ["Control de carga", "Tareas de campo", "Gimnasio"],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2025, hasta: 2025, etapa: "",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico 2",
+      cuerpo: "Cuerpo técnico de Adrián Adrover",
+      tareas: [],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2026, hasta: 2026, etapa: "1ª etapa",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico 2",
+      cuerpo: "Cuerpo técnico de Adrián Adrover",
+      tareas: [],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2026, hasta: 2026, etapa: "2ª etapa",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico",
+      cuerpo: "Cuerpo técnico de Patricio Toranzo",
+      tareas: [],
+      datos: [], logros: [], nota: ""
+    },
+    {
+      desde: 2026, hasta: null, etapa: "3ª etapa",
+      club: "Club Atlético Agropecuario Argentino",
+      escudo: "", liga: "Primera Nacional",
+      rol: "Preparador Físico institucional",
+      cuerpo: "Cuerpo técnico de Gabriel Gómez",
       actual: true,
-      datos: [],
-      logros: [],
-      nota: ""
+      tareas: ["Control de carga con GPS", "Gimnasio"],
+      datos: [], logros: [], nota: ""
     }
   ],
 

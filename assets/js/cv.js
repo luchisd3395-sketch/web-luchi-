@@ -157,11 +157,26 @@
   }
 
   function rotulo(e) {
-    if (e.actual || e.hasta === null && e.desde != null) return hay(e.desde) ? e.desde + " · Actual" : "Actual";
-    if (hay(e.desde) && hay(e.hasta)) return e.desde === e.hasta ? String(e.desde) : e.desde + " – " + e.hasta;
-    if (hay(e.desde)) return String(e.desde);
-    if (hay(e.hasta)) return String(e.hasta);
-    return "Sin fecha";
+    var enCurso = e.actual || (e.hasta === null && e.desde != null);
+    var anios;
+    if (hay(e.desde) && hay(e.hasta)) anios = e.desde === e.hasta ? String(e.desde) : e.desde + " – " + e.hasta;
+    else if (hay(e.desde)) anios = String(e.desde);
+    else if (hay(e.hasta)) anios = String(e.hasta);
+    else anios = enCurso ? "" : "Sin fecha";
+
+    /* Año · etapa · Actual, en ese orden: «2026 · 3ª etapa · Actual». */
+    var partes = [];
+    if (anios) partes.push(anios);
+    if (hay(e.etapa)) partes.push(e.etapa);
+    if (enCurso) partes.push("Actual");
+    return partes.join(" · ");
+  }
+
+  /* ¿Toda la carrera en el mismo club? Entonces repetir el nombre del club
+     debajo de cada punto de la línea no dice nada: va el cuerpo técnico. */
+  function unSoloClub() {
+    var primero = (etapas[0] || {}).club;
+    return etapas.length > 1 && etapas.every(function (e) { return e.club === primero; });
   }
 
   function pintarEtapa(i) {
@@ -176,6 +191,10 @@
 
     var logros = (e.logros || []).map(function (l) { return "<li>" + esc(l) + "</li>"; }).join("");
 
+    var tareas = (e.tareas || []).map(function (t) {
+      return '<span class="cv-chip">' + esc(t) + '</span>';
+    }).join("");
+
     caja.innerHTML =
       '<article class="cv-card cv-etapa-card">' +
         (hay(e.escudo) ? '<img class="cv-etapa-escudo" src="' + esc(e.escudo) + '" alt="">' : '') +
@@ -187,26 +206,42 @@
           (hay(e.cuerpo) ? '<span>·</span><span>' + esc(e.cuerpo) + '</span>' : '') +
         '</p>' +
         (datos ? '<div class="cv-etapa-datos">' + datos + '</div>' : '') +
+        (tareas ? '<p class="cv-etapa-h">A cargo de</p><div class="cv-chips left">' + tareas + '</div>' : '') +
         (logros ? '<ul class="cv-etapa-logros">' + logros + '</ul>' : '') +
         (hay(e.nota) ? '<p class="cv-etapa-nota">' + esc(e.nota) + '</p>' : '') +
       '</article>';
 
-    $$("#cvLinea .cv-hito").forEach(function (b, j) {
+    var hitos = $$("#cvLinea .cv-hito");
+    hitos.forEach(function (b, j) {
       var on = j === i;
       b.classList.toggle("is-active", on);
       b.setAttribute("aria-selected", on ? "true" : "false");
       b.tabIndex = on ? 0 : -1;
     });
+    medirLinea(hitos[i]);
+  }
+
+  /* El ancho total de la línea y hasta dónde llega el tramo iluminado.
+     Van como variables CSS porque el contenido es más ancho que la ventana. */
+  function medirLinea(activo) {
+    var linea = $("#cvLinea");
+    if (!linea) return;
+    linea.style.setProperty("--ancho", linea.scrollWidth + "px");
+    if (activo) linea.style.setProperty("--avance", (activo.offsetLeft + activo.offsetWidth / 2) + "px");
   }
 
   function pintarLinea() {
     var linea = $("#cvLinea");
+    var mismoClub = unSoloClub();
     linea.innerHTML = etapas.map(function (e, i) {
       var anio = hay(e.desde) ? e.desde : (e.actual ? "Hoy" : "—");
+      var pie = mismoClub ? (e.cuerpo || e.liga || e.rol || "") : (e.club || "");
+      /* «Cuerpo técnico de X» es demasiado largo debajo de un punto. */
+      pie = String(pie).replace(/^Cuerpo t[ée]cnico de\s+/i, "");
       return '<button class="cv-hito" role="tab" data-i="' + i + '" aria-selected="false" tabindex="-1">' +
         '<span class="punto" aria-hidden="true"></span>' +
         '<span class="anio">' + esc(anio) + '</span>' +
-        '<span class="club">' + esc(e.club || "") + '</span>' +
+        '<span class="club">' + esc(pie) + '</span>' +
         (hay(e.escudo) ? '<img class="escudo" src="' + esc(e.escudo) + '" alt="">' : '') +
         '</button>';
     }).join("");
@@ -236,7 +271,19 @@
     pintarLinea();
     /* Arranca en la etapa actual, o en la última. */
     var i = etapas.findIndex(function (e) { return e.actual; });
-    pintarEtapa(i >= 0 ? i : etapas.length - 1);
+    if (i < 0) i = etapas.length - 1;
+    pintarEtapa(i);
+
+    /* Con muchas etapas el punto activo cae fuera de la vista. Se corre la
+       línea a mano —no con scrollIntoView— para no mover la página. */
+    var linea = $("#cvLinea");
+    var act = $$("#cvLinea .cv-hito")[i];
+    if (linea && act) linea.scrollLeft = act.offsetLeft - (linea.clientWidth - act.offsetWidth) / 2;
+
+    /* Al cambiar el ancho de la ventana los puntos se recolocan. */
+    window.addEventListener("resize", function () {
+      medirLinea($(".cv-hito.is-active", linea));
+    });
   }
 
   /* ================================================================

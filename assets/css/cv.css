@@ -337,6 +337,8 @@ a { color: inherit; }
 .cv-etapa-dato { padding: 1.1rem .8rem; text-align: center; background: var(--cv-card-2); }
 .cv-etapa-dato .k { display: block; font-size: .56rem; letter-spacing: .2em; text-transform: uppercase; color: var(--cv-muted); }
 .cv-etapa-dato .n { display: block; margin-top: .5rem; font-family: var(--cv-display); font-size: clamp(1.5rem, 3vw, 2.3rem); line-height: 1; color: #fff; }
+.cv-etapa-h { margin: clamp(1.4rem, 3vw, 2rem) 0 .8rem; font-size: .6rem; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; color: var(--cv-cyan); }
+.cv-chips.left { justify-content: flex-start; }
 .cv-etapa-logros { list-style: none; margin: 1.6rem 0 0; padding: 0; display: grid; gap: .55rem; }
 .cv-etapa-logros li { position: relative; padding-left: 1.5rem; font-size: .88rem; color: #c6d5ee; }
 .cv-etapa-logros li::before { content: ""; position: absolute; left: 0; top: .55em; width: 8px; height: 8px; border-radius: 50%; background: var(--cv-ok); }
@@ -350,7 +352,18 @@ a { color: inherit; }
   overflow-x: auto; padding: 2.2rem .4rem 1rem;
   scrollbar-width: thin; scrollbar-color: var(--cv-line-2) transparent;
 }
-.cv-linea::before { content: ""; position: absolute; left: 0; right: 0; top: 2.55rem; height: 1px; background: var(--cv-line-2); }
+/* La línea es más larga que la ventana, así que su ancho lo mide el guion:
+   con `right: 0` sólo cubriría la parte visible y se cortaría al deslizar. */
+.cv-linea::before {
+  content: ""; position: absolute; left: 0; top: 2.55rem; height: 1px;
+  width: var(--ancho, 100%); background: var(--cv-line-2);
+}
+/* El tramo recorrido, hasta el punto activo. */
+.cv-linea::after {
+  content: ""; position: absolute; left: 0; top: 2.55rem; height: 1px;
+  width: var(--avance, 0); background: linear-gradient(90deg, rgba(53, 214, 240, .15), var(--cv-cyan));
+  transition: width .45s var(--cv-ease);
+}
 .cv-linea::-webkit-scrollbar { height: 6px; }
 .cv-linea::-webkit-scrollbar-thumb { background: var(--cv-line-2); border-radius: 999px; }
 .cv-hito {
