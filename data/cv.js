@@ -66,9 +66,13 @@ window.LSD_CV = {
   /* --- Áreas de trabajo: los chips del bloque MÉTODO ---------
      Sólo lo que está documentado en el sitio o dicho por él.    */
   areas: [
-    "Fuerza", "Control de carga", "GPS Catapult", "Readaptación",
-    "Trabajo en campo", "Gimnasio", "Juegos reducidos", "Velocidad",
-    "Videoanálisis", "Trabajo interdisciplinario"
+    "Fuerza",
+    "Control de carga GPS",
+    "Tecnología de medición en gimnasio (Ivolution y WinLaborat)",
+    "Readaptación",
+    "Trabajos de campo",
+    "Videoanálisis",
+    "Trabajo interdisciplinario"
   ],
 
   /* --- Trayectoria ------------------------------------------
