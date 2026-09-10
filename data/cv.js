@@ -39,7 +39,7 @@ window.LSD_CV = {
   },
 
   /* --- El párrafo de arriba: quién es y cómo trabaja --------- */
-  bio: "",
+  bio: "Preparador físico formado en el día a día del fútbol profesional: ocho años en el mismo club y nueve cuerpos técnicos distintos, siendo el punto fijo entre proyectos que cambian. Ese lugar exige más que planificar — pide comunicar, gestionar y resolver la logística de cada semana para que lo planificado llegue entero al campo.\n\nSu fuerte está en el desarrollo de la tarea en las dos mitades de la sesión, el campo y el gimnasio, con conocimiento profundo del desarrollo de la fuerza aplicada a los deportes de equipo y del control de la carga con GPS Catapult.\n\nY una forma de trabajar que no se aprende en un curso: años compartiendo el trabajo diario con nutricionistas, médicos y kinesiólogos del club, y decidiendo en conjunto.",
 
   /* --- Ficha de datos (columna derecha del bloque BIO) -------
      Cada entrada es una casilla. Se pintan en el orden que estén. */
@@ -52,10 +52,12 @@ window.LSD_CV = {
     { label: "Contacto",     valor: "",                            nota: "" }
   ],
 
-  /* --- Áreas de trabajo: los chips del bloque MÉTODO --------- */
+  /* --- Áreas de trabajo: los chips del bloque MÉTODO ---------
+     Sólo lo que está documentado en el sitio o dicho por él.    */
   areas: [
-    "Fuerza", "Control de carga", "GPS", "Readaptación",
-    "Velocidad", "Juegos reducidos", "Periodización"
+    "Fuerza", "Control de carga", "GPS Catapult", "Trabajo en campo",
+    "Gimnasio", "Juegos reducidos", "Velocidad", "Videoanálisis",
+    "Trabajo interdisciplinario"
   ],
 
   /* --- Trayectoria ------------------------------------------
