@@ -39,7 +39,7 @@ window.LSD_CV = {
   },
 
   /* --- El párrafo de arriba: quién es y cómo trabaja --------- */
-  bio: "Preparador físico formado en el día a día del fútbol profesional: ocho años en el mismo club y nueve cuerpos técnicos distintos, siendo el punto fijo entre proyectos que cambian. Ese lugar exige más que planificar — pide comunicar, gestionar y resolver la logística de cada semana para que lo planificado llegue entero al campo.\n\nSu fuerte está en el desarrollo de la tarea en las dos mitades de la sesión, el campo y el gimnasio, con conocimiento profundo del desarrollo de la fuerza aplicada a los deportes de equipo y del control de la carga con GPS Catapult. Desde 2023 se ocupa además de la etapa final de la readaptación: la que devuelve al jugador al trabajo con el grupo.\n\nY una forma de trabajar que no se aprende en un curso: años compartiendo el trabajo diario con nutricionistas, médicos y kinesiólogos del club, y decidiendo en conjunto.",
+  bio: "Preparador físico formado en el día a día del fútbol profesional: ocho años en el mismo club y nueve cuerpos técnicos distintos, siendo el punto fijo entre proyectos que cambian. Ese lugar exige más que planificar — pide comunicar, gestionar y resolver la logística de cada semana para que lo planificado llegue entero al campo.\n\nSu fuerte está en el desarrollo de la tarea en las dos mitades de la sesión, el campo y el gimnasio, con conocimiento profundo del desarrollo de la fuerza aplicada a los deportes de equipo y del control de la carga con GPS Catapult. Desde 2023 se ocupa además de la etapa final de la readaptación: la que devuelve al jugador a la competencia.\n\nY una forma de trabajar que no se aprende en un curso: años compartiendo el trabajo diario con nutricionistas, médicos y kinesiólogos del club, y decidiendo en conjunto.",
 
   /* --- Ficha de datos (columna derecha del bloque BIO) -------
      Cada entrada es una casilla. Se pintan en el orden que estén. */
@@ -142,7 +142,7 @@ window.LSD_CV = {
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Gabriel Gómez",
-      tareas: ["Control de carga", "Gimnasio", "Readaptación · vuelta al grupo"],
+      tareas: ["Control de carga", "Gimnasio", "Readaptación · vuelta a la competencia"],
       datos: [], logros: [], nota: ""
     },
     {
@@ -156,7 +156,7 @@ window.LSD_CV = {
         "Gimnasio",
         "Fuerza en sesiones previas al entrenamiento",
         "Fuerza durante el entrenamiento",
-        "Readaptación · vuelta al grupo"
+        "Readaptación · vuelta a la competencia"
       ],
       datos: [], logros: [], nota: ""
     },
@@ -166,7 +166,7 @@ window.LSD_CV = {
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico del plantel profesional",
       cuerpo: "Cuerpo técnico de Adrián Adrover",
-      tareas: ["Readaptación · vuelta al grupo"],
+      tareas: ["Readaptación · vuelta a la competencia"],
       datos: [], logros: [], nota: ""
     },
     {
@@ -175,7 +175,7 @@ window.LSD_CV = {
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Pablo Vico",
-      tareas: ["Control de carga", "Tareas de campo", "Gimnasio", "Readaptación · vuelta al grupo"],
+      tareas: ["Control de carga", "Tareas de campo", "Gimnasio", "Readaptación · vuelta a la competencia"],
       datos: [], logros: [], nota: ""
     },
     {
@@ -184,7 +184,7 @@ window.LSD_CV = {
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico 2",
       cuerpo: "Cuerpo técnico de Adrián Adrover",
-      tareas: ["Readaptación · vuelta al grupo"],
+      tareas: ["Readaptación · vuelta a la competencia"],
       datos: [], logros: [], nota: ""
     },
     {
@@ -193,7 +193,7 @@ window.LSD_CV = {
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico 2",
       cuerpo: "Cuerpo técnico de Adrián Adrover",
-      tareas: ["Readaptación · vuelta al grupo"],
+      tareas: ["Readaptación · vuelta a la competencia"],
       datos: [], logros: [], nota: ""
     },
     {
