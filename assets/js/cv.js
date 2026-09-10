@@ -92,6 +92,15 @@
 
     /* Enlaces: sólo los que tienen valor. */
     var links = [];
+
+    /* WhatsApp primero, que es por donde lo van a buscar. wa.me sólo acepta
+       dígitos: ni el «+», ni espacios, ni guiones. */
+    var wa = P.whatsapp === true ? P.telefono : P.whatsapp;
+    if (hay(wa)) {
+      links.push('<a class="es-wa" href="https://wa.me/' + String(wa).replace(/\D/g, "") +
+        '" target="_blank" rel="noopener">WhatsApp</a>');
+    }
+
     if (hay(P.instagram)) links.push(['<a href="' + esc(P.instagram) + '" target="_blank" rel="noopener">Instagram</a>']);
     if (hay(P.linkedin))  links.push(['<a href="' + esc(P.linkedin) + '" target="_blank" rel="noopener">LinkedIn</a>']);
     if (hay(P.mail))      links.push(['<a href="mailto:' + esc(P.mail) + '">Mail</a>']);

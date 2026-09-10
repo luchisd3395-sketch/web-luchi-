@@ -35,7 +35,10 @@ window.LSD_CV = {
     instagram: "https://instagram.com/luchisd11",
     linkedin: "",
     mail: "",
-    telefono: "+54 9 2395 43-9825"
+    telefono: "+54 9 2395 43-9825",
+    /* El botón de WhatsApp: un número propio, o `true` para usar el de
+       arriba. Vacío o false y el botón no aparece. */
+    whatsapp: true
   },
 
   /* --- El párrafo de arriba: quién es y cómo trabaja --------- */

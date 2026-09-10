@@ -290,6 +290,9 @@ a { color: inherit; }
   color: var(--cv-ink); background: rgba(255, 255, 255, .04);
 }
 .cv-links a:hover { border-color: var(--cv-cyan); color: var(--cv-cyan); }
+/* El de WhatsApp se distingue: es el que más se va a usar. */
+.cv-links a.es-wa { border-color: rgba(37, 211, 102, .5); background: rgba(37, 211, 102, .12); color: #7ef0a8; }
+.cv-links a.es-wa:hover { border-color: #25d366; color: #b6f8cd; }
 .cv-bio-left .cv-eyebrow { margin-top: clamp(1.6rem, 3vw, 2.4rem); }
 .cv-bio-texto { margin-top: .6rem; color: #c6d5ee; max-width: 56ch; }
 .cv-bio-texto p { margin: 0 0 .9rem; }
