@@ -21,7 +21,7 @@ window.LSD_CV = {
     pais: "🇦🇷 🇮🇹",
     ciudad: "Carlos Casares, Buenos Aires",
     nacimiento: "",          /* "1990-05-14" */
-    idiomas: "Español",
+    idiomas: "Español e inglés",
     /* Escudo del club. En cuanto haya un archivo acá, aparece chiquito al
        lado del club en la ficha, en las catorce tarjetas de la trayectoria
        y en cada punto de la línea de tiempo.
@@ -59,7 +59,7 @@ window.LSD_CV = {
     { label: "Ciudad",       valor: "Carlos Casares",              nota: "Buenos Aires, Argentina" },
     { label: "Nacionalidad", valor: "Argentina 🇦🇷 e italiana 🇮🇹", nota: "Doble ciudadanía" },
     { label: "Formación",    valor: "Profesor de Educación Física", nota: "Instituto N.º 13 · Pehuajó" },
-    { label: "Idiomas",      valor: "Español e inglés",            nota: "" },
+    { label: "Idiomas",      valor: "Español 🇪🇸 e inglés 🇬🇧",      nota: "" },
     { label: "Contacto",     valor: "+54 9 2395 43-9825",          nota: "Instagram · @luchisd11" }
   ],
 
