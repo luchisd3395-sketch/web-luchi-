@@ -17,7 +17,8 @@ window.LSD_CV = {
     rol: "Preparador Físico",
     club: "Club Agropecuario Argentino",
     liga: "Primera Nacional",
-    pais: "🇦🇷",
+    /* Las dos banderas de la portada: tiene doble ciudadanía. */
+    pais: "🇦🇷 🇮🇹",
     ciudad: "Carlos Casares, Buenos Aires",
     nacimiento: "",          /* "1990-05-14" */
     idiomas: "Español",
@@ -50,8 +51,9 @@ window.LSD_CV = {
     { label: "Club actual",  valor: "Club Agropecuario Argentino", nota: "Primera Nacional" },
     { label: "Puesto",       valor: "Preparador Físico",           nota: "Primer equipo" },
     { label: "Ciudad",       valor: "Carlos Casares",              nota: "Buenos Aires, Argentina" },
+    { label: "Nacionalidad", valor: "Argentina e italiana",        nota: "Doble ciudadanía" },
     { label: "Formación",    valor: "Profesor de Educación Física", nota: "Instituto N.º 13 · Pehuajó" },
-    { label: "Idiomas",      valor: "Español",                     nota: "" },
+    { label: "Idiomas",      valor: "Español e inglés",            nota: "" },
     { label: "Contacto",     valor: "+54 9 2395 43-9825",          nota: "Instagram · @luchisd11" }
   ],
 
