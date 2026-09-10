@@ -82,7 +82,7 @@ window.LSD_CV = {
   trayectoria: [
     {
       desde: 2019, hasta: 2019, etapa: "",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Categorías inferiores",
       rol: "Preparador Físico · primer profe",
       cuerpo: "",
@@ -91,7 +91,7 @@ window.LSD_CV = {
     },
     {
       desde: 2020, hasta: 2020, etapa: "",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Manuel Fernández",
@@ -100,7 +100,7 @@ window.LSD_CV = {
     },
     {
       desde: 2021, hasta: 2021, etapa: "",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Manuel Fernández",
@@ -109,7 +109,7 @@ window.LSD_CV = {
     },
     {
       desde: 2022, hasta: 2022, etapa: "1ª etapa",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Federico Hernández",
@@ -118,7 +118,7 @@ window.LSD_CV = {
     },
     {
       desde: 2022, hasta: 2022, etapa: "2ª etapa · desde mayo",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Diego Osella",
@@ -127,7 +127,7 @@ window.LSD_CV = {
     },
     {
       desde: 2022, hasta: 2022, etapa: "3ª etapa · interinato",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico 2",
       cuerpo: "Cuerpo técnico de Andrés Zerillo",
@@ -136,7 +136,7 @@ window.LSD_CV = {
     },
     {
       desde: 2023, hasta: 2023, etapa: "",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Gabriel Gómez",
@@ -145,7 +145,7 @@ window.LSD_CV = {
     },
     {
       desde: 2024, hasta: 2024, etapa: "1ª etapa",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Gabriel Gómez",
@@ -159,7 +159,7 @@ window.LSD_CV = {
     },
     {
       desde: 2024, hasta: 2024, etapa: "2ª etapa · interinato",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico del plantel profesional",
       cuerpo: "Cuerpo técnico de Adrián Adrover",
@@ -168,7 +168,7 @@ window.LSD_CV = {
     },
     {
       desde: 2024, hasta: 2024, etapa: "3ª etapa",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Pablo Vico",
@@ -177,7 +177,7 @@ window.LSD_CV = {
     },
     {
       desde: 2025, hasta: 2025, etapa: "",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico 2",
       cuerpo: "Cuerpo técnico de Adrián Adrover",
@@ -186,7 +186,7 @@ window.LSD_CV = {
     },
     {
       desde: 2026, hasta: 2026, etapa: "1ª etapa",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico 2",
       cuerpo: "Cuerpo técnico de Adrián Adrover",
@@ -195,7 +195,7 @@ window.LSD_CV = {
     },
     {
       desde: 2026, hasta: 2026, etapa: "2ª etapa",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico",
       cuerpo: "Cuerpo técnico de Patricio Toranzo",
@@ -204,7 +204,7 @@ window.LSD_CV = {
     },
     {
       desde: 2026, hasta: null, etapa: "3ª etapa",
-      club: "Club Atlético Agropecuario Argentino",
+      club: "Club Agropecuario Argentino",
       escudo: "", liga: "Primera Nacional",
       rol: "Preparador Físico institucional",
       cuerpo: "Cuerpo técnico de Gabriel Gómez",
