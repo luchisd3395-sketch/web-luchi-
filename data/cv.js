@@ -47,7 +47,7 @@ window.LSD_CV = {
     { label: "Club actual",  valor: "Club Agropecuario Argentino", nota: "Primera Nacional" },
     { label: "Puesto",       valor: "Preparador Físico",           nota: "Primer equipo" },
     { label: "Ciudad",       valor: "Carlos Casares",              nota: "Buenos Aires, Argentina" },
-    { label: "Formación",    valor: "",                            nota: "" },
+    { label: "Formación",    valor: "Profesor de Educación Física", nota: "Instituto N.º 13 · Pehuajó" },
     { label: "Idiomas",      valor: "Español",                     nota: "" },
     { label: "Contacto",     valor: "",                            nota: "" }
   ],
@@ -215,8 +215,29 @@ window.LSD_CV = {
   ],
 
   /* --- Formación --------------------------------------------
-     { titulo, casa, anio, tipo: "titulo" | "curso" }            */
-  formacion: [],
+     { titulo, casa, anio, tipo: "titulo" | "curso", detalle }
+     `tipo` sólo cambia la etiqueta que se ve al costado.        */
+  formacion: [
+    {
+      titulo: "Profesor de Educación Física",
+      casa: "Instituto N.º 13 de Pehuajó",
+      anio: "", tipo: "titulo", detalle: ""
+    },
+    {
+      titulo: "Instructor en musculación",
+      casa: "", anio: "", tipo: "curso", detalle: ""
+    },
+    {
+      titulo: "Personal trainer",
+      casa: "", anio: "", tipo: "curso", detalle: ""
+    },
+    {
+      titulo: "GPS Catapult y control de cargas",
+      casa: "Capacitaciones presenciales en Buenos Aires y online",
+      anio: "", tipo: "curso",
+      detalle: "Formación sostenida durante toda su etapa en el club, con profesionales de las mejores ligas del mundo."
+    }
+  ],
 
   /* --- Galería: si queda vacía, toma las fotos del sitio ----- */
   galeria: []

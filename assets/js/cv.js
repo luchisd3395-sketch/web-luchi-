@@ -106,6 +106,22 @@
       texto.innerHTML = "<p>" + PENDIENTE + "</p>";
     }
 
+    /* Formación: si no hay nada, la tarjeta entera no aparece. */
+    var estudios = CV.formacion || [];
+    if (estudios.length) {
+      $("#cvEstudiosCaja").hidden = false;
+      $("#cvFormacion").innerHTML = estudios.map(function (f) {
+        var pie = [f.casa, f.anio].filter(hay).join(" · ");
+        return '<li>' +
+          (f.tipo ? '<span class="tipo' + (f.tipo === "titulo" ? " es-titulo" : "") + '">' +
+            (f.tipo === "titulo" ? "Título" : "Curso") + '</span>' : '') +
+          '<span class="t">' + esc(f.titulo) + '</span>' +
+          (pie ? '<span class="c">' + esc(pie) + '</span>' : '') +
+          (hay(f.detalle) ? '<span class="d">' + esc(f.detalle) + '</span>' : '') +
+          '</li>';
+      }).join("");
+    }
+
     $("#cvFicha").innerHTML = (CV.ficha || []).map(function (f) {
       return '<div class="cv-dato">' +
         '<span class="k">' + esc(f.label) + '</span>' +
