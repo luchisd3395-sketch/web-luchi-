@@ -25,8 +25,9 @@ window.LSD_CV = {
     /* Escudo del club. En cuanto haya un archivo acá, aparece chiquito al
        lado del club en la ficha, en las catorce tarjetas de la trayectoria
        y en cada punto de la línea de tiempo.
-         escudo: "assets/img/escudo-agropecuario.jpg"                     */
-    escudo: "",
+       Va en PNG y no en JPG porque necesita fondo transparente: el JPG no
+       lo soporta y quedaría un cuadrado blanco sobre el azul de la página. */
+    escudo: "assets/img/escudo-agropecuario.png",
     /* Foto de la portada. `recorte: true` es para un PNG sin fondo, que se
        para entero sobre el degradado; con una foto normal se deja en false.
        `foco` corre el encuadre: 0% arriba del todo, 50% al medio. */
