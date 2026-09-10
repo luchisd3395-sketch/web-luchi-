@@ -325,6 +325,8 @@ a { color: inherit; }
 .cv-dato .k { display: block; font-size: .6rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--cv-cyan); margin-bottom: .45rem; }
 .cv-dato .v { display: block; font-family: var(--cv-display); font-size: clamp(1.05rem, 1.9vw, 1.55rem); line-height: 1.14; text-transform: uppercase; color: #fff; }
 .cv-dato .n { display: block; margin-top: .3rem; font-size: .74rem; color: var(--cv-muted); }
+/* El escudo, a la altura de la línea de texto y sin deformarse. */
+.cv-dato-escudo { display: inline-block; height: 1.1em; width: auto; vertical-align: -.14em; margin-right: .45em; object-fit: contain; }
 
 /* --------------------------------------------------------------
    MÉTODO

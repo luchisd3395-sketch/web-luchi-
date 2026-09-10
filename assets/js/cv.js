@@ -132,9 +132,13 @@
     }
 
     $("#cvFicha").innerHTML = (CV.ficha || []).map(function (f) {
+      /* `icono: "escudo"` pone el escudo del club antes del valor. Si el
+         archivo no está, la imagen se saca y no queda ningún hueco. */
+      var icono = (f.icono === "escudo" && hay(P.escudo))
+        ? '<img class="cv-dato-escudo" src="' + esc(P.escudo) + '" alt="" onerror="this.remove()">' : '';
       return '<div class="cv-dato">' +
         '<span class="k">' + esc(f.label) + '</span>' +
-        '<span class="v">' + (hay(f.valor) ? esc(f.valor) : PENDIENTE) + '</span>' +
+        '<span class="v">' + icono + (hay(f.valor) ? esc(f.valor) : PENDIENTE) + '</span>' +
         (hay(f.nota) ? '<span class="n">' + esc(f.nota) + '</span>' : '') +
         '</div>';
     }).join("");
@@ -199,6 +203,11 @@
 
   /* ¿Toda la carrera en el mismo club? Entonces repetir el nombre del club
      debajo de cada punto de la línea no dice nada: va el cuerpo técnico. */
+  /* Cada etapa puede traer su escudo; si no, sirve el del club de la persona. */
+  function escudoDe(e) {
+    return hay(e.escudo) ? e.escudo : (P.escudo || "");
+  }
+
   function unSoloClub() {
     var primero = (etapas[0] || {}).club;
     return etapas.length > 1 && etapas.every(function (e) { return e.club === primero; });
@@ -222,7 +231,7 @@
 
     caja.innerHTML =
       '<article class="cv-card cv-etapa-card">' +
-        (hay(e.escudo) ? '<img class="cv-etapa-escudo" src="' + esc(e.escudo) + '" alt="">' : '') +
+        (hay(escudoDe(e)) ? '<img class="cv-etapa-escudo" src="' + esc(escudoDe(e)) + '" alt="" onerror="this.remove()">' : '') +
         '<span class="cv-etapa-badge' + (e.actual ? ' actual' : '') + '">' + esc(rotulo(e)) + '</span>' +
         '<h3 class="cv-etapa-club">' + esc(e.club || "—") + '</h3>' +
         '<p class="cv-etapa-liga">' +
@@ -267,7 +276,7 @@
         '<span class="punto" aria-hidden="true"></span>' +
         '<span class="anio">' + esc(anio) + '</span>' +
         '<span class="club">' + esc(pie) + '</span>' +
-        (hay(e.escudo) ? '<img class="escudo" src="' + esc(e.escudo) + '" alt="">' : '') +
+        (hay(escudoDe(e)) ? '<img class="escudo" src="' + esc(escudoDe(e)) + '" alt="" onerror="this.remove()">' : '') +
         '</button>';
     }).join("");
 

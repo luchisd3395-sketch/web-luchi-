@@ -22,6 +22,11 @@ window.LSD_CV = {
     ciudad: "Carlos Casares, Buenos Aires",
     nacimiento: "",          /* "1990-05-14" */
     idiomas: "Español",
+    /* Escudo del club. En cuanto haya un archivo acá, aparece chiquito al
+       lado del club en la ficha, en las catorce tarjetas de la trayectoria
+       y en cada punto de la línea de tiempo.
+         escudo: "assets/img/escudo-agropecuario.jpg"                     */
+    escudo: "",
     /* Foto de la portada. `recorte: true` es para un PNG sin fondo, que se
        para entero sobre el degradado; con una foto normal se deja en false.
        `foco` corre el encuadre: 0% arriba del todo, 50% al medio. */
@@ -48,10 +53,10 @@ window.LSD_CV = {
   /* --- Ficha de datos (columna derecha del bloque BIO) -------
      Cada entrada es una casilla. Se pintan en el orden que estén. */
   ficha: [
-    { label: "Club actual",  valor: "Club Agropecuario Argentino", nota: "Primera Nacional" },
+    { label: "Club actual",  valor: "Club Agropecuario Argentino", nota: "Primera Nacional", icono: "escudo" },
     { label: "Puesto",       valor: "Preparador Físico",           nota: "Primer equipo" },
     { label: "Ciudad",       valor: "Carlos Casares",              nota: "Buenos Aires, Argentina" },
-    { label: "Nacionalidad", valor: "Argentina e italiana",        nota: "Doble ciudadanía" },
+    { label: "Nacionalidad", valor: "Argentina 🇦🇷 e italiana 🇮🇹", nota: "Doble ciudadanía" },
     { label: "Formación",    valor: "Profesor de Educación Física", nota: "Instituto N.º 13 · Pehuajó" },
     { label: "Idiomas",      valor: "Español e inglés",            nota: "" },
     { label: "Contacto",     valor: "+54 9 2395 43-9825",          nota: "Instagram · @luchisd11" }
