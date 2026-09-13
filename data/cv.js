@@ -257,6 +257,51 @@ window.LSD_CV = {
     }
   ],
 
-  /* --- Galería: si queda vacía, toma las fotos del sitio ----- */
-  galeria: []
+  /* --- Galería, por grupos ----------------------------------
+     Cada grupo lleva su encabezado y su lista de fotos:
+
+       titulo:  el nombre de la carpeta
+       nota:    una línea corta, opcional
+       formato: "apaisado" (4/3) o "vertical" (3/4)
+       fotos:   { src, pie, foco: "alto" | "medio" | "bajo" }
+
+     `foco` corre el encuadre cuando la foto se recorta: alto deja ver
+     la parte de arriba, bajo la de abajo.
+
+     Si esta lista queda vacía, la página usa las fotos de «Momentos»
+     de data/config.js, como antes.                                   */
+  galeria: [
+    {
+      titulo: "Inferiores · Club Agropecuario Argentino",
+      nota: "Primera etapa en el club, 2019.",
+      formato: "apaisado",
+      fotos: [
+        {
+          src: "assets/img/inferiores-01-entrada-en-calor.jpg",
+          pie: "Entrada en calor en el sintético del club · 28.04.2019",
+          foco: "medio"
+        },
+        {
+          src: "assets/img/inferiores-02-fuerza-suelo.jpg",
+          pie: "Trabajo de fuerza en el suelo antes de la práctica · 05.05.2019",
+          foco: "medio"
+        },
+        {
+          src: "assets/img/inferiores-03-fuerza-suelo-grupo.jpg",
+          pie: "La categoría completa, con los conos marcando el recorrido · 05.05.2019",
+          foco: "medio"
+        },
+        {
+          src: "assets/img/inferiores-04-douglas-haig.jpg",
+          pie: "Plantel y cuerpo técnico en el Club Atlético Douglas Haig, Pergamino",
+          foco: "medio"
+        },
+        {
+          src: "assets/img/inferiores-05-plantel.jpg",
+          pie: "Foto de plantel de la categoría · 26.05.2019",
+          foco: "medio"
+        }
+      ]
+    }
+  ]
 };

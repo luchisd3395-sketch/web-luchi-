@@ -443,10 +443,33 @@ a { color: inherit; }
 /* --------------------------------------------------------------
    GALERÍA
    -------------------------------------------------------------- */
-.cv-galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(.8rem, 1.8vw, 1.4rem); margin-top: clamp(1.6rem, 4vw, 2.6rem); }
+/* La galería va por carpetas: cada una con su encabezado y su grilla. */
+.cv-grupos { margin-top: clamp(1.6rem, 4vw, 2.6rem); display: grid; gap: clamp(2.2rem, 5vw, 3.6rem); }
+.cv-grupo[hidden] { display: none; }
+.cv-grupo-cab {
+  display: flex; align-items: baseline; gap: .9rem; flex-wrap: wrap;
+  border-top: 1px solid var(--cv-line); padding-top: .8rem; margin-bottom: 1.1rem;
+}
+.cv-grupo-cab h3 {
+  /* Puede envolver: «Inferiores · Club Agropecuario Argentino» no entra de
+     una línea en un teléfono. */
+  margin: 0; flex: 1 1 auto; min-width: 0; overflow-wrap: break-word;
+  font-family: var(--cv-display); font-weight: 400;
+  font-size: clamp(1.05rem, 2.2vw, 1.5rem); line-height: 1.1;
+  text-transform: uppercase; color: #fff;
+}
+.cv-grupo-nota { margin: 0; font-size: .82rem; color: var(--cv-muted); }
+.cv-grupo-cuenta { margin-left: auto; flex: 0 0 auto; white-space: nowrap; font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--cv-cyan); }
+
+.cv-galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(.8rem, 1.8vw, 1.4rem); }
 .cv-foto { position: relative; overflow: hidden; border-radius: 14px; border: 1px solid var(--cv-line); background: #0b1430; cursor: pointer; padding: 0; }
 .cv-foto img { width: 100%; height: 100%; aspect-ratio: 3 / 4; object-fit: cover; transition: transform .6s var(--cv-ease); }
-.cv-foto:nth-child(4n) img, .cv-foto:nth-child(4n+1) img { aspect-ratio: 4 / 3; }
+/* La proporción la fija el grupo: las apaisadas no entran en un 3/4. */
+.cv-grupo[data-formato="apaisado"] .cv-foto img { aspect-ratio: 4 / 3; }
+/* Y el encuadre, cada foto. */
+.cv-foto[data-foco="alto"] img  { object-position: 50% 24%; }
+.cv-foto[data-foco="medio"] img { object-position: 50% 44%; }
+.cv-foto[data-foco="bajo"] img  { object-position: 50% 72%; }
 .cv-foto:hover img { transform: scale(1.04); }
 .cv-foto:focus-visible { outline: 2px solid var(--cv-cyan); outline-offset: 3px; }
 .cv-foto-n { position: absolute; right: .8rem; top: .7rem; display: flex; align-items: center; gap: .5rem; font-family: var(--cv-mono); font-size: .62rem; letter-spacing: .18em; color: #fff; text-shadow: 0 2px 8px rgba(0, 0, 0, .8); }
@@ -474,6 +497,17 @@ a { color: inherit; }
 .cv-lightbox-caja { width: min(1100px, 100%); }
 .cv-lightbox-caja iframe, .cv-lightbox-caja img { width: 100%; border: 0; border-radius: 14px; display: block; }
 .cv-lightbox-caja iframe { aspect-ratio: 16 / 9; height: auto; }
+/* Flechas para pasar de una foto a otra sin cerrar el visor. */
+.cv-lightbox-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 46px; height: 46px; border-radius: 50%; cursor: pointer;
+  border: 1px solid var(--cv-line-2); background: rgba(255, 255, 255, .09);
+  color: #fff; font-size: 1.6rem; line-height: 1; display: grid; place-items: center;
+}
+.cv-lightbox-nav:hover { background: rgba(255, 255, 255, .18); }
+.cv-lightbox-nav[data-paso="-1"] { left: clamp(.4rem, 2vw, 1.4rem); }
+.cv-lightbox-nav[data-paso="1"]  { right: clamp(.4rem, 2vw, 1.4rem); }
+.cv-lightbox-nav:focus-visible { outline: 2px solid var(--cv-cyan); outline-offset: 2px; }
 .cv-lightbox-caja img { max-height: 82svh; object-fit: contain; }
 .cv-lightbox-pie { margin: .9rem 0 0; text-align: center; color: var(--cv-muted); font-size: .8rem; }
 

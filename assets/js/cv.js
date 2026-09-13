@@ -370,40 +370,134 @@
   /* ================================================================
      GALERÍA
      ================================================================ */
-  function galeria() {
-    var fotos = (CV.galeria && CV.galeria.length) ? CV.galeria : ((CFG.media && CFG.media.gallery) || []);
-    $("#cvGaleriaCuenta").textContent = String(fotos.length).padStart(2, "0") + " capturas";
+  /* Todas las fotos de la página, en una sola lista: es lo que recorre el
+     visor con las flechas, atravesando los grupos. */
+  var album = [];
 
-    $("#cvGaleria").innerHTML = fotos.map(function (f, i) {
-      return '<button class="cv-foto" data-src="' + esc(f.src) + '" data-pie="' + esc(f.pie || "") + '">' +
-        '<img src="' + esc(f.src) + '" alt="' + esc(f.pie || "") + '" loading="lazy">' +
-        '<span class="cv-foto-n">' + String(i + 1).padStart(2, "0") + '</span>' +
-        (hay(f.pie) ? '<span class="cv-foto-pie">' + esc(f.pie) + '</span>' : '') +
-        '</button>';
+  /* Los datos admiten tres formas, y las tres siguen funcionando:
+     una lista de grupos, una lista suelta de fotos, o nada —y entonces
+     se usan las de «Momentos» del sitio—. */
+  function gruposDeFotos() {
+    var g = CV.galeria || [];
+    var lista = [];
+
+    if (g.length && g[0] && g[0].fotos) lista = g.slice();
+    else if (g.length) lista = [{ titulo: "", fotos: g }];
+
+    /* Los momentos del sitio van siempre al final, así la galería del CV
+       se actualiza sola cuando se suma una foto desde la terminal. */
+    var momentos = (CFG.media && CFG.media.gallery) || [];
+    if (momentos.length) {
+      lista.push({ titulo: "Momentos en el club", formato: "vertical", fotos: momentos });
+    }
+    return lista;
+  }
+
+  function galeria() {
+    album = [];
+    var grupos = gruposDeFotos();
+
+    $("#cvGaleria").innerHTML = grupos.map(function (gr) {
+      var fotos = (gr.fotos || []).map(function (f) {
+        var i = album.length;
+        album.push(f);
+        return '<button class="cv-foto" data-i="' + i + '" data-foco="' + esc(f.foco || "medio") + '">' +
+          '<img src="' + esc(f.src) + '" alt="' + esc(f.pie || "") + '" loading="lazy">' +
+          '<span class="cv-foto-n">' + String(i + 1).padStart(2, "0") + '</span>' +
+          (hay(f.pie) ? '<span class="cv-foto-pie">' + esc(f.pie) + '</span>' : '') +
+          '</button>';
+      }).join("");
+
+      return '<section class="cv-grupo" data-formato="' + esc(gr.formato || "vertical") + '">' +
+        (hay(gr.titulo)
+          ? '<header class="cv-grupo-cab">' +
+              '<h3>' + esc(gr.titulo) + '</h3>' +
+              (hay(gr.nota) ? '<p class="cv-grupo-nota">' + esc(gr.nota) + '</p>' : '') +
+              '<span class="cv-grupo-cuenta"></span>' +
+            '</header>'
+          : '') +
+        '<div class="cv-galeria">' + fotos + '</div>' +
+        '</section>';
     }).join("");
+
+    /* Una foto que no llega se saca sola: mejor eso que un recuadro roto.
+       Queda marcada para que el visor la saltee. */
+    $$("#cvGaleria .cv-foto img").forEach(function (img) {
+      img.addEventListener("error", function () {
+        var boton = img.closest(".cv-foto");
+        if (!boton) return;
+        album[Number(boton.dataset.i)].roto = true;
+        boton.remove();
+        contarGrupos();
+      });
+    });
+
+    contarGrupos();
 
     $("#cvGaleria").addEventListener("click", function (ev) {
       var b = ev.target.closest(".cv-foto");
-      if (!b) return;
-      abrirCaja('<img src="' + esc(b.dataset.src) + '" alt="' + esc(b.dataset.pie) + '">', b.dataset.pie);
+      if (b) verFoto(Number(b.dataset.i));
     });
+  }
+
+  /* Cuenta las fotos que quedaron en pie y esconde el grupo que se vació. */
+  function contarGrupos() {
+    var total = 0;
+    $$("#cvGaleria .cv-grupo").forEach(function (gr) {
+      var n = $$(".cv-foto", gr).length;
+      total += n;
+      gr.hidden = n === 0;
+      var cuenta = $(".cv-grupo-cuenta", gr);
+      if (cuenta) cuenta.textContent = n === 1 ? "1 foto" : n + " fotos";
+    });
+    var rotulo = $("#cvGaleriaCuenta");
+    if (rotulo) rotulo.textContent = String(total).padStart(2, "0") + " capturas";
   }
 
   /* ================================================================
      LIGHTBOX
      ================================================================ */
   var ultimoFoco = null;
+  var iFoto = -1;          /* -1 = el visor no está mostrando una foto */
+
+  /* Abre una foto del álbum. `paso` es la dirección en la que se venía
+     moviendo, para saltear en ese sentido las que no cargaron. */
+  function verFoto(i, paso) {
+    var n = album.length;
+    if (!n) return;
+    paso = paso || 1;
+    i = ((i % n) + n) % n;
+    for (var intento = 0; album[i].roto && intento < n; intento++) {
+      i = (((i + paso) % n) + n) % n;
+    }
+    if (album[i].roto) return;
+
+    iFoto = i;
+    var f = album[i];
+    abrirCaja(
+      '<img src="' + esc(f.src) + '" alt="' + esc(f.pie || "") + '">' +
+      (n > 1
+        ? '<button class="cv-lightbox-nav" data-paso="-1" aria-label="Foto anterior">‹</button>' +
+          '<button class="cv-lightbox-nav" data-paso="1" aria-label="Foto siguiente">›</button>'
+        : ''),
+      f.pie);
+  }
 
   function abrirCaja(html, pie) {
     var lb = $("#cvLightbox");
-    ultimoFoco = d.activeElement;
+    /* Al pasar de una foto a otra el visor se vuelve a pintar: el elemento
+       al que hay que devolver el foco es el de antes de abrirlo, no un
+       botón del propio visor que está por desaparecer. */
+    var estabaCerrado = lb.hidden;
+    if (estabaCerrado) ultimoFoco = d.activeElement;
+
     lb.innerHTML =
       '<button class="cv-lightbox-cerrar" aria-label="Cerrar">×</button>' +
       '<div class="cv-lightbox-caja">' + html +
       (hay(pie) ? '<p class="cv-lightbox-pie">' + esc(pie) + '</p>' : '') + '</div>';
     lb.hidden = false;
     d.documentElement.style.overflow = "hidden";
-    $(".cv-lightbox-cerrar", lb).focus();
+    if (estabaCerrado) $(".cv-lightbox-cerrar", lb).focus();
   }
 
   function cerrarCaja() {
@@ -411,6 +505,7 @@
     if (lb.hidden) return;
     lb.hidden = true;
     lb.innerHTML = "";           /* corta la reproducción */
+    iFoto = -1;
     d.documentElement.style.overflow = "";
     if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
   }
@@ -418,9 +513,25 @@
   d.addEventListener("click", function (ev) {
     var lb = $("#cvLightbox");
     if (lb.hidden) return;
+
+    var flecha = ev.target.closest(".cv-lightbox-nav");
+    if (flecha) {
+      var paso = Number(flecha.dataset.paso);
+      verFoto(iFoto + paso, paso);
+      /* El visor se repinta: hay que devolver el foco a la misma flecha. */
+      var misma = $('.cv-lightbox-nav[data-paso="' + paso + '"]', lb);
+      if (misma) misma.focus();
+      return;
+    }
     if (ev.target === lb || ev.target.closest(".cv-lightbox-cerrar")) cerrarCaja();
   });
-  d.addEventListener("keydown", function (ev) { if (ev.key === "Escape") cerrarCaja(); });
+
+  d.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape") { cerrarCaja(); return; }
+    if (iFoto < 0 || $("#cvLightbox").hidden) return;
+    if (ev.key === "ArrowRight") { ev.preventDefault(); verFoto(iFoto + 1, 1); }
+    if (ev.key === "ArrowLeft")  { ev.preventDefault(); verFoto(iFoto - 1, -1); }
+  });
 
   /* ================================================================
      NAVEGACIÓN
