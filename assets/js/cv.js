@@ -393,6 +393,13 @@
     return lista;
   }
 
+  /* La grilla no necesita la foto entera: hay una copia chica en
+     assets/img/mini/ para cada una. La grande se descarga recién al
+     abrir el visor. */
+  function miniDe(src) {
+    return String(src).replace(/^assets\/img\//, "assets/img/mini/");
+  }
+
   function galeria() {
     album = [];
     var grupos = gruposDeFotos();
@@ -401,8 +408,9 @@
       var fotos = (gr.fotos || []).map(function (f) {
         var i = album.length;
         album.push(f);
-        return '<button class="cv-foto" data-i="' + i + '" data-foco="' + esc(f.foco || "medio") + '">' +
-          '<img src="' + esc(f.src) + '" alt="' + esc(f.pie || "") + '" loading="lazy">' +
+        return '<button class="cv-foto" data-i="' + i + '" data-foco="' + esc(f.foco || "medio") + '"' +
+          ' data-full="' + esc(f.src) + '">' +
+          '<img src="' + esc(miniDe(f.src)) + '" alt="' + esc(f.pie || "") + '" loading="lazy">' +
           '<span class="cv-foto-n">' + String(i + 1).padStart(2, "0") + '</span>' +
           (hay(f.pie) ? '<span class="cv-foto-pie">' + esc(f.pie) + '</span>' : '') +
           '</button>';
@@ -420,12 +428,18 @@
         '</section>';
     }).join("");
 
-    /* Una foto que no llega se saca sola: mejor eso que un recuadro roto.
-       Queda marcada para que el visor la saltee. */
+    /* Si falta la miniatura se prueba con la foto grande; si tampoco está,
+       la foto se saca sola —mejor eso que un recuadro roto— y queda marcada
+       para que el visor la saltee. */
     $$("#cvGaleria .cv-foto img").forEach(function (img) {
       img.addEventListener("error", function () {
         var boton = img.closest(".cv-foto");
         if (!boton) return;
+        if (!img.dataset.reintento && boton.dataset.full) {
+          img.dataset.reintento = "1";
+          img.src = boton.dataset.full;
+          return;
+        }
         album[Number(boton.dataset.i)].roto = true;
         boton.remove();
         contarGrupos();
