@@ -384,11 +384,18 @@
     if (g.length && g[0] && g[0].fotos) lista = g.slice();
     else if (g.length) lista = [{ titulo: "", fotos: g }];
 
-    /* Los momentos del sitio van siempre al final, así la galería del CV
-       se actualiza sola cuando se suma una foto desde la terminal. */
+    /* Las fotos de «Momentos» del sitio se suman al final de la última
+       carpeta, no en una aparte: así la galería del CV se sigue
+       actualizando sola cuando se sube una foto desde la terminal, pero
+       sin abrir una carpeta más. */
     var momentos = (CFG.media && CFG.media.gallery) || [];
     if (momentos.length) {
-      lista.push({ titulo: "Momentos en el club", formato: "vertical", fotos: momentos });
+      if (lista.length) {
+        var ultima = lista[lista.length - 1];
+        ultima.fotos = (ultima.fotos || []).concat(momentos);
+      } else {
+        lista.push({ titulo: "", fotos: momentos });
+      }
     }
     return lista;
   }
