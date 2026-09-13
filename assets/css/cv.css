@@ -462,7 +462,8 @@ a { color: inherit; }
 .cv-grupo-cuenta { margin-left: auto; flex: 0 0 auto; white-space: nowrap; font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--cv-cyan); }
 
 .cv-galeria { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(.8rem, 1.8vw, 1.4rem); }
-.cv-foto { position: relative; overflow: hidden; border-radius: 14px; border: 1px solid var(--cv-line); background: #0b1430; cursor: pointer; padding: 0; }
+.cv-foto-caja { position: relative; }
+.cv-foto { position: relative; display: block; width: 100%; overflow: hidden; border-radius: 14px; border: 1px solid var(--cv-line); background: #0b1430; cursor: pointer; padding: 0; }
 .cv-foto img { width: 100%; height: 100%; aspect-ratio: 3 / 4; object-fit: cover; transition: transform .6s var(--cv-ease); }
 /* La proporción la fija el grupo: las apaisadas no entran en un 3/4. */
 .cv-grupo[data-formato="apaisado"] .cv-foto img { aspect-ratio: 4 / 3; }
@@ -481,6 +482,50 @@ a { color: inherit; }
 }
 
 /* --------------------------------------------------------------
+   EDITAR LOS PIES DE FOTO
+   Sólo se ve con el modo encendido: un visitante no lo tiene.
+   -------------------------------------------------------------- */
+.cv-foto-editar {
+  position: absolute; right: .55rem; top: .5rem; z-index: 2;
+  width: 34px; height: 34px; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center;
+  border: 1px solid var(--cv-line-2); background: rgba(6, 12, 30, .78);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: #fff; font-size: 1.1rem; line-height: 1; letter-spacing: .06em;
+}
+.cv-foto-editar:hover { background: var(--cv-cyan); color: #041019; border-color: var(--cv-cyan); }
+.cv-foto-editar:focus-visible { outline: 2px solid var(--cv-cyan); outline-offset: 2px; }
+/* Con el modo encendido el número se corre, para no pisarse con el botón. */
+.cv-editando .cv-foto-n { right: 3.1rem; }
+
+.cv-editor { margin-top: 1rem; display: grid; gap: .7rem; text-align: left; }
+.cv-editor label { font-size: .62rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--cv-cyan); }
+.cv-editor textarea {
+  width: 100%; padding: .8rem .9rem; border-radius: 12px; resize: vertical;
+  border: 1px solid var(--cv-line-2); background: rgba(255, 255, 255, .06);
+  color: var(--cv-ink); font: inherit; font-size: .92rem; line-height: 1.5;
+}
+.cv-editor textarea:focus { outline: 2px solid var(--cv-cyan); outline-offset: 1px; }
+.cv-editor-botones { display: flex; flex-wrap: wrap; gap: .6rem; }
+.cv-editor-lista { max-height: 60svh; overflow: auto; padding: 1rem; border-radius: 12px; background: rgba(255, 255, 255, .06); font-family: var(--cv-mono); font-size: .78rem; line-height: 1.7; white-space: pre-wrap; }
+
+.cv-barra-edicion {
+  position: fixed; left: 50%; bottom: clamp(.7rem, 2vw, 1.4rem); transform: translateX(-50%);
+  z-index: 70; display: flex; align-items: center; flex-wrap: wrap; justify-content: center;
+  gap: .6rem; max-width: calc(100vw - 1.4rem);
+  padding: .6rem .7rem; border-radius: 999px;
+  border: 1px solid var(--cv-line-2); background: rgba(6, 12, 30, .9);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .5);
+}
+.cv-barra-edicion .cv-barra-n { padding: 0 .5rem; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--cv-muted); }
+.cv-barra-edicion .cv-cta { padding: .55rem 1rem; font-size: .62rem; }
+@media (max-width: 560px) {
+  .cv-barra-edicion { border-radius: 16px; }
+  .cv-barra-edicion .cv-barra-n { flex: 1 0 100%; text-align: center; }
+}
+
+/* --------------------------------------------------------------
    LIGHTBOX
    -------------------------------------------------------------- */
 .cv-lightbox {
@@ -489,6 +534,10 @@ a { color: inherit; }
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
 }
 .cv-lightbox[hidden] { display: none; }
+.cv-lightbox { overflow: auto; }
+/* Con el editor abierto la foto se achica: si no, los botones de abajo
+   quedan fuera de la pantalla y no se pueden tocar. */
+.cv-lightbox-caja.es-editor img { max-height: 34svh; }
 .cv-lightbox-cerrar {
   position: absolute; right: clamp(1rem, 3vw, 2rem); top: clamp(1rem, 3vw, 2rem);
   width: 44px; height: 44px; border-radius: 50%; cursor: pointer;

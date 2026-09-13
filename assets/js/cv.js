@@ -391,8 +391,14 @@
     var momentos = (CFG.media && CFG.media.gallery) || [];
     if (momentos.length) {
       if (lista.length) {
+        /* Se arma una carpeta nueva en vez de tocar la del archivo: si se
+           le agregara encima, cada vez que la galería se vuelve a pintar
+           las mismas fotos se sumarían otra vez. */
         var ultima = lista[lista.length - 1];
-        ultima.fotos = (ultima.fotos || []).concat(momentos);
+        lista[lista.length - 1] = {
+          titulo: ultima.titulo, nota: ultima.nota, formato: ultima.formato,
+          fotos: (ultima.fotos || []).concat(momentos)
+        };
       } else {
         lista.push({ titulo: "", fotos: momentos });
       }
@@ -407,6 +413,151 @@
     return String(src).replace(/^assets\/img\//, "assets/img/mini/");
   }
 
+  /* ================================================================
+     EDITAR LOS PIES DE FOTO
+     ----------------------------------------------------------------
+     Un sitio estático no puede guardar nada en el servidor, así que
+     los cambios quedan en este navegador —y sólo acá—. El botón
+     «Copiar los cambios» arma la lista para pasarla al archivo y que
+     la vea todo el mundo.
+
+     El modo se enciende abriendo la página con ?editar al final, y
+     queda recordado en este dispositivo hasta que se apague con
+     ?editar=no. Un visitante nunca ve los botones.
+     ================================================================ */
+  var LLAVE_PIES = "lsd.cv.pies.v1";
+  var LLAVE_MODO = "lsd.cv.editar.v1";
+  var EDITANDO = false;
+  var pies = {};
+
+  function leerGuardado(llave, porDefecto) {
+    try {
+      var v = localStorage.getItem(llave);
+      return v ? JSON.parse(v) : porDefecto;
+    } catch (e) { return porDefecto; }
+  }
+  function guardar(llave, valor) {
+    try { localStorage.setItem(llave, JSON.stringify(valor)); } catch (e) {}
+  }
+
+  function arrancarEdicion() {
+    pies = leerGuardado(LLAVE_PIES, {}) || {};
+    var q = String(location.search || "");
+    if (/[?&]editar=no\b/.test(q)) {
+      try { localStorage.removeItem(LLAVE_MODO); } catch (e) {}
+    } else if (/[?&]editar\b/.test(q)) {
+      guardar(LLAVE_MODO, 1);
+    }
+    EDITANDO = !!leerGuardado(LLAVE_MODO, 0);
+    if (EDITANDO) d.documentElement.classList.add("cv-editando");
+  }
+
+  /* El pie que se ve: el editado si lo hay, y si no el del archivo. */
+  function pieDe(f) {
+    var propio = pies[f.src];
+    return propio != null ? propio : (f.pie || "");
+  }
+
+  function editarPie(i) {
+    var f = album[i];
+    if (!f) return;
+    var actual = pieDe(f);
+    var original = f.pie || "";
+
+    abrirCaja(
+      '<img src="' + esc(miniDe(f.src)) + '" alt="">' +
+      '<div class="cv-editor">' +
+        '<label for="cvPieTexto">Pie de la foto ' + (i + 1) + '</label>' +
+        '<textarea id="cvPieTexto" rows="3" maxlength="180" ' +
+          'placeholder="Qué se ve en la foto">' + esc(actual) + '</textarea>' +
+        '<div class="cv-editor-botones">' +
+          '<button class="cv-cta" data-hacer="guardar">Guardar</button>' +
+          (actual !== original
+            ? '<button class="cv-cta ghost" data-hacer="original">Volver al original</button>'
+            : '') +
+          '<button class="cv-cta ghost" data-hacer="cerrar">Cancelar</button>' +
+        '</div>' +
+      '</div>', "");
+
+    var lb = $("#cvLightbox");
+    $(".cv-lightbox-caja", lb).classList.add("es-editor");
+    var campo = $("#cvPieTexto", lb);
+    campo.focus();
+    campo.setSelectionRange(campo.value.length, campo.value.length);
+
+    $$(".cv-editor-botones .cv-cta", lb).forEach(function (b) {
+      b.addEventListener("click", function () {
+        var q = b.dataset.hacer;
+        if (q === "guardar") {
+          var texto = campo.value.trim();
+          if (texto === original) delete pies[f.src]; else pies[f.src] = texto;
+          guardar(LLAVE_PIES, pies);
+        } else if (q === "original") {
+          delete pies[f.src];
+          guardar(LLAVE_PIES, pies);
+        }
+        cerrarCaja();
+        if (q !== "cerrar") { galeria(); barraEdicion(); }
+      });
+    });
+
+    /* Enter guarda, sin tener que buscar el botón. */
+    campo.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter" && !ev.shiftKey) {
+        ev.preventDefault();
+        $('.cv-editor-botones [data-hacer="guardar"]', lb).click();
+      }
+    });
+  }
+
+  /* La barra de abajo: cuántos pies se cambiaron y cómo llevárselos. */
+  function barraEdicion() {
+    var barra = $("#cvBarraEdicion");
+    if (!EDITANDO) { if (barra) barra.remove(); return; }
+
+    if (!barra) {
+      barra = d.createElement("div");
+      barra.id = "cvBarraEdicion";
+      barra.className = "cv-barra-edicion";
+      d.body.appendChild(barra);
+    }
+
+    var claves = Object.keys(pies);
+    barra.innerHTML =
+      '<span class="cv-barra-n">' +
+        (claves.length === 0 ? "Modo edición · ningún pie cambiado"
+          : claves.length === 1 ? "1 pie cambiado" : claves.length + " pies cambiados") +
+      '</span>' +
+      (claves.length
+        ? '<button class="cv-cta" data-hacer="copiar">Copiar los cambios</button>' +
+          '<button class="cv-cta ghost" data-hacer="borrar">Descartar</button>'
+        : '') +
+      '<a class="cv-cta ghost" href="cv.html?editar=no">Salir</a>';
+
+    $$("[data-hacer]", barra).forEach(function (b) {
+      b.addEventListener("click", function () {
+        if (b.dataset.hacer === "copiar") {
+          var texto = Object.keys(pies).map(function (src) {
+            return src.split("/").pop() + "  →  " + (pies[src] || "(sin pie)");
+          }).join("\n");
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(texto).then(function () {
+              b.textContent = "¡Copiado!";
+              setTimeout(function () { b.textContent = "Copiar los cambios"; }, 1600);
+            });
+          } else {
+            abrirCaja('<pre class="cv-editor-lista">' + esc(texto) + '</pre>', "Copiá este texto y pasámelo");
+          }
+        } else if (b.dataset.hacer === "borrar") {
+          if (!confirm("¿Descartar todos los pies cambiados en este dispositivo?")) return;
+          pies = {};
+          guardar(LLAVE_PIES, pies);
+          galeria(); barraEdicion();
+        }
+      });
+    });
+  }
+
   function galeria() {
     album = [];
     var grupos = gruposDeFotos();
@@ -415,12 +566,21 @@
       var fotos = (gr.fotos || []).map(function (f) {
         var i = album.length;
         album.push(f);
-        return '<button class="cv-foto" data-i="' + i + '" data-foco="' + esc(f.foco || "medio") + '"' +
+        var pie = pieDe(f);
+        /* El botón de editar no puede ir dentro del de la foto —un botón
+           dentro de otro botón no es válido—, así que van hermanos. */
+        return '<div class="cv-foto-caja">' +
+          '<button class="cv-foto" data-i="' + i + '" data-foco="' + esc(f.foco || "medio") + '"' +
           ' data-full="' + esc(f.src) + '">' +
-          '<img src="' + esc(miniDe(f.src)) + '" alt="' + esc(f.pie || "") + '" loading="lazy">' +
+          '<img src="' + esc(miniDe(f.src)) + '" alt="' + esc(pie) + '" loading="lazy">' +
           '<span class="cv-foto-n">' + String(i + 1).padStart(2, "0") + '</span>' +
-          (hay(f.pie) ? '<span class="cv-foto-pie">' + esc(f.pie) + '</span>' : '') +
-          '</button>';
+          (hay(pie) ? '<span class="cv-foto-pie">' + esc(pie) + '</span>' : '') +
+          '</button>' +
+          (EDITANDO
+            ? '<button class="cv-foto-editar" data-i="' + i + '" title="Editar el pie de foto"' +
+              ' aria-label="Editar el pie de la foto ' + (i + 1) + '">⋯</button>'
+            : '') +
+          '</div>';
       }).join("");
 
       return '<section class="cv-grupo" data-formato="' + esc(gr.formato || "vertical") + '">' +
@@ -448,17 +608,25 @@
           return;
         }
         album[Number(boton.dataset.i)].roto = true;
-        boton.remove();
+        (boton.closest(".cv-foto-caja") || boton).remove();
         contarGrupos();
       });
     });
 
     contarGrupos();
 
-    $("#cvGaleria").addEventListener("click", function (ev) {
-      var b = ev.target.closest(".cv-foto");
-      if (b) verFoto(Number(b.dataset.i));
-    });
+    /* La escucha se pone una sola vez: la galería se vuelve a pintar
+       cada vez que se guarda un pie, y si no se duplicaría. */
+    var caja = $("#cvGaleria");
+    if (!caja.dataset.escuchando) {
+      caja.dataset.escuchando = "1";
+      caja.addEventListener("click", function (ev) {
+        var lapiz = ev.target.closest(".cv-foto-editar");
+        if (lapiz) { editarPie(Number(lapiz.dataset.i)); return; }
+        var b = ev.target.closest(".cv-foto");
+        if (b) verFoto(Number(b.dataset.i));
+      });
+    }
   }
 
   /* Cuenta las fotos que quedaron en pie y esconde el grupo que se vació. */
@@ -618,12 +786,14 @@
   /* ================================================================
      ARRANQUE
      ================================================================ */
+  arrancarEdicion();
   portada();
   bio();
   metodo();
   trayectoria();
   videos();
   galeria();
+  barraEdicion();
   navegacion();
   aparecer();
 })();
