@@ -399,6 +399,11 @@
         (c.video.hoverPlay && LSD.canHoverPreview(v)
           ? '<video class="hover-preview" src="' + esc(mediaUrl(v.url)) + '" muted loop playsinline preload="none"></video>'
           : '') +
+        /* Hueco para el reproductor congelado. Se llena recién cuando la
+           tarjeta entra en pantalla; hasta entonces se ve la miniatura. */
+        (LSD.puedeCongelar(v)
+          ? '<span class="thumb-congelado" data-congelar="' + esc(LSD.embedCongelado(v)) + '"></span>'
+          : '') +
         '</div>';
     }
 
@@ -535,6 +540,119 @@
     }, 120);
   };
 
+  /* ================================================================
+     PORTADAS CONGELADAS
+     ----------------------------------------------------------------
+     YouTube no sirve fotogramas por segundo: su miniatura es la del
+     vídeo entero, así que dos recortes de la misma grabación se verían
+     con la misma imagen. Para que la portada salga de adentro del
+     fragmento, se monta el reproductor callado arrancando en ese
+     segundo y se lo pausa apenas empieza.
+
+     El iframe es decorado y nada más: no recibe clics, no entra con el
+     tabulador y no se monta hasta que la tarjeta se ve. Si YouTube no
+     contesta o el navegador no deja arrancar en silencio, queda la
+     miniatura de siempre y no se rompe nada.
+     ================================================================ */
+  var CONGELAR_A_LA_VEZ = 2;      /* no cargar diez reproductores de golpe */
+  var colaCongelar = [];
+  var congelando = 0;
+  var miradorCongelar = null;
+
+  function congelarPortadas(scope) {
+    var huecos = $$(".thumb-congelado", scope || d);
+    if (!huecos.length) return;
+
+    if (!("IntersectionObserver" in w)) { huecos.forEach(encolarCongelado); return; }
+
+    if (!miradorCongelar) {
+      miradorCongelar = new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          miradorCongelar.unobserve(e.target);
+          encolarCongelado(e.target);
+        });
+      }, { rootMargin: "200px 0px" });
+    }
+    huecos.forEach(function (h) {
+      if (h.dataset.visto) return;
+      h.dataset.visto = "1";
+      miradorCongelar.observe(h);
+    });
+  }
+
+  function encolarCongelado(hueco) {
+    colaCongelar.push(hueco);
+    seguirCola();
+  }
+
+  function seguirCola() {
+    while (congelando < CONGELAR_A_LA_VEZ && colaCongelar.length) {
+      montarCongelado(colaCongelar.shift());
+    }
+  }
+
+  function montarCongelado(hueco) {
+    if (!hueco || !hueco.isConnected || hueco.dataset.montado) { seguirCola(); return; }
+    hueco.dataset.montado = "1";
+    congelando++;
+
+    var marco = d.createElement("iframe");
+    marco.className = "congelado";
+    marco.src = hueco.dataset.congelar;
+    marco.setAttribute("tabindex", "-1");
+    marco.setAttribute("aria-hidden", "true");
+    marco.setAttribute("title", "");
+    marco.setAttribute("frameborder", "0");
+    marco.setAttribute("allow", "autoplay; encrypted-media");
+    hueco.appendChild(marco);
+
+    var listo = false;
+    function terminar(congelado) {
+      if (listo) return;
+      listo = true;
+      congelando--;
+      w.removeEventListener("message", oir);
+      if (congelado) {
+        var caja = hueco.closest(".video-thumb");
+        if (caja) caja.classList.add("is-congelado");
+      } else {
+        /* Nunca llegó a reproducir: YouTube bloqueado, sin red, autoplay
+           denegado. Se saca el iframe y queda la miniatura de siempre —en
+           blanco sería peor que como está hoy. */
+        marco.remove();
+      }
+      seguirCola();
+    }
+
+    /* El reproductor avisa por «message» en qué estado está. Se le pide
+       que hable, y en cuanto dice que está reproduciendo se lo pausa. */
+    function hablar(orden) {
+      try {
+        marco.contentWindow.postMessage(JSON.stringify(orden), "https://www.youtube-nocookie.com");
+      } catch (e) {}
+    }
+    function oir(ev) {
+      if (ev.source !== marco.contentWindow) return;
+      var dato;
+      try { dato = JSON.parse(ev.data); } catch (e) { return; }
+      /* 1 = reproduciendo. Sólo entonces hay un fotograma de verdad. */
+      if (dato && dato.event === "onStateChange" && dato.info === 1) {
+        hablar({ event: "command", func: "pauseVideo", args: [] });
+        terminar(true);
+      }
+    }
+    w.addEventListener("message", oir);
+
+    marco.addEventListener("load", function () {
+      hablar({ event: "listening", id: 1 });
+    });
+
+    /* Red de seguridad: si en cuatro segundos no llegó a reproducir, se
+       deja la tarjeta como estaba y se sigue con la siguiente. */
+    setTimeout(function () { terminar(false); }, 4000);
+  }
+
   function renderVideos() {
     var c = LSD.store.config, cfg = c.video;
     var dark = (c.layout.inverted || []).indexOf("videos") >= 0;
@@ -580,6 +698,7 @@
     strip.innerHTML = "";
     host.innerHTML = list.map(function (v, i) { return videoCard(v, i, { dark: dark }); }).join("");
     bindHoverPreview(host);
+    congelarPortadas(host);
     $$("#videoCollection .video-card").forEach(function (el) {
       el.addEventListener("click", function () {
         var v = list[parseInt(el.getAttribute("data-i"), 10)];

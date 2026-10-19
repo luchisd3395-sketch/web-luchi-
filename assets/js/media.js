@@ -152,6 +152,32 @@
     return v && v.provider === "file" && !!v.url;
   };
 
+  /** ¿Se puede congelar el reproductor para usarlo de portada?
+      Sólo tiene sentido en YouTube y sólo si hay un recorte: la miniatura
+      que da YouTube es la del vídeo entero, así que dos fragmentos de la
+      misma grabación se verían con la misma imagen. */
+  LSD.puedeCongelar = function (v) {
+    return !!(v && v.provider === "youtube" && v.vid && v.start != null && !v.poster);
+  };
+
+  /** Reproductor decorativo: arranca en el segundo del recorte, callado y
+      sin controles. Quien lo monta lo pausa en cuanto empieza, y queda
+      quieto en un fotograma de adentro del fragmento. */
+  LSD.embedCongelado = function (v) {
+    var origen = "";
+    try {
+      if (location.protocol === "http:" || location.protocol === "https:") {
+        origen = "&origin=" + encodeURIComponent(location.origin);
+      }
+    } catch (e) {}
+    /* Un segundo más adelante del inicio: el primer fotograma exacto de un
+       corte suele ser el final de la jugada anterior. */
+    var seg = Math.max(0, Math.round(v.start) + 1);
+    return "https://www.youtube-nocookie.com/embed/" + v.vid +
+      "?autoplay=1&mute=1&controls=0&playsinline=1&rel=0&modestbranding=1" +
+      "&disablekb=1&fs=0&iv_load_policy=3&enablejsapi=1&start=" + seg + origen;
+  };
+
   /** Miniatura automática según proveedor. */
   LSD.thumbUrl = function (v) {
     if (v.poster) return LSD.resolveUrl ? LSD.resolveUrl(v.poster) : v.poster;
