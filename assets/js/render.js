@@ -299,7 +299,7 @@
     $$("#blocksGrid .block-card").forEach(function (el) {
       el.addEventListener("click", function () {
         setWorkFilter(el.getAttribute("data-block"));
-        var t = $("#trabajos");
+        var t = (LSD.esTelefono() && $('#worksGrid .wk-grupo[data-block="' + el.getAttribute("data-block") + '"]')) || $("#trabajos");
         if (t) t.scrollIntoView({ behavior: LSD.store.config.theme.motion ? "smooth" : "auto", block: "start" });
       });
     });
@@ -322,6 +322,14 @@
   }
 
   function setWorkFilter(f) {
+    /* En el tel\u00e9fono no hay filtros: las unidades van en desplegables, y
+       elegir un bloque abre el suyo. */
+    if (LSD.esTelefono()) {
+      ui.filterWorks = "all";
+      var g = $('#worksGrid .wk-grupo[data-block="' + f + '"]');
+      if (g) g.open = true;
+      return;
+    }
     ui.filterWorks = f;
     renderWorkFilters();
     renderWorks();
@@ -329,9 +337,57 @@
   }
   LSD.setWorkFilter = setWorkFilter;
 
+  /* Tel\u00e9fono: el mismo corte que usa site.css para la pantalla chica. */
+  var telefono = window.matchMedia ? window.matchMedia("(max-width: 680px)") : null;
+  LSD.esTelefono = function () { return !!(telefono && telefono.matches); };
+  if (telefono) {
+    var alCambiarPantalla = function () {
+      if (!$("#worksGrid")) return;
+      ui.filterWorks = "all";
+      renderWorkFilters();
+      renderWorks();
+      LSD.observeReveal();
+    };
+    if (telefono.addEventListener) telefono.addEventListener("change", alCambiarPantalla);
+    else if (telefono.addListener) telefono.addListener(alCambiarPantalla);
+  }
+
   function meta(v) { return v && v !== "\u2014"; }
 
+  /* Unidades en el tel\u00e9fono: un desplegable por bloque, con una fila corta
+     por tarea. El objetivo queda para la ficha. */
+  function renderWorksTelefono() {
+    $("#worksCount").textContent = allWorks().length + " unidades";
+    $("#worksGrid").innerHTML = M.blocks.map(function (b) {
+      return '<details class="wk-grupo" data-block="' + b.id + '">' +
+        '<summary><span class="wk-cod">' + esc(b.code) + '</span>' +
+        '<span class="wk-nom">' + esc(b.short) + '</span>' +
+        '<span class="wk-cant">' + b.items.length + '</span></summary>' +
+        b.items.map(function (it) {
+          var nv = videosOfWork(it.id).length;
+          var datos = [it.formato, it.duracion].filter(meta).map(esc).join(" \u00b7 ");
+          return '<button class="work-card wk-fila" data-work="' + it.id + '">' +
+            '<span class="wk-txt"><span class="wc-title">' + esc(it.name) + '</span>' +
+            (datos ? '<span class="wk-datos">' + datos + '</span>' : '') + '</span>' +
+            (nv ? '<span class="wc-vid">\u25b6 ' + nv + '</span>' : '') +
+            '<span class="wk-flecha" aria-hidden="true">\u2192</span></button>';
+        }).join("") +
+        '</details>';
+    }).join("");
+  }
+
   function renderWorks() {
+    if (LSD.esTelefono()) {
+      renderWorksTelefono();
+    } else {
+      renderWorksGrilla();
+    }
+    $$("#worksGrid .work-card").forEach(function (el) {
+      el.addEventListener("click", function () { openFicha(el.getAttribute("data-work")); });
+    });
+  }
+
+  function renderWorksGrilla() {
     var list = ui.filterWorks === "all" ? allWorks() : allWorks().filter(function (x) { return x.block.id === ui.filterWorks; });
     $("#worksCount").textContent = list.length + (list.length === 1 ? " unidad" : " unidades");
     $("#worksGrid").innerHTML = list.map(function (x) {
@@ -346,9 +402,6 @@
           (meta(x.item.duracion) ? '<span>' + esc(x.item.duracion) + '</span>' : '') +
         '</div></button>';
     }).join("");
-    $$("#worksGrid .work-card").forEach(function (el) {
-      el.addEventListener("click", function () { openFicha(el.getAttribute("data-work")); });
-    });
   }
 
   /* ================================================================

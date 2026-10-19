@@ -1093,3 +1093,94 @@
 }
 .player-salida:hover { background: var(--accent); color: var(--accent-ink); }
 .player-host.is-bloqueado .player-salida { display: none; }
+
+/* =============================================================
+   TELÉFONO
+   En pantalla chica las tarjetas de escritorio quedan enormes o
+   diminutas: bloques de a dos, unidades en desplegables por bloque
+   y vídeos en lista con la miniatura a la izquierda. iPad y
+   computadora no se tocan.
+   ============================================================= */
+
+/* Las filas de unidades sólo existen en el teléfono, pero el estilo
+   base va fuera del corte por si se pintan al girar la pantalla. */
+.wk-grupo { border: 1px solid var(--border); background: var(--surface); scroll-margin-top: 78px; }
+.wk-grupo + .wk-grupo { border-top: 0; }
+.wk-grupo summary {
+  display: flex; align-items: center; gap: .7rem; padding: .95rem 1rem;
+  cursor: pointer; list-style: none;
+}
+.wk-grupo summary::-webkit-details-marker { display: none; }
+.wk-grupo summary::after {
+  content: "+"; font-family: var(--font-mono); font-size: 1.1rem; line-height: 1;
+  color: var(--accent); margin-left: .2rem; transition: transform .3s var(--ease);
+}
+.wk-grupo[open] summary::after { transform: rotate(45deg); }
+.wk-grupo[open] summary { border-bottom: 1px solid var(--border); }
+.wk-cod { font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .14em; color: var(--accent-2); }
+.wk-nom { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; font-size: 1rem; line-height: 1.1; flex: 1; min-width: 0; }
+[data-titlecase="normal"] .wk-nom { text-transform: none; }
+.wk-cant {
+  font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted);
+  border: 1px solid var(--border); padding: .12rem .45rem; min-width: 1.9rem; text-align: center;
+}
+.work-card.wk-fila {
+  flex-direction: row; align-items: center; gap: .8rem;
+  border: 0; border-radius: 0; background: transparent;
+  padding: .8rem 1rem .8rem 1.4rem;
+}
+.work-card.wk-fila + .work-card.wk-fila { border-top: 1px solid var(--border); }
+.work-card.wk-fila:hover { transform: none; background: var(--surface-2); }
+.wk-txt { display: flex; flex-direction: column; gap: .3rem; flex: 1; min-width: 0; }
+.work-card.wk-fila .wc-title { margin-top: 0; font-size: .92rem; font-weight: 800; }
+.wk-datos { font-family: var(--font-mono); font-size: var(--fs-micro); color: var(--muted); line-height: 1.4; }
+.wk-flecha { color: var(--muted); font-size: .9rem; }
+[data-card="soft"] .work-card.wk-fila, [data-card="glass"] .work-card.wk-fila { box-shadow: none; background: transparent; backdrop-filter: none; }
+
+@media (max-width: 680px) {
+  /* --- Bloques: de a dos --- */
+  .blocks-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .6rem; }
+  .block-card, .block-card.has-img { min-height: 190px; padding: .9rem .85rem 1rem; }
+  .block-card.has-img { padding-bottom: 1.1rem; }
+  .block-card .bc-code { font-size: .58rem; letter-spacing: .12em; }
+  .block-card .bc-title, .block-card.has-img .bc-title {
+    font-size: 1rem; line-height: 1.02; margin-top: .45rem; hyphens: auto;
+  }
+  .block-card .bc-desc, .block-card.has-img .bc-desc { display: none; }
+  .block-card .bc-foot { margin-top: .7rem; padding-top: .55rem; gap: .4rem; }
+  .block-card .bc-foot .label { font-size: .58rem; letter-spacing: .06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .block-card.has-img .bar-bottom { height: 4px; }
+  .block-card:hover, .work-card:hover, .video-card:hover { transform: none; }
+
+  /* --- Unidades: sin filtros, van los desplegables --- */
+  #worksFilters { display: none; }
+  .works-grid { display: block; }
+
+  /* --- Vídeos: lista con miniatura --- */
+  .video-collection[data-layout="grid"],
+  .video-collection[data-layout="grid"][data-cols="auto"],
+  .video-collection[data-align="stretch"][data-layout="grid"] { grid-template-columns: minmax(0, 1fr); gap: .6rem; }
+  .video-collection[data-layout="grid"] .video-card {
+    display: grid; grid-template-columns: 44% minmax(0, 1fr); align-items: stretch;
+  }
+  .video-collection[data-layout="grid"] .video-thumb { aspect-ratio: 16 / 9; align-self: start; }
+  .video-collection[data-layout="grid"] .video-body { padding: .6rem .75rem .7rem; gap: .3rem; min-width: 0; }
+  .video-collection[data-layout="grid"] .video-title { font-size: .86rem; line-height: 1.12; hyphens: auto; overflow-wrap: normal; }
+  .video-collection[data-layout="grid"] .video-meta { gap: .3rem; }
+  .video-collection[data-layout="grid"] .video-meta span { font-size: .56rem; letter-spacing: .06em; }
+  .video-collection[data-layout="grid"] .video-meta span:not(:last-child)::after { margin-left: .3rem; }
+  .video-collection[data-layout="grid"] .video-desc { display: none; }
+  .video-collection[data-layout="grid"] .video-tags {
+    gap: .2rem; max-height: 2.9em; overflow: hidden; margin-top: 0;
+  }
+  .video-collection[data-layout="grid"] .video-tags b { font-size: .56rem; padding: .08rem .3rem; }
+  .video-collection[data-layout="grid"] .play-btn { width: 34px; height: 34px; }
+  .video-collection[data-layout="grid"] .play-btn svg { width: 11px; height: 12px; }
+  .video-collection[data-layout="grid"] .video-frag,
+  .video-collection[data-layout="grid"] .video-dur { font-size: .52rem; padding: .1rem .3rem; left: auto; right: .3rem; bottom: .3rem; }
+  .video-collection[data-layout="grid"] .video-frag { left: .3rem; right: auto; }
+  /* Con recorte, la marca ya dice cuánto dura: la duración sobra. */
+  .video-collection[data-layout="grid"] .video-dur:has(~ .video-frag) { display: none; }
+  .video-collection[data-layout="grid"] .video-badge { font-size: .5rem; letter-spacing: .08em; padding: .1rem .3rem; left: .3rem; top: .3rem; }
+  .video-collection[data-layout="grid"] .diag-congelado { left: .3rem; top: .3rem; font-size: .55rem; }
+}
