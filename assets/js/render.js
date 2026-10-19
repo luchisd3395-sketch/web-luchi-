@@ -386,7 +386,7 @@
     if (live) {
       inner = '<div class="video-thumb is-live">' + playerMarkup(v, true) + '</div>';
     } else {
-      inner = '<div class="video-thumb">' +
+      inner = '<div class="video-thumb' + (LSD.puedeCongelar(v) ? ' con-congelado' : '') + '">' +
         '<img src="' + esc(thumb) + '" alt="' + esc(v.title) + '" loading="lazy" ' +
         'onerror="this.onerror=null;this.src=\'' + ph.replace(/'/g, "%27") + '\'">' +
         (v.featured ? '<span class="video-badge">Destacado</span>' : '') +
@@ -555,6 +555,7 @@
      miniatura de siempre y no se rompe nada.
      ================================================================ */
   var CONGELAR_A_LA_VEZ = 2;      /* no cargar diez reproductores de golpe */
+  var ESPERA_CONGELADO = 15000;   /* lo que se le da a cada uno para arrancar */
   var colaCongelar = [];
   var congelando = 0;
   var miradorCongelar = null;
@@ -596,6 +597,7 @@
     if (!hueco || !hueco.isConnected || hueco.dataset.montado) { seguirCola(); return; }
     hueco.dataset.montado = "1";
     congelando++;
+    pasoCongelado(hueco, "cargando");
 
     var marco = d.createElement("iframe");
     marco.className = "congelado";
@@ -607,50 +609,103 @@
     marco.setAttribute("allow", "autoplay; encrypted-media");
     hueco.appendChild(marco);
 
-    var listo = false;
+    var listo = false, respondio = false, saludo = null, espera = null;
     function terminar(congelado) {
       if (listo) return;
       listo = true;
       congelando--;
+      clearInterval(saludo);
+      clearTimeout(espera);
       w.removeEventListener("message", oir);
       if (congelado) {
         var caja = hueco.closest(".video-thumb");
         if (caja) caja.classList.add("is-congelado");
+        pasoCongelado(hueco, "congelado");
       } else {
         /* Nunca llegó a reproducir: YouTube bloqueado, sin red, autoplay
            denegado. Se saca el iframe y queda la miniatura de siempre —en
            blanco sería peor que como está hoy. */
         marco.remove();
+        pasoCongelado(hueco, respondio ? "respondió, pero no arrancó" : "sin respuesta");
       }
       seguirCola();
     }
 
-    /* El reproductor avisa por «message» en qué estado está. Se le pide
-       que hable, y en cuanto dice que está reproduciendo se lo pausa. */
+    /* Los mensajes van dirigidos al origen del propio iframe: si no
+       coincide, el navegador los descarta en silencio. */
+    var origenMarco = "https://www.youtube-nocookie.com";
+    try { origenMarco = new URL(marco.src, location.href).origin; } catch (e) {}
     function hablar(orden) {
       try {
-        marco.contentWindow.postMessage(JSON.stringify(orden), "https://www.youtube-nocookie.com");
+        marco.contentWindow.postMessage(JSON.stringify(orden), origenMarco);
       } catch (e) {}
     }
+
+    /* «Reproduciendo» llega de dos formas según la versión del reproductor:
+       como cambio de estado, o dentro del paquete de información. */
+    function estaReproduciendo(dato) {
+      if (!dato) return false;
+      if (dato.event === "onStateChange" && dato.info === 1) return true;
+      return dato.event === "infoDelivery" && dato.info && dato.info.playerState === 1;
+    }
+
     function oir(ev) {
       if (ev.source !== marco.contentWindow) return;
       var dato;
-      try { dato = JSON.parse(ev.data); } catch (e) { return; }
-      /* 1 = reproduciendo. Sólo entonces hay un fotograma de verdad. */
-      if (dato && dato.event === "onStateChange" && dato.info === 1) {
+      try { dato = typeof ev.data === "string" ? JSON.parse(ev.data) : ev.data; } catch (e) { return; }
+      if (!dato || typeof dato !== "object") return;
+
+      if (!respondio) {
+        respondio = true;
+        clearInterval(saludo);
+        pasoCongelado(hueco, "respondió");
+        /* Por si el autoplay de la dirección no lo arrancó: callado, un
+           arranque pedido desde la página suele estar permitido. */
+        hablar({ event: "command", func: "mute", args: [] });
+        hablar({ event: "command", func: "playVideo", args: [] });
+      }
+      /* Sólo cuando reproduce hay un fotograma de verdad del recorte. */
+      if (estaReproduciendo(dato)) {
         hablar({ event: "command", func: "pauseVideo", args: [] });
         terminar(true);
       }
     }
     w.addEventListener("message", oir);
 
+    /* El saludo se repite hasta que el reproductor contesta. Mandado una
+       sola vez al cargar se pierde, porque adentro todavía no escucha
+       nadie: es lo mismo que hace la API oficial de YouTube. */
     marco.addEventListener("load", function () {
-      hablar({ event: "listening", id: 1 });
+      if (listo || respondio) return;
+      hablar({ event: "listening", id: 1, channel: "widget" });
+      clearInterval(saludo);
+      saludo = setInterval(function () {
+        if (listo || respondio) { clearInterval(saludo); return; }
+        hablar({ event: "listening", id: 1, channel: "widget" });
+      }, 250);
     });
 
-    /* Red de seguridad: si en cuatro segundos no llegó a reproducir, se
-       deja la tarjeta como estaba y se sigue con la siguiente. */
-    setTimeout(function () { terminar(false); }, 4000);
+    /* Red de seguridad: un iPad tarda en bajar y arrancar un reproductor
+       de YouTube, así que se le da tiempo antes de rendirse. */
+    espera = setTimeout(function () { terminar(false); }, ESPERA_CONGELADO);
+  }
+
+  /* El paso en que va cada portada. Con ?diag en la dirección se ve escrito
+     sobre la tarjeta: sirve para saber, en un aparato que no tengo a mano,
+     en qué punto se queda. Sin ?diag no se muestra nada. */
+  var DIAG = /[?&]diag\b/.test(String(location.search || ""));
+  function pasoCongelado(hueco, paso) {
+    hueco.dataset.paso = paso;
+    if (!DIAG) return;
+    var caja = hueco.closest(".video-thumb");
+    if (!caja) return;
+    var et = caja.querySelector(".diag-congelado");
+    if (!et) {
+      et = d.createElement("span");
+      et.className = "diag-congelado";
+      caja.appendChild(et);
+    }
+    et.textContent = "portada: " + paso;
   }
 
   function renderVideos() {

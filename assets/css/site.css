@@ -420,19 +420,33 @@
 .video-thumb.is-live::after { display: none; }
 
 /* Portada congelada: el reproductor de YouTube arrancado en el segundo del
-   recorte y pausado ahí. Aparece recién cuando está quieto, así no se ve
-   arrancar, y no recibe clics: el que manda sigue siendo el botón de la
-   tarjeta, que respeta el inicio y el fin. */
+   recorte y pausado ahí. Mientras arranca queda DEBAJO de la miniatura y sin
+   transparencia: Safari no deja arrancar un vídeo que considera invisible,
+   así que tiene que estar "a la vista" aunque la miniatura lo tape. Cuando
+   se congela, la miniatura se apaga y queda el fotograma. No recibe clics:
+   el que manda sigue siendo el botón de la tarjeta, que respeta inicio y fin. */
 .thumb-congelado {
-  position: absolute; inset: 0; display: block; z-index: 1;
-  opacity: 0; pointer-events: none; transition: opacity .5s var(--ease);
+  position: absolute; inset: 0; display: block; z-index: 0;
+  pointer-events: none;
 }
 .thumb-congelado iframe { position: absolute; inset: 0; pointer-events: none; }
-.video-thumb.is-congelado .thumb-congelado { opacity: 1; }
+.video-thumb.con-congelado > img { position: relative; z-index: 1; transition: opacity .5s var(--ease); }
+/* El degradado de abajo tiene que seguir encima de la miniatura y del
+   fotograma, y debajo de las etiquetas (z-index 2). */
+.video-thumb.con-congelado::after { z-index: 1; }
+.video-thumb.is-congelado > img { opacity: 0; }
 /* El reproductor pausado dibuja su propio botón de play: si no, quedarían
    dos, uno encima del otro. */
 .video-thumb.is-congelado .play-btn { opacity: 0; pointer-events: none; }
 .video-card:hover .video-thumb.is-congelado .play-btn { opacity: 0; }
+
+/* Diagnóstico: sólo con ?diag en la dirección. */
+.diag-congelado {
+  position: absolute; left: .6rem; top: .6rem; z-index: 3;
+  padding: .25rem .5rem; border-radius: 4px;
+  background: rgba(0, 0, 0, .82); color: #fff;
+  font: 600 .66rem/1.2 var(--font-mono); letter-spacing: .04em;
+}
 
 .play-btn {
   position: absolute; left: 50%; top: 50%; translate: -50% -50%;

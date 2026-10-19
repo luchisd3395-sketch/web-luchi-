@@ -15,7 +15,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const leer = (p) => fs.readFileSync(path.join(raiz, p), "utf8");
+/* Las rutas pueden traer «?v=» para saltar la caché del navegador: para
+   leer el archivo del disco hay que sacárselo. */
+const leer = (p) => fs.readFileSync(path.join(raiz, p.split("?")[0]), "utf8");
 const kb = (n) => (n / 1024).toFixed(0) + " KB";
 const mb = (n) => (n / 1024 / 1024).toFixed(2) + " MB";
 
