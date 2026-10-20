@@ -781,6 +781,7 @@
       host.innerHTML = "";
       strip.innerHTML = "";
       $("#videosEmpty").classList.remove("hidden");
+      ventanaDeVideos();
       return;
     }
     $("#videosEmpty").classList.add("hidden");
@@ -800,6 +801,7 @@
           renderVideos();
         });
       });
+      ventanaDeVideos();
       return;
     }
 
@@ -823,8 +825,55 @@
         }
       });
     });
+    host.scrollTop = 0;
+    ventanaDeVideos();
   }
   LSD.renderVideos = renderVideos;
+
+  /* Teléfono: los vídeos van en una caja del alto de cuatro, y el resto se
+     desliza adentro. Se mide en vez de usar un alto fijo porque los
+     renglones no miden todos lo mismo (títulos de una a tres líneas). */
+  var VIDEOS_A_LA_VISTA = 4;
+  function ventanaDeVideos() {
+    var host = $("#videoCollection"), aviso = $("#videosAviso");
+    if (!host || !aviso) return;
+    var cards = $$(".video-card", host);
+    var activa = LSD.esTelefono() && host.getAttribute("data-layout") === "grid" &&
+      cards.length > VIDEOS_A_LA_VISTA;
+    host.classList.toggle("es-ventana", activa);
+    aviso.hidden = !activa;
+    if (!activa) {
+      host.style.removeProperty("--alto-ventana");
+      host.classList.remove("al-final");
+      return;
+    }
+    var arriba = cards[0].getBoundingClientRect().top;
+    var abajo = cards[VIDEOS_A_LA_VISTA - 1].getBoundingClientRect().bottom;
+    host.style.setProperty("--alto-ventana", Math.ceil(abajo - arriba) + "px");
+    aviso.textContent = "Deslizá para ver los " + cards.length + " vídeos ↑";
+    marcarFinDeVentana();
+  }
+  LSD.ventanaDeVideos = ventanaDeVideos;
+
+  function marcarFinDeVentana() {
+    var host = $("#videoCollection"), aviso = $("#videosAviso");
+    if (!host || !aviso) return;
+    var alFinal = host.scrollTop + host.clientHeight >= host.scrollHeight - 4;
+    host.classList.toggle("al-final", alFinal);
+    aviso.classList.toggle("al-final", alFinal);
+  }
+
+  (function () {
+    var host = $("#videoCollection");
+    if (host) host.addEventListener("scroll", marcarFinDeVentana, { passive: true });
+    var espera = null;
+    window.addEventListener("resize", function () {
+      clearTimeout(espera);
+      espera = setTimeout(ventanaDeVideos, 150);
+    });
+    /* Con la tipografía definitiva los títulos pueden cambiar de largo. */
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(ventanaDeVideos);
+  })();
 
 
   /* ================================================================

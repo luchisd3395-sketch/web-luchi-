@@ -1184,3 +1184,24 @@
   .video-collection[data-layout="grid"] .video-badge { font-size: .5rem; letter-spacing: .08em; padding: .1rem .3rem; left: .3rem; top: .3rem; }
   .video-collection[data-layout="grid"] .diag-congelado { left: .3rem; top: .3rem; font-size: .55rem; }
 }
+
+/* Vídeos en el teléfono: caja del alto de cuatro con desplazamiento propio.
+   Sin overscroll-behavior: al llegar al final, el dedo sigue bajando la
+   página en vez de quedar atrapado en la caja. */
+.videos-aviso {
+  margin-top: .7rem; text-align: center;
+  font-family: var(--font-mono); font-size: var(--fs-micro); letter-spacing: .12em;
+  text-transform: uppercase; color: var(--muted); transition: opacity .3s var(--ease);
+}
+.videos-aviso.al-final { opacity: 0; }
+.section.is-inverted .videos-aviso { color: rgba(255, 255, 255, .6); }
+@media (max-width: 680px) {
+  .video-collection.es-ventana {
+    max-height: var(--alto-ventana); overflow-y: auto;
+    -webkit-overflow-scrolling: touch; scrollbar-width: thin;
+    /* El degradado de abajo insinúa que hay más; se va al llegar al final. */
+    -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 36px), transparent);
+            mask-image: linear-gradient(180deg, #000 calc(100% - 36px), transparent);
+  }
+  .video-collection.es-ventana.al-final { -webkit-mask-image: none; mask-image: none; }
+}
